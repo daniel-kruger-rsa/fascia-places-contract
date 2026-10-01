@@ -23,8 +23,11 @@ found by a user rather than by a diff. Advance OS asked for something to diff ag
 | A new field, endpoint or response | minor (`0.13` → `0.14`) |
 | Editorial only — wording, examples, descriptions, no interface change | patch (`0.13.0` → `0.13.1`) |
 
-A patch release never changes what the API accepts or returns. `0.13.1` is one: it removed a
-key-shaped example string from the security scheme and listed the production server.
+A patch release never changes what the API accepts or returns.
+
+**[CHANGELOG.md](CHANGELOG.md)** has every published version, newest first, with one column that
+answers the only question a diff really asks: does your client care? Nothing is published without
+an entry in it.
 
 Breaking changes do not happen inside v1. The path carries the major version, so an
 incompatible contract would be `/v2/places` and a new document.
