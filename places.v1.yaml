@@ -1,0 +1,900 @@
+openapi: 3.0.3
+info:
+  title: Fascia Places
+  version: 0.13.1
+  description: |
+    Host-facing geography rail for Advance OS and other platforms.
+    Pack generation mdb-zaf-2020 (MDB ADM1–4 + Stats SA MP/SP + GeoNames P).
+    Harvest cells are subplaces. GeoNames are labels/search only.
+    Every response carries the header x-places-generation, except a 404 for a country with no
+    pack: that response asserts no generation, in the header or the body. Persist area_id with
+    generation, and the country with it.
+  contact:
+    name: AsOne Fascia
+servers:
+  - url: https://places.fascia.asone.net.za
+    description: Production
+  - url: http://localhost:8080
+    description: Local compose
+security:
+  - hostKey: []
+
+tags:
+  - name: public
+  - name: resolve
+  - name: overlay
+  - name: harvest
+
+paths:
+  /health:
+    get:
+      tags: [public]
+      security: []
+      summary: Process up
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok: { type: boolean, example: true }
+
+  /v1/places/generation:
+    get:
+      tags: [public]
+      security: []
+      summary: Active pack generation for a country
+      description: |
+        The generation a host pins, for the country it asks about. Cadence follows census years,
+        so each country has its own. A country with no pack is refused, never answered with the
+        default country's generation.
+
+        This is also the capability probe. `loaded` is false for a country that is configured but
+        whose pack has not been ingested: it answers with its own generation, correctly, and holds
+        nothing. A probe reading the generation alone would report ready while every read came back
+        empty, so read `loaded` with it.
+      parameters:
+        - $ref: "#/components/parameters/country"
+      responses:
+        "200":
+          description: Generation id hosts must pin, with the country it belongs to
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  country: { type: string, example: ZA }
+                  generation: { type: string, example: mdb-zaf-2020 }
+                  loaded:
+                    type: boolean
+                    description: An ingest has run for this country and generation
+                    example: true
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "404": { $ref: "#/components/responses/NoPackForCountry" }
+
+  /v1/places/building/{building_id}:
+    get:
+      tags: [resolve]
+      summary: One structure
+      description: |
+        What a host stores after a member confirms a candidate. building_id is minted by
+        Places and stable within a generation; source_ref keeps the source's own key because
+        no ML footprint source publishes a stable id.
+      parameters:
+        - in: path
+          name: building_id
+          required: true
+          schema: { type: string, format: uuid }
+        - $ref: "#/components/parameters/generation"
+      responses:
+        "200":
+          description: The structure, or {} when the id is unknown
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  building_id: { type: string, format: uuid }
+                  generation: { type: string }
+                  country: { type: string }
+                  source: { type: string, example: google_open_buildings }
+                  source_ref: { type: string, nullable: true }
+                  area_m2: { type: integer, nullable: true }
+                  lng: { type: number }
+                  lat: { type: number }
+                  area:
+                    $ref: "#/components/schemas/AreaRef"
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "404": { $ref: "#/components/responses/NoPackForCountry" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+
+  /v1/places/coverage:
+    get:
+      tags: [public]
+      security: []
+      summary: What this pack can answer for a country
+      description: |
+        Identity (can a building be identified at all) and attributes (entrance ref, floors,
+        house numbers) reported separately on purpose. crowding_10m sizes a building picker
+        and is measured rather than derived from density. measured:false means no ingest has
+        measured that country — not an error.
+      parameters:
+        - $ref: "#/components/parameters/country"
+        - $ref: "#/components/parameters/generation"
+      responses:
+        "200":
+          description: Measures and guidance
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  country: { type: string, example: ZA }
+                  generation: { type: string }
+                  measured: { type: boolean }
+                  measures:
+                    type: object
+                    additionalProperties:
+                      type: object
+                      properties:
+                        value: { type: number, nullable: true }
+                        detail: { type: object }
+                  guidance:
+                    type: object
+                    properties:
+                      building_candidates: { type: integer, nullable: true }
+                      entrance_picker: { type: boolean, nullable: true }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "404": { $ref: "#/components/responses/NoPackForCountry" }
+
+  /v1/places/generations:
+    get:
+      tags: [public]
+      security: []
+      summary: Generations this pack holds
+      description: |
+        During a geography change the old and the new generation are loaded side by side.
+        Any read accepts ?generation= to choose one; omitting it serves the default.
+      responses:
+        "200":
+          description: Default generation and everything loaded
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  default_country: { type: string, example: ZA }
+                  default: { type: string, example: mdb-zaf-2020, description: "The default country's generation; the single-country shape, kept for hosts written against it." }
+                  countries:
+                    type: array
+                    description: Every country this deployment serves, each with its own default and generations.
+                    items:
+                      type: object
+                      properties:
+                        country: { type: string, example: ZA }
+                        default: { type: string }
+                        loaded: { type: boolean, description: False when a country is configured but not yet ingested. }
+                        generations:
+                          type: array
+                          items: { type: object }
+                  generations:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        generation: { type: string }
+                        loaded_at: { type: string, format: date-time }
+                        layers:
+                          type: array
+                          items: { type: string }
+                        default: { type: boolean }
+
+  /v1/places/layers:
+    get:
+      tags: [public]
+      security: []
+      summary: Layer catalogue
+      description: |
+        The same layers everywhere, but the response carries a generation, and a generation
+        belongs to a country: a country with no pack is refused here too.
+      parameters:
+        - $ref: "#/components/parameters/country"
+      responses:
+        "200":
+          description: ADM1–4, MP, SP, GN
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  country: { type: string, example: ZA }
+                  generation: { type: string, example: mdb-zaf-2020 }
+                  layers:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        adm: { type: string, example: SP }
+                        kind: { type: string, example: subplace }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "404": { $ref: "#/components/responses/NoPackForCountry" }
+
+  /v1/places/point:
+    get:
+      tags: [resolve]
+      summary: Resolve a WGS84 point to the admin/place stack
+      parameters:
+        - $ref: "#/components/parameters/lng"
+        - $ref: "#/components/parameters/lat"
+        - $ref: "#/components/parameters/country"
+        - $ref: "#/components/parameters/generation"
+        - in: query
+          name: kind
+          schema: { type: string }
+          description: Filter to one layer (ADM1|ADM2|ADM3|ADM4|MP|SP or kind name). Omit for full stack.
+        - in: query
+          name: include
+          schema: { type: string, example: building }
+          description: |
+            Comma-separated extras. "building" adds a ranked candidate list of structures
+            within 60 m, sized by the cell's crowding, with confirm_required true. Omitted,
+            no building data is returned: a structure is closer to a home than a cell is.
+      responses:
+        "200":
+          description: Smallest area + layers + stack + nearest GeoNames place. Miss returns lat/lng/place only.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PointResponse"
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "404": { $ref: "#/components/responses/NoPackForCountry" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "500": { $ref: "#/components/responses/Unavailable" }
+
+  /v1/places/search:
+    get:
+      tags: [resolve]
+      summary: Search GeoNames populated places by name
+      parameters:
+        - in: query
+          name: q
+          required: true
+          schema: { type: string, minLength: 2 }
+        - $ref: "#/components/parameters/country"
+        - $ref: "#/components/parameters/generation"
+      responses:
+        "200":
+          description: Up to 20 name hits
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/GeonameHit"
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "404": { $ref: "#/components/responses/NoPackForCountry" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+
+  /v1/places/areas/search:
+    get:
+      tags: [resolve]
+      summary: Search polygon layers (ADM1–4, MP, SP) by name
+      description: |
+        Case-insensitive match on the area name; the query is matched literally.
+        Order: exact name, then prefix, then contains; larger layers first; shorter names first.
+        Each hit carries its parent chain (large → small) so repeated names can be told apart.
+      parameters:
+        - in: query
+          name: q
+          required: true
+          schema: { type: string, minLength: 2 }
+        - in: query
+          name: kind
+          schema: { type: string }
+          description: One layer or a comma-separated list (ADM1|ADM2|ADM3|ADM4|MP|SP or kind names). Default all six. GN is not an area layer; use /v1/places/search.
+        - in: query
+          name: within
+          schema: { type: string, format: uuid }
+          description: Only areas whose point-on-surface lies inside this area (any layer). Unknown id → empty list.
+        - in: query
+          name: limit
+          schema: { type: integer, default: 20, minimum: 1, maximum: 50 }
+        - $ref: "#/components/parameters/country"
+        - $ref: "#/components/parameters/generation"
+      responses:
+        "200":
+          description: Area hits
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/AreaHit"
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "404": { $ref: "#/components/responses/NoPackForCountry" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "500": { $ref: "#/components/responses/Unavailable" }
+
+  /v1/places/streets:
+    get:
+      tags: [resolve]
+      summary: Search street names (OpenStreetMap, ODbL)
+      description: |
+        Labels, not harvest cells. One row per street per sub-place, so every hit carries its
+        sub-place and that cell's parent chain. Queries are normalised the way the ingest
+        normalised names ("Main Rd" finds "Main Road").
+        Responses carry attribution; the host must display it wherever a street name appears.
+      parameters:
+        - in: query
+          name: q
+          required: true
+          schema: { type: string, minLength: 2 }
+        - in: query
+          name: within
+          schema: { type: string, format: uuid }
+          description: Only streets in this area, or in cells inside it.
+        - in: query
+          name: limit
+          schema: { type: integer, default: 20, minimum: 1, maximum: 50 }
+        - $ref: "#/components/parameters/country"
+        - $ref: "#/components/parameters/generation"
+      responses:
+        "200":
+          description: Street hits with attribution
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StreetSearchResponse"
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "404": { $ref: "#/components/responses/NoPackForCountry" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "500": { $ref: "#/components/responses/Unavailable" }
+
+  /v1/places/area/{area_id}/neighbours:
+    get:
+      tags: [resolve]
+      summary: Cells touching this one
+      description: |
+        Harvest planning asks "what should this group take next", which is adjacency, not a
+        viewport. Sub-places only; any other layer returns an empty list. Adjacency is by
+        intersection, not strict touching: census polygons share slivers and rounding.
+      parameters:
+        - $ref: "#/components/parameters/areaId"
+        - $ref: "#/components/parameters/generation"
+      responses:
+        "200":
+          description: Neighbouring cells, each with its own measures
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  area_id: { type: string, format: uuid }
+                  generation: { type: string }
+                  count: { type: integer }
+                  neighbours:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        area_id: { type: string, format: uuid }
+                        name: { type: string }
+                        kind: { type: string, example: subplace }
+                        adm: { type: string, example: SP }
+                        country: { type: string }
+                        area_km2: { type: number, nullable: true }
+                        land_class: { type: string, nullable: true }
+                        buildings: { type: integer, nullable: true }
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "404": { $ref: "#/components/responses/NoPackForCountry" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+
+  /v1/places/street/{street_id}/geojson:
+    get:
+      tags: [overlay]
+      summary: One street's line
+      parameters:
+        - in: path
+          name: street_id
+          required: true
+          schema: { type: string, format: uuid }
+        - $ref: "#/components/parameters/generation"
+      responses:
+        "200":
+          description: MultiLineString FeatureCollection with attribution; unknown id gives an empty collection
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FeatureCollection"
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "404": { $ref: "#/components/responses/NoPackForCountry" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+
+  /v1/places/geonames:
+    get:
+      tags: [overlay]
+      summary: GeoNames points in a viewport
+      parameters:
+        - $ref: "#/components/parameters/west"
+        - $ref: "#/components/parameters/south"
+        - $ref: "#/components/parameters/east"
+        - $ref: "#/components/parameters/north"
+        - $ref: "#/components/parameters/country"
+        - $ref: "#/components/parameters/generation"
+        - in: query
+          name: limit
+          schema: { type: integer, default: 250, minimum: 1, maximum: 500 }
+      responses:
+        "200":
+          description: Point FeatureCollection (generation, kind geoname, adm GN, count)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FeatureCollection"
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "404": { $ref: "#/components/responses/NoPackForCountry" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+
+  /v1/places/harvest:
+    get:
+      tags: [harvest]
+      summary: Uncovered harvest cells (default subplace) in a bbox
+      parameters:
+        - $ref: "#/components/parameters/west"
+        - $ref: "#/components/parameters/south"
+        - $ref: "#/components/parameters/east"
+        - $ref: "#/components/parameters/north"
+        - in: query
+          name: kind
+          schema: { type: string, default: subplace }
+        - in: query
+          name: covered
+          schema: { type: string }
+          description: Comma-separated area_id UUIDs already selected. At most 200; more or non-UUID values are 400.
+        - in: query
+          name: summary
+          schema: { type: string, enum: ["1", "true"] }
+        - $ref: "#/components/parameters/country"
+        - $ref: "#/components/parameters/generation"
+      responses:
+        "200":
+          description: Array of cells, or counts when summary=1
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - type: array
+                    items:
+                      $ref: "#/components/schemas/HarvestCell"
+                  - $ref: "#/components/schemas/HarvestSummary"
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "404": { $ref: "#/components/responses/NoPackForCountry" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+
+  /v1/places/geojson:
+    get:
+      tags: [overlay]
+      summary: Viewport polygons for one layer
+      description: |
+        Bbox is required for ward, mainplace and subplace (400 without). Province, district and
+        municipality may be fetched pack-wide. Feature properties carry area_id, name, kind, adm, generation.
+      parameters:
+        - in: query
+          name: kind
+          schema: { type: string, default: subplace }
+        - $ref: "#/components/parameters/westOpt"
+        - $ref: "#/components/parameters/southOpt"
+        - $ref: "#/components/parameters/eastOpt"
+        - $ref: "#/components/parameters/northOpt"
+        - $ref: "#/components/parameters/country"
+        - $ref: "#/components/parameters/generation"
+        - in: query
+          name: simplify
+          schema: { type: number, default: 0.0006, maximum: 0.05 }
+        - in: query
+          name: limit
+          schema: { type: integer, default: 2500, minimum: 1, maximum: 8000 }
+      responses:
+        "200":
+          description: FeatureCollection with count and total
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FeatureCollection"
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "404": { $ref: "#/components/responses/NoPackForCountry" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+
+  /v1/places/area/{area_id}:
+    get:
+      tags: [resolve]
+      summary: Area properties by id
+      parameters:
+        - $ref: "#/components/parameters/areaId"
+        - $ref: "#/components/parameters/generation"
+      responses:
+        "200":
+          description: Area or empty object
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Area"
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "404": { $ref: "#/components/responses/NoPackForCountry" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+
+  /v1/places/area/{area_id}/geojson:
+    get:
+      tags: [overlay]
+      summary: One area as simplified GeoJSON (highlight / fitBounds)
+      parameters:
+        - $ref: "#/components/parameters/areaId"
+        - $ref: "#/components/parameters/generation"
+      responses:
+        "200":
+          description: FeatureCollection with 0 or 1 feature
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FeatureCollection"
+        "401": { $ref: "#/components/responses/Unauthorized" }
+
+components:
+  securitySchemes:
+    hostKey:
+      type: http
+      scheme: bearer
+      description: |
+        A per-host key, issued by Fascia and held server-side by the host. Never in a client
+        bundle: a key in a browser is a key published. Each deployment sets its own in HOST_KEYS,
+        including dev stacks, so no key value is written down here.
+
+  parameters:
+    generation:
+      in: query
+      name: generation
+      schema: { type: string }
+      description: |
+        Read a generation other than the country's default. Resolved within the country asked
+        for: a generation that exists for another country is refused with 400, because a
+        generation of one pack is not a generation of another. See /v1/places/generations.
+    lng:
+      in: query
+      name: lng
+      required: true
+      schema: { type: number, example: 28.0473 }
+    lat:
+      in: query
+      name: lat
+      required: true
+      schema: { type: number, example: -26.2041 }
+    country:
+      in: query
+      name: country
+      schema: { type: string, default: ZA }
+    west:
+      in: query
+      name: west
+      required: true
+      schema: { type: number }
+    south:
+      in: query
+      name: south
+      required: true
+      schema: { type: number }
+    east:
+      in: query
+      name: east
+      required: true
+      schema: { type: number }
+    north:
+      in: query
+      name: north
+      required: true
+      schema: { type: number }
+    westOpt:
+      in: query
+      name: west
+      schema: { type: number }
+    southOpt:
+      in: query
+      name: south
+      schema: { type: number }
+    eastOpt:
+      in: query
+      name: east
+      schema: { type: number }
+    northOpt:
+      in: query
+      name: north
+      schema: { type: number }
+    areaId:
+      in: path
+      name: area_id
+      required: true
+      schema: { type: string, format: uuid }
+
+  schemas:
+    Area:
+      type: object
+      properties:
+        stats:
+          allOf:
+            - $ref: "#/components/schemas/AreaStats"
+          description: Present on GET /v1/places/area/{area_id} when an ingest has measured the cell.
+        attribution:
+          type: array
+          description: Credits the measures require; present with stats.
+          items:
+            $ref: "#/components/schemas/Attribution"
+        area_id: { type: string, format: uuid }
+        geoname_id: { type: integer, nullable: true }
+        name: { type: string }
+        kind:
+          type: string
+          enum: [province, district, municipality, ward, mainplace, subplace]
+        country: { type: string, example: ZA }
+        codes: { type: object }
+        parent_ids:
+          type: array
+          items: { type: string, format: uuid }
+        generation: { type: string }
+
+    GeonameHit:
+      type: object
+      properties:
+        geoname_id: { type: integer }
+        name: { type: string }
+        feature_class: { type: string, example: P }
+        feature_code: { type: string, example: PPLA }
+        capital_of:
+          type: string
+          nullable: true
+          enum: [national, province, district, municipality]
+          description: Derived from feature_code, so hosts need not know the GeoNames codes.
+        admin1: { type: string }
+        lng: { type: number }
+        lat: { type: number }
+        meters: { type: integer }
+
+    AreaRef:
+      type: object
+      properties:
+        area_id: { type: string, format: uuid }
+        name: { type: string }
+        kind: { type: string, example: municipality }
+        adm: { type: string, example: ADM3 }
+
+    AreaHit:
+      type: object
+      properties:
+        area_id: { type: string, format: uuid }
+        name: { type: string }
+        kind:
+          type: string
+          enum: [province, district, municipality, ward, mainplace, subplace]
+        adm: { type: string, example: SP }
+        country: { type: string, example: ZA }
+        generation: { type: string }
+        parents:
+          type: array
+          description: Parent chain, large → small (e.g. ADM1, ADM2, ADM3, MP for a subplace). Empty for provinces.
+          items:
+            $ref: "#/components/schemas/AreaRef"
+        bbox:
+          type: array
+          description: "[west, south, east, north], WGS84"
+          minItems: 4
+          maxItems: 4
+          items: { type: number }
+
+    Attribution:
+      type: object
+      properties:
+        source: { type: string, example: OpenStreetMap }
+        text: { type: string, example: "© OpenStreetMap contributors" }
+        url: { type: string, example: "https://www.openstreetmap.org/copyright" }
+        license: { type: string, example: ODbL 1.0 }
+
+    StreetHit:
+      type: object
+      properties:
+        street_id: { type: string, format: uuid }
+        name: { type: string, example: Atterbury Road }
+        highway: { type: string, example: primary }
+        length_m: { type: integer }
+        subplace:
+          $ref: "#/components/schemas/AreaRef"
+        parents:
+          type: array
+          items:
+            $ref: "#/components/schemas/AreaRef"
+        bbox:
+          type: array
+          minItems: 4
+          maxItems: 4
+          items: { type: number }
+
+    StreetSearchResponse:
+      type: object
+      properties:
+        generation: { type: string }
+        attribution:
+          type: array
+          items:
+            $ref: "#/components/schemas/Attribution"
+        count: { type: integer }
+        streets:
+          type: array
+          items:
+            $ref: "#/components/schemas/StreetHit"
+
+    NearestStreet:
+      type: object
+      nullable: true
+      properties:
+        street_id: { type: string, format: uuid }
+        name: { type: string }
+        highway: { type: string }
+        sp_area_id: { type: string, format: uuid }
+        meters: { type: integer }
+
+    PointResponse:
+      allOf:
+        - $ref: "#/components/schemas/Area"
+        - type: object
+          properties:
+            lat: { type: number }
+            lng: { type: number }
+            place:
+              allOf:
+                - $ref: "#/components/schemas/GeonameHit"
+              nullable: true
+            nearby:
+              type: array
+              items:
+                $ref: "#/components/schemas/GeonameHit"
+            street:
+              allOf:
+                - $ref: "#/components/schemas/NearestStreet"
+              description: Nearest named street within 120 m, or null. Often null outside metros.
+            attribution:
+              type: array
+              description: Present when the response carries street data.
+              items:
+                $ref: "#/components/schemas/Attribution"
+            layers:
+              type: object
+              additionalProperties:
+                $ref: "#/components/schemas/Area"
+            stack:
+              type: array
+              items:
+                allOf:
+                  - $ref: "#/components/schemas/Area"
+                  - type: object
+                    properties:
+                      adm: { type: string, example: SP }
+
+    HarvestCell:
+      type: object
+      properties:
+        area_id: { type: string, format: uuid }
+        name: { type: string }
+        kind: { type: string, example: subplace }
+        country: { type: string, example: ZA }
+        generation: { type: string }
+
+    AreaStats:
+      type: object
+      description: |
+        Coverage denominators for one cell. Measure coverage against road_km or buildings, not
+        against named streets: named-street availability tracks OSM volunteer effort (96% of
+        Gauteng sub-places, 12% of Eastern Cape ones), not where people live.
+      properties:
+        road_km: { type: number, nullable: true, description: All street-like OSM ways in the cell, named or not }
+        named_road_km: { type: number, nullable: true }
+        buildings: { type: integer, nullable: true, description: Google Open Buildings structures whose centroid falls in the cell }
+        area_km2: { type: number, nullable: true }
+        crowding_10m:
+          type: number
+          nullable: true
+          description: Mean other structures within 10 m. Sizes a building picker; measured, not derived from density.
+        building_candidates:
+          type: integer
+          nullable: true
+          description: How many candidates a picker should offer in this cell.
+        land_class:
+          type: string
+          nullable: true
+          enum: [urban, non_urban, agricultural_holdings, smallholdings]
+          description: MP and SP only; inferred from the Stats SA name suffix. Null for admin layers.
+        centroid:
+          type: object
+          nullable: true
+          description: A point on the cell (ST_PointOnSurface), for pinning a label.
+          properties:
+            lng: { type: number }
+            lat: { type: number }
+
+    HarvestSummary:
+      type: object
+      properties:
+        generation: { type: string }
+        kind: { type: string, example: subplace }
+        uncovered: { type: integer }
+        covered: { type: integer }
+        uncovered_totals:
+          $ref: "#/components/schemas/AreaStats"
+        attribution:
+          type: array
+          items:
+            $ref: "#/components/schemas/Attribution"
+
+    FeatureCollection:
+      type: object
+      properties:
+        type: { type: string, example: FeatureCollection }
+        generation: { type: string }
+        kind: { type: string }
+        adm: { type: string }
+        count: { type: integer }
+        total: { type: integer }
+        features:
+          type: array
+          items: { type: object }
+
+    Error:
+      type: object
+      properties:
+        error:
+          type: object
+          properties:
+            code: { type: string }
+            message: { type: string }
+
+    NoPackForCountry:
+      type: object
+      properties:
+        error:
+          type: object
+          properties:
+            code: { type: string, example: no_pack_for_country }
+            message: { type: string }
+            country: { type: string, example: IN, description: The country asked for }
+            countries:
+              type: array
+              description: What this deployment does serve
+              items: { type: string }
+              example: [ZA]
+        generation:
+          type: string
+          nullable: true
+          description: Always null — no generation applies to a country with no pack
+
+  responses:
+    BadRequest:
+      description: Missing or invalid query
+      content:
+        application/json:
+          schema: { $ref: "#/components/schemas/Error" }
+    Unauthorized:
+      description: Missing or unknown host key
+      content:
+        application/json:
+          schema: { $ref: "#/components/schemas/Error" }
+    Unavailable:
+      description: Server / database error
+      content:
+        application/json:
+          schema: { $ref: "#/components/schemas/Error" }
+    NoPackForCountry:
+      description: |
+        No pack covers the country asked for. Refused by name rather than answered with an empty
+        200, which a host cannot tell apart from a coordinate in the sea, and never stamped with
+        another country's generation. The header x-places-generation is absent.
+      content:
+        application/json:
+          schema: { $ref: "#/components/schemas/NoPackForCountry" }
