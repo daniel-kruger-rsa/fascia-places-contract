@@ -1,14 +1,20 @@
 openapi: 3.0.3
 info:
   title: Fascia Places
-  version: 0.13.1
+  version: 0.14.0
   description: |
     Host-facing geography rail for Advance OS and other platforms.
     Pack generation mdb-zaf-2020 (MDB ADM1–4 + Stats SA MP/SP + GeoNames P).
     Harvest cells are subplaces. GeoNames are labels/search only.
-    Every response carries the header x-places-generation, except a 404 for a country with no
-    pack: that response asserts no generation, in the header or the body. Persist area_id with
-    generation, and the country with it.
+    Every response carries the header x-places-generation, except the two that assert no
+    generation because none applies: a 404 for a country with no pack, and a 404 for a path that
+    does not exist. Persist area_id with generation, and the country with it.
+
+    Switch on error.code, never on the status alone. Two 404s mean different things:
+    no_pack_for_country is a settled answer about a country, while not_found is a path this
+    deployment does not have, which is a client bug or a stale client. A path that does not exist
+    answers 404 with or without a host key: existence is not a function of who is asking.
+    A path that does exist answers 401 until the key is right.
   contact:
     name: AsOne Fascia
 servers:
@@ -887,6 +893,14 @@ components:
           schema: { $ref: "#/components/schemas/Error" }
     Unavailable:
       description: Server / database error
+      content:
+        application/json:
+          schema: { $ref: "#/components/schemas/Error" }
+    NotFound:
+      description: |
+        No such path. Returned with or without a host key, and carries error.code not_found,
+        which is what distinguishes it from no_pack_for_country. The header
+        x-places-generation is absent. Every path this deployment has is in this document.
       content:
         application/json:
           schema: { $ref: "#/components/schemas/Error" }
