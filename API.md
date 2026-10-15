@@ -2,6 +2,8 @@
 
 Host-facing geography rail. Hosts consume this; they do not store polygons.
 
+A **host** is a platform that builds Places into its own product. Its members use the host's app, and the host's backend calls this API on their behalf with a host key, never from a client. The host owns its members, its communities and which cells they cover; Places answers questions about geography and knows nothing of members or communities.
+
 
 - **Base:** `https://places.fascia.network` (production), `http://localhost:8080` (local compose)
 - **Version prefix:** `/v1/places`
@@ -164,6 +166,8 @@ Takes `country` (default: the deployment's default country).
 ```
 
 Pin this on the host, with the country. When it changes, refresh cached `area_id`s. A country with no pack gets `404 no_pack_for_country`, not the default country's generation.
+
+**`contract` is the version of [the published contract](https://github.com/daniel-kruger-rsa/fascia-places-contract) this deployment implements.** Compare it at boot against the version you vendored. Below your floor deserves its own failure reason — *the server is older than this app expects* — and never a sentence about geography: a rollback past your floor would otherwise serve you a contract you did not pin, with every call looking fine. It is also on every response that carries `x-places-generation`, as `x-places-contract`.
 
 **This is the capability probe, so read `loaded` with the generation.** A country that is configured but not yet ingested answers with its own generation — correctly — and holds nothing. A probe that treated a generation coming back as "ready" would un-hide every Places surface while every read returned empty: a flag that reports ready while nothing works, which is worse than no flag. `loaded: false` is the state to wait on. `GET /v1/places/generations` carries the same field per country, for a host that wants the whole picture.
 
