@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: Fascia Places
-  version: 0.16.0
+  version: 0.17.0
   description: |
     Host-facing geography rail for Advance OS and other platforms.
     Pack generation mdb-zaf-2020 (MDB ADM1–4 + Stats SA MP/SP + GeoNames P).
@@ -88,6 +88,16 @@ paths:
                     type: boolean
                     description: An ingest has run for this country and generation
                     example: true
+                  contract:
+                    type: string
+                    example: 0.17.0
+                    description: |
+                      The version of this document that the deployment implements. Compare it at
+                      boot against the version you vendored: a pinned copy says what you expect,
+                      and without this there was nothing to check it against. A deployment below
+                      your floor deserves its own failure reason — the server is older than your
+                      app expects — and never a claim about geography. Also returned as the
+                      x-places-contract header on every response that carries x-places-generation.
         "400": { $ref: "#/components/responses/BadRequest" }
         "404": { $ref: "#/components/responses/NoPackForCountry" }
 
