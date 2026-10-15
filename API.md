@@ -1,6 +1,6 @@
 # Fascia Places API v1
 
-Host-facing geography rail. Advance OS (and other hosts) consume this; they do not store polygons.
+Host-facing geography rail. Hosts consume this; they do not store polygons.
 
 
 - **Base:** `https://places.fascia.network` (production), `http://localhost:8080` (local compose)
@@ -16,7 +16,7 @@ Host-facing geography rail. Advance OS (and other hosts) consume this; they do n
 | `/health`, `/v1/places/generation`, `/v1/places/generations`, `/v1/places/coverage`, `/v1/places/layers` | none |
 | Everything else under `/v1/places` | `Authorization: Bearer <host-key>` |
 
-The host key is issued per host and is **server-to-server only** (Advance OS Edge / SECURITY DEFINER). It must never ship in an Expo/web bundle.
+The host key is issued per host and is **server-to-server only**: call Places from your backend. It must never ship in a mobile or web bundle.
 
 Unknown or missing key → `401 { "error": { "code": "unauthorized" } }`. Keys are compared in constant time.
 
@@ -36,7 +36,7 @@ Two different `404`s, and a host that reads only the status will conflate them:
 | `404` | `not_found` | This deployment has no such path — a client bug or a stale client, not a fact about geography |
 | `401` | `unauthorized` | The path exists; the key does not, or is wrong |
 
-**A path that does not exist answers `404` with or without a key**, because existence is not a function of who is asking. It used to answer `401`, which hid the route table from unauthenticated callers — an argument that ended when the route table was published. Advance OS read a `401` on a path Places has never served as a file served and protected, and spent effort on a door that was never there. They agreed the change on 1 October 2026 after making their own client switch on `error.code` first.
+**A path that does not exist answers `404` with or without a key**, because existence is not a function of who is asking. It used to answer `401`, which hid the route table from unauthenticated callers — an argument that ended when the route table was published. A host read a `401` on a path Places has never served as a route that existed and was protected, and spent effort on a door that was never there. The change shipped in 0.14.0, on 1 October 2026.
 
 Both `404`s assert no generation: `x-places-generation` is absent, and `no_pack_for_country` carries `generation: null` in the body.
 
@@ -191,7 +191,7 @@ Takes `country` (default: the deployment's default country), because the respons
 
 ## `GET /v1/places/point`
 
-Resolve a click / GPS fix. **Primary verb for Advance OS.**
+Resolve a click / GPS fix. **The primary verb for a host.**
 
 | Query | Required | Notes |
 |---|---|---|
@@ -361,14 +361,14 @@ Returns a point FeatureCollection with `generation`, `kind: "geoname"`, `adm: "G
 
 | Role | Owner |
 |---|---|
-| Which cells are **covered** (linked to a Kingdom Group / `kc_area_links`) | **Host** |
+| Which cells are **covered** (linked to one of the host's groups) | **Host** |
 | Which polygons exist in a bbox | **Fascia** |
 
 Fascia does not know about communities. The harvest *field* is a host-owned list of SP `area_id`s + `generation`.
 
 `GET /harvest?covered=` is an optional **small-set convenience** (mapping-team picker, a few dozen ids). It is **not** the production map path.
 
-**Slice 3 (map paint):** call `GET /geojson` for “SP (or ADM*) cells in bbox”. The Advance OS Edge Function subtracts `kc_area_links` and paints two colours. Do **not** send the national covered set to Fascia on every pan.
+**Map paint:** call `GET /geojson` for “SP (or ADM*) cells in bbox”. The host's backend subtracts its own covered set and paints two colours. Do **not** send the national covered set to Fascia on every pan.
 
 Do not put thousands of UUIDs on a GET query string. If a server-side remainder of a large set is ever needed, that would be a future `POST /harvest` with a JSON body — not this GET.
 
@@ -388,7 +388,7 @@ Do not put thousands of UUIDs on a GET query string. If a server-side remainder 
 
 ## `GET /v1/places/geojson`
 
-Viewport polygons for **one** layer. This is the slice-3 overlay. **Live — slice 3 is not blocked.**
+Viewport polygons for **one** layer. This is the map overlay.
 
 Zoom → kind ladder (host-enforced): ADM1/ADM2 at country zoom; SP only when close. Never request SP polygons at country zoom.
 

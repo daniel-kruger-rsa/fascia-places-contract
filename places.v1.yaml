@@ -1,9 +1,9 @@
 openapi: 3.0.3
 info:
   title: Fascia Places
-  version: 0.15.0
+  version: 0.15.1
   description: |
-    Host-facing geography rail for Advance OS and other platforms.
+    Host-facing geography rail for platforms that organise people by place.
     Pack generation mdb-zaf-2020 (MDB ADM1–4 + Stats SA MP/SP + GeoNames P).
     Harvest cells are subplaces. GeoNames are labels/search only.
     Every response carries the header x-places-generation, except the two that assert no
@@ -16,7 +16,7 @@ info:
     answers 404 with or without a host key: existence is not a function of who is asking.
     A path that does exist answers 401 until the key is right.
   contact:
-    name: AsOne Fascia
+    name: Fascia Places
 servers:
   - url: https://places.fascia.network
     description: Production

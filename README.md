@@ -3,18 +3,18 @@
 The OpenAPI 3.0 document for the Fascia Places v1 API, published so that a host can read
 it, vendor a copy, and diff against it when it changes, with the prose reference beside it.
 
-- **[places.v1.yaml](places.v1.yaml)** — the contract. Current version: **0.15.0**.
+- **[places.v1.yaml](places.v1.yaml)** — the contract. Current version: **0.15.1**.
 - **[API.md](API.md)** — the API documentation: what each endpoint is for, worked responses, and
   the rules a host must follow (persist `area_id` with `generation`, switch on `error.code`,
   show attribution). Where it and the contract disagree, the contract wins.
-- Every published version is tagged (`v0.15.0`), so a vendored copy can pin one:
-  `https://raw.githubusercontent.com/daniel-kruger-rsa/fascia-places-contract/v0.15.0/places.v1.yaml`
+- Every published version is tagged (`v0.15.1`), so a vendored copy can pin one:
+  `https://raw.githubusercontent.com/daniel-kruger-rsa/fascia-places-contract/v0.15.1/places.v1.yaml`
 
 ## Why this repo exists
 
 A host writes its client against this document. If the only copy is the one that was read
 at the time, a drift between client and contract surfaces as a defect in somebody's screen,
-found by a user rather than by a diff. Advance OS asked for something to diff against on
+found by a user rather than by a diff. A host asked for something to diff against on
 1 October 2026; this is it.
 
 ## Versioning
@@ -61,4 +61,4 @@ The licence covers these files, not the data the API serves, and not access to t
 
 ## Contact
 
-AsOne Fascia. Issues on this repo are read.
+Fascia Places. Issues on this repo are read.
