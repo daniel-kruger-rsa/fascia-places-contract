@@ -1,9 +1,9 @@
 openapi: 3.0.3
 info:
   title: Fascia Places
-  version: 0.15.2
+  version: 0.16.0
   description: |
-    Host-facing geography rail for platforms that organise people by place.
+    Host-facing geography rail for Advance OS and other platforms.
     Pack generation mdb-zaf-2020 (MDB ADM1–4 + Stats SA MP/SP + GeoNames P).
     Harvest cells are subplaces. GeoNames are labels/search only.
     Every response carries the header x-places-generation, except the two that assert no
@@ -16,7 +16,7 @@ info:
     answers 404 with or without a host key: existence is not a function of who is asking.
     A path that does exist answers 401 until the key is right.
   contact:
-    name: Fascia Places
+    name: AsOne Fascia
 servers:
   - url: https://places.fascia.network
     description: Production
@@ -46,6 +46,17 @@ paths:
                 type: object
                 properties:
                   ok: { type: boolean, example: true }
+                  build:
+                    type: string
+                    example: e8ebb238da7f
+                    description: |
+                      An opaque fingerprint of the deployed build, twelve hex characters. It is
+                      not the image tag: the tag is a commit sha and this endpoint is public, so
+                      what is published is sha256(tag) truncated. Diagnostic rather than
+                      contractual, and it answers one question: is the build answering the one I
+                      expect, which the asker can fingerprint for itself. It changes on every
+                      deploy and is stable within one. "unknown" where the deployment does not
+                      set a build, such as a local stack.
 
   /v1/places/generation:
     get:
@@ -151,12 +162,12 @@ paths:
                       key is present either way, including for a country that is configured but
                       has never been ingested, where all of them read false.
                     properties:
-                      cells: { type: boolean, description: "Polygon layers, so /areas/search and /point can answer" }
-                      geonames: { type: boolean, description: "GeoNames points, so /search can answer" }
-                      streets: { type: boolean, description: "Street layer, so /streets can answer" }
-                      cell_stats: { type: boolean, description: "Per-cell measures, the stats object on /area/{id}" }
-                      neighbours: { type: boolean, description: "Adjacency, so /area/{id}/neighbours can answer" }
-                      buildings: { type: boolean, description: "Structures, so include=building can answer" }
+                      cells: { type: boolean, description: Polygon layers, so /areas/search and /point can answer }
+                      geonames: { type: boolean, description: GeoNames points, so /search can answer }
+                      streets: { type: boolean, description: Street layer, so /streets can answer }
+                      cell_stats: { type: boolean, description: Per-cell measures, the stats object on /area/{id} }
+                      neighbours: { type: boolean, description: Adjacency, so /area/{id}/neighbours can answer }
+                      buildings: { type: boolean, description: Structures, so include=building can answer }
                   measures:
                     type: object
                     additionalProperties:
@@ -198,7 +209,7 @@ paths:
                       properties:
                         country: { type: string, example: ZA }
                         default: { type: string }
-                        loaded: { type: boolean, description: "False when a country is configured but not yet ingested." }
+                        loaded: { type: boolean, description: False when a country is configured but not yet ingested. }
                         generations:
                           type: array
                           items: { type: object }
@@ -772,7 +783,6 @@ components:
             lat: { type: number }
             lng: { type: number }
             place:
-              type: object
               allOf:
                 - $ref: "#/components/schemas/GeonameHit"
               nullable: true
@@ -818,9 +828,9 @@ components:
         against named streets: named-street availability tracks OSM volunteer effort (96% of
         Gauteng sub-places, 12% of Eastern Cape ones), not where people live.
       properties:
-        road_km: { type: number, nullable: true, description: "All street-like OSM ways in the cell, named or not" }
+        road_km: { type: number, nullable: true, description: All street-like OSM ways in the cell, named or not }
         named_road_km: { type: number, nullable: true }
-        buildings: { type: integer, nullable: true, description: "Google Open Buildings structures whose centroid falls in the cell" }
+        buildings: { type: integer, nullable: true, description: Google Open Buildings structures whose centroid falls in the cell }
         area_km2: { type: number, nullable: true }
         crowding_10m:
           type: number
@@ -887,7 +897,7 @@ components:
           properties:
             code: { type: string, example: no_pack_for_country }
             message: { type: string }
-            country: { type: string, example: IN, description: "The country asked for" }
+            country: { type: string, example: IN, description: The country asked for }
             countries:
               type: array
               description: What this deployment does serve
