@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: Fascia Places
-  version: 0.14.1
+  version: 0.15.0
   description: |
     Host-facing geography rail for Advance OS and other platforms.
     Pack generation mdb-zaf-2020 (MDB ADM1–4 + Stats SA MP/SP + GeoNames P).
@@ -140,6 +140,23 @@ paths:
                   country: { type: string, example: ZA }
                   generation: { type: string }
                   measured: { type: boolean }
+                  layers:
+                    type: object
+                    description: |
+                      What this pack holds, read from the data rather than from what an ingest
+                      recorded. false means the layer is ABSENT, not empty. A host must check
+                      here before rendering a zero from /v1/places/streets, /area/{id}/neighbours,
+                      the stats object on /area/{id}, or include=building as "none here": an
+                      absent layer and an empty layer are identical in those responses. Every
+                      key is present either way, including for a country that is configured but
+                      has never been ingested, where all of them read false.
+                    properties:
+                      cells: { type: boolean, description: Polygon layers, so /areas/search and /point can answer }
+                      geonames: { type: boolean, description: GeoNames points, so /search can answer }
+                      streets: { type: boolean, description: Street layer, so /streets can answer }
+                      cell_stats: { type: boolean, description: Per-cell measures, the stats object on /area/{id} }
+                      neighbours: { type: boolean, description: Adjacency, so /area/{id}/neighbours can answer }
+                      buildings: { type: boolean, description: Structures, so include=building can answer }
                   measures:
                     type: object
                     additionalProperties:
