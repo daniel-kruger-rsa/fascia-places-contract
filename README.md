@@ -1,9 +1,12 @@
 # Fascia Places — API contract
 
 The OpenAPI 3.0 document for the Fascia Places v1 API, published so that a host can read
-it, vendor a copy, and diff against it when it changes. Nothing else lives here.
+it, vendor a copy, and diff against it when it changes, with the prose reference beside it.
 
 - **[places.v1.yaml](places.v1.yaml)** — the contract. Current version: **0.15.0**.
+- **[API.md](API.md)** — the API documentation: what each endpoint is for, worked responses, and
+  the rules a host must follow (persist `area_id` with `generation`, switch on `error.code`,
+  show attribution). Where it and the contract disagree, the contract wins.
 - Every published version is tagged (`v0.15.0`), so a vendored copy can pin one:
   `https://raw.githubusercontent.com/daniel-kruger-rsa/fascia-places-contract/v0.15.0/places.v1.yaml`
 
@@ -35,7 +38,7 @@ incompatible contract would be `/v2/places` and a new document.
 ## What the API serves, and what that costs you
 
 Reads need a **host key**, issued per host and held server-side — never in a client bundle.
-Four endpoints are open, because they answer *what can this pack do* before a host has
+Five endpoints are open, because they answer *what can this pack do* before a host has
 decided to call anything: `/health`, `/v1/places/generation`, `/v1/places/generations`,
 `/v1/places/coverage` and `/v1/places/layers`.
 
@@ -53,8 +56,8 @@ returns.
 
 ## Licence
 
-The document is MIT (see [LICENSE](LICENSE)) — vendor it, diff it, generate clients from it.
-The licence covers this file, not the data the API serves, and not access to the API.
+The contract and API.md are MIT (see [LICENSE](LICENSE)) — vendor them, diff them, generate clients from them.
+The licence covers these files, not the data the API serves, and not access to the API.
 
 ## Contact
 
