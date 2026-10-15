@@ -7,6 +7,8 @@ it, vendor a copy, and diff against it when it changes, with the prose reference
 - **[API.md](API.md)** — the API documentation: what each endpoint is for, worked responses, and
   the rules a host must follow (persist `area_id` with `generation`, switch on `error.code`,
   show attribution). Where it and the contract disagree, the contract wins.
+- **[Browse the contract](https://daniel-kruger-rsa.github.io/fascia-places-contract/)** — the same
+  file rendered as a page (Redoc), always the version on `main`.
 - Every published version is tagged (`v0.15.1`), so a vendored copy can pin one:
   `https://raw.githubusercontent.com/daniel-kruger-rsa/fascia-places-contract/v0.15.1/places.v1.yaml`
 
