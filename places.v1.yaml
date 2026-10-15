@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: Fascia Places
-  version: 0.14.0
+  version: 0.14.1
   description: |
     Host-facing geography rail for Advance OS and other platforms.
     Pack generation mdb-zaf-2020 (MDB ADM1–4 + Stats SA MP/SP + GeoNames P).
@@ -18,7 +18,7 @@ info:
   contact:
     name: AsOne Fascia
 servers:
-  - url: https://places.fascia.asone.net.za
+  - url: https://places.fascia.network
     description: Production
   - url: http://localhost:8080
     description: Local compose
