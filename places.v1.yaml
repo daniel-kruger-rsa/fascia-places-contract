@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: Fascia Places
-  version: 0.17.1
+  version: 0.18.0
   description: |
     Host-facing geography rail for platforms that organise people by place.
 
@@ -347,7 +347,16 @@ paths:
         - in: query
           name: within
           schema: { type: string, format: uuid }
-          description: Only areas whose point-on-surface lies inside this area (any layer). Unknown id → empty list.
+          description: |
+            Constrain the search to this area. Resolved by **geometry** when the target has a
+            polygon — is the candidate's point-on-surface inside it — and by **ancestry** when it
+            does not: is the target anywhere in the candidate's parent chain. For a pack built
+            from one hierarchy ancestry is containment rather than an approximation of it.
+
+            A target with no geometry that nothing claims as a parent is refused with
+            400 within_unsupported: neither mechanism can say what is inside it, and an empty
+            list would be indistinguishable from "no matches". Unknown id still gives an empty
+            list, which is its documented behaviour.
         - in: query
           name: limit
           schema: { type: integer, default: 20, minimum: 1, maximum: 50 }
@@ -938,6 +947,15 @@ components:
           schema: { $ref: "#/components/schemas/Error" }
     Unavailable:
       description: Server / database error
+      content:
+        application/json:
+          schema: { $ref: "#/components/schemas/Error" }
+    WithinUnsupported:
+      description: |
+        The search was constrained to an area this pack cannot constrain by: it has no geometry
+        and nothing claims it as a parent. error.code is within_unsupported and error.within
+        names the target. Refused rather than answered with an empty list, which a host cannot
+        tell from "no matches" — the distinction this pack's geometry-free cells exist inside.
       content:
         application/json:
           schema: { $ref: "#/components/schemas/Error" }

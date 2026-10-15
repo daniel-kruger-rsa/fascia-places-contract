@@ -28,6 +28,25 @@ Every read accepts an optional **`generation`** parameter, resolved **within the
 
 Common validation, all `400 bad_request`: `country` must be a two-letter code (default: the deployment's default country, `ZA` in production); `kind` must be one of the layer codes or names; a bbox must have all four edges, `west < east`, `south < north`, within WGS84 range.
 
+### A cell may have no geometry, and `within` says so rather than going quiet
+
+A pack can hold a cell's **name, codes and parent chain without a polygon**. The lawful boundary source for a country may not publish a cell at the level a host needs — India is the case, where the official boundary database carries no urban cell below the municipality and its conditions forbid altering the dataset — so the names exist and the geometry does not.
+
+Two consequences for a reader:
+
+- **`bbox` is omitted** on an `/areas/search` hit for such a cell, rather than returned as four nulls. A client that indexes it unconditionally will read `undefined`.
+- **`within` resolves by ancestry** when its target has no polygon: is the target anywhere in the candidate's parent chain. For a pack built from one hierarchy that is containment, not an approximation of it. Where the target *has* a polygon, geometry still decides — South African sub-places and wards come from different sources and genuinely do not nest, so containment remains the truthful test.
+
+**`400 within_unsupported`** when the target has neither geometry nor anything claiming it as a parent:
+
+```json
+{ "error": { "code": "within_unsupported",
+             "message": "this pack cannot constrain a search to that area…",
+             "within": "…" } }
+```
+
+Neither mechanism can say what is inside it, and an empty list would be indistinguishable from *no matches* — a host following the right rule would read it as the name being absent from the region. Treat it as *this pack cannot answer that question*.
+
 ### Switch on `error.code`, never on the status alone
 
 Two different `404`s, and a host that reads only the status will conflate them:
@@ -270,7 +289,7 @@ Name search over the polygon layers: ADM1–4, MP and SP. Use it when the member
 |---|---|---|
 | `q` | yes, min 2 chars | Case-insensitive; matched literally (`%` and `_` are not wildcards) |
 | `kind` | no | One layer or a comma-separated list, codes or names (`SP`, `ADM3,MP`, `subplace`). Default: all six. `GN` is `400` — use `/search` |
-| `within` | no | An `area_id` of any layer: only areas whose point-on-surface lies inside it (e.g. SPs in one municipality). Unknown id → `[]` |
+| `within` | no | An `area_id` of any layer. Resolved by **geometry** where the target has a polygon (point-on-surface inside it), and by **ancestry** where it does not — for a pack built from one hierarchy, ancestry is containment rather than an approximation. Unknown id still gives `[]`; a target with neither geometry nor anything claiming it as a parent is refused, see below |
 | `limit` | no | Default 20, max 50 |
 | `country` | no | Default `ZA` |
 
@@ -311,7 +330,7 @@ Street name search. Streets are **labels**, like GeoNames: never harvest cells, 
 | Query | Required | Notes |
 |---|---|---|
 | `q` | yes, min 2 chars | Normalised the same way the ingest normalised street names, so "Main Rd" finds "Main Road" |
-| `within` | no | An `area_id` of any layer: only streets in that cell, or in cells inside it |
+| `within` | no | An `area_id` of any layer: only streets in that cell, or in cells inside it. Same two mechanisms and the same refusal as `/areas/search`, since a street hangs off a cell |
 | `limit` | no | Default 20, max 50 |
 | `country` | no | Default `ZA` |
 
