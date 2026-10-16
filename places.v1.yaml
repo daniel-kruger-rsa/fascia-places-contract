@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: Fascia Places
-  version: 0.18.0
+  version: 0.20.0
   description: |
     Host-facing geography rail for platforms that organise people by place.
 
@@ -12,6 +12,11 @@ info:
 
     Pack generation mdb-zaf-2020 (MDB ADM1–4 + Stats SA MP/SP + GeoNames P).
     Harvest cells are subplaces. GeoNames are labels/search only.
+    Levels are compared with `adm` (ADM1..ADM4, MP, SP), never with `kind`. A `kind` is the
+    word a source uses for a level, and it differs by country: South Africa's ADM3 is a
+    municipality, India's is a subdistrict. A `kind=` parameter accepts either, and an adm
+    code resolves to whichever word that country's pack uses.
+
     Every response carries the header x-places-generation, except the two that assert no
     generation because none applies: a 404 for a country with no pack, and a 404 for a path that
     does not exist. Persist area_id with generation, and the country with it.
@@ -469,6 +474,7 @@ paths:
                 $ref: "#/components/schemas/FeatureCollection"
         "400": { $ref: "#/components/responses/BadRequest" }
         "404": { $ref: "#/components/responses/NoPackForCountry" }
+        "403": { $ref: "#/components/responses/GeometryNotServed" }
         "401": { $ref: "#/components/responses/Unauthorized" }
 
   /v1/places/geonames:
@@ -564,6 +570,7 @@ paths:
                 $ref: "#/components/schemas/FeatureCollection"
         "400": { $ref: "#/components/responses/BadRequest" }
         "404": { $ref: "#/components/responses/NoPackForCountry" }
+        "403": { $ref: "#/components/responses/GeometryNotServed" }
         "401": { $ref: "#/components/responses/Unauthorized" }
 
   /v1/places/area/{area_id}:
@@ -693,7 +700,13 @@ components:
         name: { type: string }
         kind:
           type: string
-          enum: [province, district, municipality, ward, mainplace, subplace]
+          enum: [province, district, municipality, subdistrict, ward, mainplace, subplace]
+          description: |
+            The word the source itself uses, which differs by country at the same level:
+            South Africa's ADM3 is a `municipality`, India's is a `subdistrict` (a taluk,
+            tehsil or mandal), and the two are nothing alike as things. **Branch on `adm`,
+            not on `kind`** — adm is the comparable level, kind is local vocabulary and the
+            list grows as countries are added.
         country: { type: string, example: ZA }
         codes: { type: object }
         parent_ids:
@@ -947,6 +960,19 @@ components:
           schema: { $ref: "#/components/schemas/Error" }
     Unavailable:
       description: Server / database error
+      content:
+        application/json:
+          schema: { $ref: "#/components/schemas/Error" }
+    GeometryNotServed:
+      description: |
+        This pack may not serve geometry for that country: the source's conditions forbid
+        redistributing its boundaries, so no polygon is returned — not simplified, not verbatim.
+        error.code is geometry_not_served and error.attribution names the source to credit.
+        403 rather than 400: the request is well formed and understood, and refused because of
+        what the source permits. /point still resolves a coordinate to a cell and
+        /v1/places/areas/search still returns cells with their parents; only the polygons are
+        withheld. Affects /v1/places/geojson, /area/{area_id}/geojson and
+        /street/{street_id}/geojson.
       content:
         application/json:
           schema: { $ref: "#/components/schemas/Error" }

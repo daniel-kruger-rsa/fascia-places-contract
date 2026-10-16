@@ -47,6 +47,25 @@ Two consequences for a reader:
 
 Neither mechanism can say what is inside it, and an empty list would be indistinguishable from *no matches* — a host following the right rule would read it as the name being absent from the region. Treat it as *this pack cannot answer that question*.
 
+### A pack may withhold its geometry
+
+Some sources permit their boundaries to be **used** and not **redistributed**. Survey of India is the case: no prior permission is needed to use the Administrative Boundary Database, and altering the dataset is forbidden — so the India pack answers which cell contains a point and never hands over the polygon that decided it.
+
+For such a country, the three endpoints that would return a polygon answer **`403 geometry_not_served`**:
+
+```json
+{ "error": { "code": "geometry_not_served",
+             "message": "this pack may not serve geometry for IN…",
+             "country": "IN",
+             "attribution": [ { "source": "Survey of India", "…": "…" } ] } }
+```
+
+`/v1/places/geojson`, `/v1/places/area/{area_id}/geojson`, `/v1/places/street/{street_id}/geojson`.
+
+**Everything that is not a polygon still works.** `/point` resolves a coordinate to a cell, `/areas/search` returns cells with their parent chains, `/area/{area_id}` returns the cell. A host that draws boundaries needs a fallback for such a country; a host that picks a cell from a list does not notice.
+
+**And the credit rides along.** Where a source requires acknowledgement, every response carrying that pack's cells includes it in `attribution`, beside the layer credits rather than instead of them. A pack whose source asks for nothing adds nothing, which is why South African responses are unchanged.
+
 ### Switch on `error.code`, never on the status alone
 
 Two different `404`s, and a host that reads only the status will conflate them:
@@ -80,18 +99,20 @@ A country that is **configured but not yet ingested** is a different answer: rea
 
 Polygons (harvest cells and admin stack) and named points (labels/search only).
 
-| Code | `kind` | Source | Role |
-|---|---|---|---|
-| ADM1 | `province` | geoBoundaries / MDB | Admin |
-| ADM2 | `district` | geoBoundaries / MDB | Admin |
-| ADM3 | `municipality` | geoBoundaries / MDB | Admin |
-| ADM4 | `ward` | geoBoundaries / MDB | Admin |
-| MP | `mainplace` | Stats SA Census 2011 | Place |
-| SP | `subplace` | Stats SA Census 2011 | **Harvest cell** |
-| GN | `geoname` | GeoNames ZA (feature class P) | Label / search — **not** a harvest cell. Hits carry `capital_of`: `national`, `province`, `district`, `municipality` or `null` |
-| ST | `street` | OpenStreetMap (ODbL) | Label / search — **not** a harvest cell. One row per street per SP |
+**`adm` is the level; `kind` is the word the source uses for it.** Compare levels with `adm`, which is the same everywhere. `kind` differs by country at the same level — South Africa's ADM3 is a `municipality`, India's is a `subdistrict`, which is a taluk and not a municipality in any sense — and the list grows as countries are added.
 
-`kind` query params accept either the code (`SP`) or the name (`subplace`).
+| Code | `kind` (ZA) | `kind` (IN) | Source | Role |
+|---|---|---|---|---|
+| ADM1 | `province` | `province` | geoBoundaries / MDB · SOI ABDB | Admin |
+| ADM2 | `district` | `district` | geoBoundaries / MDB · SOI ABDB | Admin |
+| ADM3 | `municipality` | `subdistrict` | geoBoundaries / MDB · SOI ABDB | Admin — **the same level, a different thing** |
+| ADM4 | `ward` | — | geoBoundaries / MDB | Admin |
+| MP | `mainplace` | — | Stats SA Census 2011 | Place |
+| SP | `subplace` | `subplace` (a village) | Stats SA Census 2011 · SOI ABDB | **Harvest cell** |
+| GN | `geoname` | — | GeoNames (feature class P) | Label / search — **not** a harvest cell. Hits carry `capital_of`: `national`, `province`, `district`, `municipality` or `null` |
+| ST | `street` | — | OpenStreetMap (ODbL) | Label / search — **not** a harvest cell. One row per street per SP |
+
+`kind` query params accept either the code (`SP`) or the name (`subplace`). **An `adm` code resolves to whichever word that country's pack uses**, so `kind=ADM3` finds municipalities in South Africa and sub-districts in India without the caller knowing which. A literal word that the country does not use returns nothing rather than an error, the same as a bbox over the sea.
 
 **NU** on MP/SP names = Stats SA **Non-Urban** (farm/rural remainder), not a suburb.
 
