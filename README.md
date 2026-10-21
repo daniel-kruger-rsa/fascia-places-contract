@@ -3,14 +3,14 @@
 The OpenAPI 3.0 document for the Fascia Places v1 API, published so that a host can read
 it, vendor a copy, and diff against it when it changes, with the prose reference beside it.
 
-- **[places.v1.yaml](places.v1.yaml)** — the contract. Current version: **0.20.0**.
+- **[places.v1.yaml](places.v1.yaml)** — the contract. Current version: **0.21.0**.
 - **[API.md](API.md)** — the API documentation: what each endpoint is for, worked responses, and
   the rules a host must follow (persist `area_id` with `generation`, switch on `error.code`,
   show attribution). Where it and the contract disagree, the contract wins.
 - **[Browse the contract](https://daniel-kruger-rsa.github.io/fascia-places-contract/)** — the same
   file rendered as a page (Redoc), always the version on `main`.
-- Every published version is tagged (`v0.20.0`), so a vendored copy can pin one:
-  `https://raw.githubusercontent.com/daniel-kruger-rsa/fascia-places-contract/v0.20.0/places.v1.yaml`
+- Every published version is tagged (`v0.21.0`), so a vendored copy can pin one:
+  `https://raw.githubusercontent.com/daniel-kruger-rsa/fascia-places-contract/v0.21.0/places.v1.yaml`
 
 **Host**, used throughout: a platform that builds Places into its own product. Its members use
 the host's app, and the host's backend calls this API on their behalf. The host owns its members,
@@ -53,9 +53,20 @@ Two things in the contract carry obligations rather than conveniences:
 - **`attribution`** is returned beside street and building data and is not decorative.
   Streets derive from OpenStreetMap (ODbL 1.0) and must credit it wherever a street name is
   shown; building counts and centroids derive from Google Open Buildings (CC BY 4.0).
-- **Boundaries** derive from Statistics South Africa and the Municipal Demarcation Board.
-  Stats SA's conditions of use apply to anything built from them, including a requirement
-  that derivative products be vetted before publication.
+- **Boundaries** derive from each country's official mapping or statistical agency, and each
+  one sets its own conditions. South African boundaries derive from Statistics South Africa
+  and the Municipal Demarcation Board: Stats SA must be acknowledged, and their boundaries may
+  not be resold or charged for as a standalone product.
+
+  Where a source requires acknowledgement, **the wording it has approved is served to you** —
+  read `attribution` from `GET /v1/places/generation?country=XX` at boot and show it. Some
+  sources permit their boundaries to be used but not redistributed, and for those countries the
+  endpoints that would return a polygon answer `403 geometry_not_served` instead.
+
+  *Corrected 20 October 2026:* this section previously said Stats SA's conditions require that
+  derivative products be vetted before publication. Stats SA withdrew that clause on
+  20 October 2026 — it had been copied from an organisational template and was never applied
+  to any product. If you wrote that requirement into your own terms or plans, it is not one.
 
 The data is not open because this document is. Ask before redistributing anything the API
 returns.

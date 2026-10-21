@@ -64,7 +64,9 @@ For such a country, the three endpoints that would return a polygon answer **`40
 
 **Everything that is not a polygon still works.** `/point` resolves a coordinate to a cell, `/areas/search` returns cells with their parent chains, `/area/{area_id}` returns the cell. A host that draws boundaries needs a fallback for such a country; a host that picks a cell from a list does not notice.
 
-**And the credit rides along.** Where a source requires acknowledgement, every response carrying that pack's cells includes it in `attribution`, beside the layer credits rather than instead of them. A pack whose source asks for nothing adds nothing, which is why South African responses are unchanged.
+**And the credit rides along.** Where a source requires acknowledgement, the credit joins `attribution` on every response with room to carry one, beside the layer credits rather than instead of them: `/point`, `/area/{area_id}`, `/area/{area_id}/neighbours`, `/area/{area_id}/geojson`, `/v1/places/geojson`, `/harvest?summary=1`, `/building/{building_id}`, and the `403` itself.
+
+**South Africa carries one as of 0.21.0.** Statistics South Africa supplied the acknowledgement they accept on 20 October 2026, so the South African pack records it and the API hands it over. See "Attribution is not optional" below for what a host must do with it.
 
 ### Switch on `error.code`, never on the status alone
 
@@ -202,12 +204,15 @@ A generation appears here once an ingest has written its `pack_meta` row.
 Takes `country` (default: the deployment's default country).
 
 ```json
-{ "country": "ZA", "generation": "mdb-zaf-2020", "loaded": true }
+{ "country": "ZA", "generation": "mdb-zaf-2020", "loaded": true, "contract": "0.21.0",
+  "attribution": [ { "source": "Statistics South Africa", "statement": "…", "…": "…" } ] }
 ```
 
 Pin this on the host, with the country. When it changes, refresh cached `area_id`s. A country with no pack gets `404 no_pack_for_country`, not the default country's generation.
 
 **`contract` is the version of [the published contract](https://github.com/daniel-kruger-rsa/fascia-places-contract) this deployment implements.** Compare it at boot against the version you vendored. Below your floor deserves its own failure reason — *the server is older than this app expects* — and never a sentence about geography: a rollback past your floor would otherwise serve you a contract you did not pin, with every call looking fine. It is also on every response that carries `x-places-generation`, as `x-places-contract`.
+
+**`attribution` is this country's display duty** — the credits whose sources require acknowledgement, each with the wording that source has approved, and empty where no source asks for one. Build the licence screen from it at boot; see [Attribution is not optional](#attribution-is-not-optional).
 
 **This is the capability probe, so read `loaded` with the generation.** A country that is configured but not yet ingested answers with its own generation — correctly — and holds nothing. A probe that treated a generation coming back as "ready" would un-hide every Places surface while every read returned empty: a flag that reports ready while nothing works, which is worse than no flag. `loaded: false` is the state to wait on. `GET /v1/places/generations` carries the same field per country, for a host that wants the whole picture.
 
@@ -388,6 +393,18 @@ One street's line (`MultiLineString`) for drawing or fitBounds, with `attributio
 ### Attribution is not optional
 
 Street data is OpenStreetMap under ODbL. Every response carrying streets carries `attribution`, and the host **must** show "© OpenStreetMap contributors" wherever a street name is displayed, linked to openstreetmap.org/copyright. The method producing this layer is published at [fascia-places-streets](https://github.com/daniel-kruger-rsa/fascia-places-streets).
+
+**Boundaries carry their own duty, and it differs by country.** A pack whose source requires acknowledgement says so, and its credit arrives in the same `attribution` array:
+
+| Field | What to do with it |
+| --- | --- |
+| `text` | The short line. Show it wherever the data is shown — under a map, beside a cell name |
+| `statement` | The full acknowledgement, in the rights holder's own words, present only where one was supplied. Show it on a licence or about screen |
+| `url`, `license` | Link and terms, for that screen |
+
+**Read the duty once, at boot, from `GET /v1/places/generation?country=XX`.** Its `attribution` array is the whole display duty for that country and generation. Three reasons that is the right place rather than collecting credits from responses: the duty is static per pack, the endpoint needs no host key, and three read endpoints — `/search`, `/areas/search`, and `/harvest` without `summary=1` — answer with a bare JSON array and so cannot carry a credit at all. Those shapes are not changing inside v1.
+
+**South Africa, from 0.21.0.** Boundaries derive from Statistics South Africa's Census 2011 place-name framework. Stats SA supplied the wording they accept on 20 October 2026; the pack carries it as `statement` and it is the text to show. It covers two things at once — that Stats SA is the source and rights holder, and that the boundaries are not sold or charged for as a standalone product, any fee attaching to work built on top of them.
 
 ---
 

@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: Fascia Places
-  version: 0.20.0
+  version: 0.21.0
   description: |
     Host-facing geography rail for platforms that organise people by place.
 
@@ -109,6 +109,19 @@ paths:
                       your floor deserves its own failure reason — the server is older than your
                       app expects — and never a claim about geography. Also returned as the
                       x-places-contract header on every response that carries x-places-generation.
+                  attribution:
+                    type: array
+                    description: |
+                      The display duty for this country and generation: the credits whose sources
+                      require acknowledgement, each with the wording that source has approved.
+                      Empty where no source of this pack asks for one.
+
+                      Read it here rather than collecting it from reads. The duty is static per
+                      pack, this endpoint needs no host key, so a licence screen can be built
+                      before anything else is called — and three read endpoints answer with a
+                      bare JSON array and have nowhere to carry a credit at all.
+                    items:
+                      $ref: "#/components/schemas/Attribution"
         "400": { $ref: "#/components/responses/BadRequest" }
         "404": { $ref: "#/components/responses/NoPackForCountry" }
 
@@ -769,6 +782,15 @@ components:
         text: { type: string, example: "© OpenStreetMap contributors" }
         url: { type: string, example: "https://www.openstreetmap.org/copyright" }
         license: { type: string, example: ODbL 1.0 }
+        statement:
+          type: string
+          description: |
+            The full acknowledgement a rights holder has approved, in that rights holder's own
+            words, present only where one has been supplied. Where it is present, show it:
+            `text` is the short line that goes under a map, and `statement` is what belongs on
+            a licence or about screen. Statistics South Africa supplied theirs on
+            20 October 2026, and it covers both acknowledgement and the terms on which the
+            boundaries may be charged for.
 
     StreetHit:
       type: object
@@ -915,6 +937,14 @@ components:
         adm: { type: string }
         count: { type: integer }
         total: { type: integer }
+        attribution:
+          type: array
+          description: |
+            Present where a source of these boundaries requires acknowledgement. A foreign
+            member of the collection, which GeoJSON permits and which the other members here
+            already use; a parser that ignores unknown members is unaffected.
+          items:
+            $ref: "#/components/schemas/Attribution"
         features:
           type: array
           items: { type: object }
