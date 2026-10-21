@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: Fascia Places
-  version: 0.21.0
+  version: 0.22.0
   description: |
     Host-facing geography rail for platforms that organise people by place.
 
@@ -267,11 +267,16 @@ paths:
       description: |
         The same layers everywhere, but the response carries a generation, and a generation
         belongs to a country: a country with no pack is refused here too.
+
+        Each layer also says **which vintage it is of**, and whether that vintage still
+        describes what is in force. One generation can hold layers on different cadences from
+        different custodians — South Africa's wards are a 2020 demarcation and its sub-places a
+        2011 census, inside `mdb-zaf-2020` — so the generation name cannot tell you.
       parameters:
         - $ref: "#/components/parameters/country"
       responses:
         "200":
-          description: ADM1–4, MP, SP, GN
+          description: ADM1–4, MP, SP, GN, ST, each with its vintage where the pack records one
           content:
             application/json:
               schema:
@@ -286,6 +291,38 @@ paths:
                       properties:
                         adm: { type: string, example: SP }
                         kind: { type: string, example: subplace }
+                        vintage:
+                          type: string
+                          example: "2011"
+                          description: |
+                            The year this layer's boundaries represent. Omitted, with the three
+                            fields below, on a layer whose pack records no vintage — omitted
+                            rather than null, so a client reads undefined instead of having to
+                            pattern-match a placeholder.
+                        superseded_by:
+                          type: string
+                          example: MDB ward delimitation 2024/2026
+                          description: |
+                            A newer vintage of this layer that is known to exist. On its own it
+                            does **not** mean this layer is wrong: a census is a snapshot, and
+                            the 2011 snapshot stays a true description of 2011.
+                        superseded_from:
+                          type: string
+                          format: date
+                          example: "2026-11-04"
+                          description: |
+                            The date from which this layer stops describing what is in force.
+                            Present only where "in force" is a real idea, which for boundaries
+                            means the administrative ones: a ward exists because a delimitation
+                            says so. South Africa's wards change on election day.
+                        current:
+                          type: boolean
+                          example: true
+                          description: |
+                            **Branch on this.** False only once a `superseded_from` date has
+                            passed, so a newer vintage merely existing leaves it true. Computed
+                            per request against the server's date, so a layer stops being
+                            current on the day it does, with no deployment involved.
         "400": { $ref: "#/components/responses/BadRequest" }
         "404": { $ref: "#/components/responses/NoPackForCountry" }
 

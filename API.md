@@ -225,16 +225,36 @@ Takes `country` (default: the deployment's default country), because the respons
   "country": "ZA",
   "generation": "mdb-zaf-2020",
   "layers": [
-    { "adm": "ADM1", "kind": "province" },
-    { "adm": "ADM2", "kind": "district" },
-    { "adm": "ADM3", "kind": "municipality" },
-    { "adm": "ADM4", "kind": "ward" },
-    { "adm": "MP", "kind": "mainplace" },
-    { "adm": "SP", "kind": "subplace" },
-    { "adm": "GN", "kind": "geoname" }
+    { "adm": "ADM1", "kind": "province",      "vintage": "2020" },
+    { "adm": "ADM2", "kind": "district",      "vintage": "2020" },
+    { "adm": "ADM3", "kind": "municipality",  "vintage": "2020" },
+    { "adm": "ADM4", "kind": "ward",          "vintage": "2020",
+      "superseded_by": "MDB ward delimitation 2024/2026",
+      "superseded_from": "2026-11-04", "current": true },
+    { "adm": "MP",   "kind": "mainplace",     "vintage": "2011",
+      "superseded_by": "Stats SA Census 2022 place names", "current": true },
+    { "adm": "SP",   "kind": "subplace",      "vintage": "2011",
+      "superseded_by": "Stats SA Census 2022 place names", "current": true },
+    { "adm": "GN",   "kind": "geoname" }
   ]
 }
 ```
+
+**Every layer says which vintage it is of.** `vintage` is the year the boundaries represent;
+`superseded_by` names a newer vintage that exists; `superseded_from` is the date ours stops
+describing what is in force; and **`current` is the one to branch on**. All four are omitted on
+a layer whose pack records no vintage.
+
+A generation name cannot carry this, because one generation holds layers on different cadences
+from different custodians: in `mdb-zaf-2020`, the wards are a 2020 demarcation and the
+sub-places a 2011 census. And the two kinds of staleness are not the same — a newer census
+existing does not make the older snapshot wrong, while a ward whose delimitation has been
+replaced simply no longer exists. `current` is false only for the second.
+
+**South Africa's wards go stale on 4 November 2026**, election day, when 4,468 wards become
+4,488. `current` flips on the day, computed per request, with no deployment. If you filter or
+label by ward, read it; the sub-place harvest cell is unaffected.
+
 
 ---
 
