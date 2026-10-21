@@ -428,6 +428,49 @@ Street data is OpenStreetMap under ODbL. Every response carrying streets carries
 
 ---
 
+## `GET /v1/places/crosswalk`
+
+What became of a cell when the geography changed. For re-linking stored `area_id`s after a cutover, and for nothing else.
+
+```
+GET /v1/places/crosswalk?country=ZA&from=mdb-zaf-2020&to=stats-sa-2022&area_id=<uuid>,<uuid>
+```
+
+```json
+{ "country": "ZA", "from": "mdb-zaf-2020", "to": "stats-sa-2022",
+  "results": [
+    { "area_id": "…", "verdict": "same",
+      "to": [ { "area_id": "…", "name": "Rietpoort SP", "kind": "subplace", "adm": "SP", "share": 0.997 } ] },
+    { "area_id": "…", "verdict": "split",
+      "to": [ { "area_id": "…", "name": "Ennerdale Ext 14", "share": 0.41, "…": "…" },
+              { "area_id": "…", "name": "Ennerdale Ext 12", "share": 0.33, "…": "…" },
+              { "area_id": "…", "name": "Ennerdale Ext 13", "share": 0.25, "…": "…" } ] },
+    { "area_id": "…", "verdict": "unresolved", "to": [] },
+    { "area_id": "…", "verdict": "unknown",    "to": [] } ] }
+```
+
+**It returns a list, not one id, and that is the point.** One id is always available and often wrong. Measured on Census 2011 against Census 2022 sub-places: 86.2% of old cells have exactly one successor, 13.8% split into two or more, and **every single old centre falls inside some new cell**. A single-id answer would be well formed and wrong for one cell in seven, and a host would store it without ever learning.
+
+**Branch on `verdict`.** Not on the shares — the thresholds are ours to tune and yours to ignore.
+
+| `verdict` | Means | What to do |
+| --- | --- | --- |
+| `same` | One successor holding ≥ 98% of the old cell | Re-point the stored id. No human needed |
+| `moved` | One successor, 50–98% | Re-point it; the boundary moved materially |
+| `split` | Two or more successors | **Ask a person.** Which successor a member belongs to is not a geometry question |
+| `unresolved` | No successor holds half the old cell | Do not guess. Keep the old id, keep reading the old generation for that row, or send someone to look. `to` still lists any partial overlaps — the verdict says do not re-point automatically, not that nothing is known |
+| `unknown` | This generation does not hold that `area_id` | Your id is wrong — wrong country, wrong layer, or a typo. Deliberately not `unresolved` |
+
+Up to **200** `area_id`s per call; re-link in batches. Results come back in the order asked.
+
+**A generation pair with no crosswalk computed answers `404 crosswalk_not_loaded`,** naming the pair. That is not a claim that the cells are unchanged — it means the mapping does not exist yet. A crosswalk is built per layer pair and takes minutes of compute, so it exists for the pairs someone has needed. A misspelled generation lands here too, and the refusal names the pair so you can see it.
+
+**Neither generation has to still be loaded.** A crosswalk outlives the generations it maps between, and that is the point: once we drop the old generation, a host still holding its ids needs this answer more than it did before. A successor's `name` and `kind` are omitted if the target generation is gone; `area_id` and `share` are always there.
+
+**Names change too, and the crosswalk does not carry them.** 35% of 2011 sub-places have a differently-spelled or differently-named 2022 successor. If you stored a name string rather than reading it from us, re-read it.
+
+---
+
 ## `GET /v1/places/geonames`
 
 Viewport GeoNames dots. Bbox required. `limit` default 250, max 500. Optional `country` (default `ZA`).

@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: Fascia Places
-  version: 0.22.0
+  version: 0.23.0
   description: |
     Host-facing geography rail for platforms that organise people by place.
 
@@ -551,6 +551,105 @@ paths:
         "400": { $ref: "#/components/responses/BadRequest" }
         "404": { $ref: "#/components/responses/NoPackForCountry" }
         "401": { $ref: "#/components/responses/Unauthorized" }
+
+  /v1/places/crosswalk:
+    get:
+      tags: [harvest]
+      summary: What became of a cell when the geography changed
+      description: |
+        Maps `area_id`s from one generation to another, for a host re-linking stored ids after
+        a cutover.
+
+        **It returns every successor with its share, not one id**, because one id is always
+        available and often wrong. Measured on Census 2011 against Census 2022 sub-places:
+        86.2% of old cells have exactly one successor, 13.8% split into two or more, and every
+        single old centre falls inside some new cell. A single-id answer would be well formed
+        and wrong for one cell in seven.
+
+        **Branch on `verdict`** rather than on the shares:
+
+        | `verdict` | Means | Do |
+        | --- | --- | --- |
+        | `same` | One successor holding 98% or more of the old cell | Re-point the id |
+        | `moved` | One successor, 50-98% | Re-point it; the boundary moved materially |
+        | `split` | Two or more successors | Ask a person. Which one a member belongs to is not a geometry question |
+        | `unresolved` | No successor holds half the old cell | Do not guess. Keep the old id, or send someone to look |
+        | `unknown` | This generation does not hold that `area_id` | Your id is wrong, not your cell |
+
+        `unknown` is deliberately not `unresolved`: an id from the wrong country, the wrong
+        layer or a typo must not be reported as a cell with no successor.
+
+        A generation pair whose crosswalk has not been computed answers **404
+        `crosswalk_not_loaded`**, naming the pair. That is not a claim that the cells are
+        unchanged.
+
+        **Neither generation has to still be loaded.** A crosswalk outlives the generations it
+        maps between, which is the point of it: once the old generation is dropped, a host
+        still holding its ids needs this answer more than it did before. A successor's `name`
+        and `kind` are omitted when the target generation is no longer loaded; its `area_id`
+        and `share` are always there.
+      parameters:
+        - $ref: "#/components/parameters/country"
+        - name: from
+          in: query
+          required: true
+          schema: { type: string, example: mdb-zaf-2020 }
+          description: The generation the stored ids belong to
+        - name: to
+          in: query
+          required: true
+          schema: { type: string, example: stats-sa-2022 }
+          description: The generation to map them into
+        - name: area_id
+          in: query
+          required: true
+          schema: { type: string }
+          description: One area_id, or up to 200 comma-separated
+      responses:
+        "200":
+          description: One result per area_id asked for, in the order asked
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  country: { type: string, example: ZA }
+                  from: { type: string, example: mdb-zaf-2020 }
+                  to: { type: string, example: stats-sa-2022 }
+                  results:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        area_id: { type: string, format: uuid }
+                        verdict:
+                          type: string
+                          enum: [same, moved, split, unresolved, unknown]
+                        to:
+                          type: array
+                          description: |
+                            Successors, largest share first. Empty for `unknown`, and for an
+                            `unresolved` cell that has no successor above the threshold at all.
+                            An `unresolved` cell with partial overlaps still lists them: the
+                            verdict says do not re-point automatically, not that nothing is known.
+                          items:
+                            type: object
+                            properties:
+                              area_id: { type: string, format: uuid }
+                              name: { type: string, example: Ennerdale Ext 14 }
+                              kind: { type: string, example: subplace }
+                              adm: { type: string, example: SP }
+                              share:
+                                type: number
+                                example: 0.41
+                                description: Fraction of the OLD cell's area that this successor holds
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "404":
+          description: No pack for this country, or no crosswalk computed for this generation pair
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Error" }
 
   /v1/places/harvest:
     get:
