@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: Fascia Places
-  version: 0.24.0
+  version: 0.25.0
   description: |
     Host-facing geography rail for platforms that organise people by place.
 
@@ -278,6 +278,7 @@ paths:
         delimitation was downloadable in September 2026 and applies from election day.
       parameters:
         - $ref: "#/components/parameters/country"
+        - $ref: "#/components/parameters/generation"
       responses:
         "200":
           description: ADM1–4, MP, SP, GN, ST, each with its vintage where the pack records one
