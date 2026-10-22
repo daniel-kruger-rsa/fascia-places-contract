@@ -453,7 +453,7 @@ GET /v1/places/crosswalk?country=ZA&from=mdb-zaf-2020&to=stats-sa-2022&area_id=<
 ```json
 { "country": "ZA", "from": "mdb-zaf-2020", "to": "stats-sa-2022",
   "results": [
-    { "area_id": "…", "verdict": "same",
+    { "area_id": "…", "verdict": "same", "from_name": "Rietpoort SP",
       "to": [ { "area_id": "…", "name": "Rietpoort SP", "kind": "subplace", "adm": "SP", "share": 0.997 } ] },
     { "area_id": "…", "verdict": "split",
       "to": [ { "area_id": "…", "name": "Ennerdale Ext 14", "share": 0.41, "…": "…" },
@@ -464,6 +464,14 @@ GET /v1/places/crosswalk?country=ZA&from=mdb-zaf-2020&to=stats-sa-2022&area_id=<
 ```
 
 **It returns a list, not one id, and that is the point.** One id is always available and often wrong. Measured on Census 2011 against Census 2022 sub-places: 86.2% of old cells have exactly one successor, 13.8% split into two or more, and **every single old centre falls inside some new cell**. A single-id answer would be well formed and wrong for one cell in seven, and a host would store it without ever learning.
+
+**`same` is a claim about ground, not about your link.** It says the cell did not change. Whether your link was *correct when it was made* is a question this endpoint cannot reach — and a crosswalk run is often the only moment anybody looks at an old link, which makes it the right moment to check the thing geometry cannot see.
+
+That is what `from_name` is for. It is what the cell was called under `from`, carried in the crosswalk itself rather than looked up, so it survives the old generation being dropped. **Put it beside your own name for the thing you linked.**
+
+A host re-linking two communities across the Census 2022 cutover found one that had been placed four weeks earlier on the cell whose *name* matched the community — 1.7 km from the ground the community occupies. The crosswalk said `same`, share `1.000`, and it was telling the truth: that cell's boundary had not moved an inch. Scripting every `same` would have carried the error onto the new pack at full confidence, and the rename that forced a person to look was the one event that exposed it.
+
+So: `split` and `unresolved` need a person because the geometry demands it. `same` and `moved` are worth a *cheap* person — your name beside `from_name`, and a prompt only where they differ. "Cedar Lakes Estate" against "Needwood" is a mismatch read in a second.
 
 **Branch on `verdict`.** Not on the shares — the thresholds are ours to tune and yours to ignore.
 

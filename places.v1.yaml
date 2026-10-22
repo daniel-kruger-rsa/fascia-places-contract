@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: Fascia Places
-  version: 0.25.0
+  version: 0.26.0
   description: |
     Host-facing geography rail for platforms that organise people by place.
 
@@ -583,6 +583,12 @@ paths:
         single old centre falls inside some new cell. A single-id answer would be well formed
         and wrong for one cell in seven.
 
+        **`same` is a claim about ground, not about your link.** It says the cell did not
+        change. Whether the link was correct when it was made is a question this endpoint
+        cannot reach, and a crosswalk run is often the only moment anybody looks at an old
+        link — which makes it the right moment to check the thing the geometry cannot see.
+        `from_name` is there for that.
+
         **Branch on `verdict`** rather than on the shares:
 
         | `verdict` | Means | Do |
@@ -639,6 +645,22 @@ paths:
                       type: object
                       properties:
                         area_id: { type: string, format: uuid }
+                        from_name:
+                          type: string
+                          example: Cedar Lakes
+                          description: |
+                            What this cell was called under `from`, carried in the crosswalk
+                            itself rather than looked up — so it survives the old generation
+                            being dropped.
+
+                            **Put it beside your own name for the thing you linked.** A
+                            `verdict` of `same` certifies that the ground did not change; it
+                            cannot certify that the link was ever right. A host re-linking two
+                            communities found one that had been placed four weeks earlier on
+                            the cell whose *name* matched the community, 1.7 km from the ground
+                            it occupies — and `same` would have carried it forward at full
+                            confidence. `Cedar Lakes` against `Needwood` is a mismatch a person
+                            reads in a second and a script cannot.
                         verdict:
                           type: string
                           enum: [same, moved, split, unresolved, unknown]
