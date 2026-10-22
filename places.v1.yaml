@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: Fascia Places
-  version: 0.23.0
+  version: 0.24.0
   description: |
     Host-facing geography rail for platforms that organise people by place.
 
@@ -268,10 +268,14 @@ paths:
         The same layers everywhere, but the response carries a generation, and a generation
         belongs to a country: a country with no pack is refused here too.
 
-        Each layer also says **which vintage it is of**, and whether that vintage still
-        describes what is in force. One generation can hold layers on different cadences from
-        different custodians — South Africa's wards are a 2020 demarcation and its sub-places a
-        2011 census, inside `mdb-zaf-2020` — so the generation name cannot tell you.
+        Each layer also says **which vintage it is of**, and whether that vintage describes
+        what is in force. One generation can hold layers on different cadences from different
+        custodians, so the generation name cannot tell you.
+
+        Three states, and `current` is the one to branch on: **not yet in force** before
+        `effective_from`, **in force**, and **superseded** from `superseded_from`. A boundary
+        that has been published is not yet a boundary that exists — South Africa's 2026 ward
+        delimitation was downloadable in September 2026 and applies from election day.
       parameters:
         - $ref: "#/components/parameters/country"
       responses:
@@ -299,6 +303,16 @@ paths:
                             fields below, on a layer whose pack records no vintage — omitted
                             rather than null, so a client reads undefined instead of having to
                             pattern-match a placeholder.
+                        effective_from:
+                          type: string
+                          format: date
+                          example: "2026-11-04"
+                          description: |
+                            The date from which this layer describes what is in force. Present
+                            where a boundary was published before it applied: South Africa's
+                            2026 ward delimitation was downloadable in September and takes
+                            effect on election day. Until then the cells are real and
+                            resolvable, and `current` is false.
                         superseded_by:
                           type: string
                           example: MDB ward delimitation 2024/2026
@@ -319,10 +333,12 @@ paths:
                           type: boolean
                           example: true
                           description: |
-                            **Branch on this.** False only once a `superseded_from` date has
-                            passed, so a newer vintage merely existing leaves it true. Computed
-                            per request against the server's date, so a layer stops being
-                            current on the day it does, with no deployment involved.
+                            **Branch on this.** True only while the layer describes what is in
+                            force: false before `effective_from` and false from
+                            `superseded_from`. A newer vintage merely existing leaves it true,
+                            because only a dated change moves it. Computed per request against
+                            the server's date, so a layer changes state on the day it changes
+                            with no deployment involved.
         "400": { $ref: "#/components/responses/BadRequest" }
         "404": { $ref: "#/components/responses/NoPackForCountry" }
 

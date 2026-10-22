@@ -241,9 +241,23 @@ Takes `country` (default: the deployment's default country), because the respons
 ```
 
 **Every layer says which vintage it is of.** `vintage` is the year the boundaries represent;
-`superseded_by` names a newer vintage that exists; `superseded_from` is the date ours stops
-describing what is in force; and **`current` is the one to branch on**. All four are omitted on
-a layer whose pack records no vintage.
+`effective_from` is the date it starts describing what is in force; `superseded_by` names a
+newer vintage that exists; `superseded_from` is the date ours stops; and **`current` is the one
+to branch on**. All are omitted on a layer whose pack records no vintage.
+
+Three states, and `current` is true only in the middle one:
+
+| | `current` |
+| --- | --- |
+| Before `effective_from` — published, not yet in force | `false` |
+| In force | `true` |
+| From `superseded_from` | `false` |
+
+**A boundary that has been published is not yet a boundary that exists.** South Africa's ward
+layer is the MDB's 2026 delimitation — 4,485 wards, downloadable since September 2026 and
+applying from **4 November**, election day. Until that morning `current` is false, and on it the
+flag flips with no deployment. The cells are real throughout: `/point` resolves them and
+`/areas/search` finds them. A layer that is not in force is **labelled, never withheld**.
 
 A generation name cannot carry this, because one generation holds layers on different cadences
 from different custodians: in `mdb-zaf-2020`, the wards are a 2020 demarcation and the
