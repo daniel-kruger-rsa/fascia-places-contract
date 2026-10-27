@@ -1,0 +1,2316 @@
+{
+  "_read_me": "A complete real response per path, generated from a live deployment rather than written by hand. Assert that every key path here survives your transport, recursively. If this file cannot be fetched, report that you could not check -- never pass.",
+  "contract": "0.28.0",
+  "generated_from": "https://places.fascia.network",
+  "examples": {
+    "generation": {
+      "request": {
+        "method": "GET",
+        "path": "/v1/places/generation?country=ZA",
+        "needs_host_key": false
+      },
+      "why": "The attribution a licence screen reads. The field that was dropped. No host key.",
+      "response": {
+        "country": "ZA",
+        "generation": "stats-sa-2022",
+        "loaded": true,
+        "contract": "0.28.0",
+        "attribution": [
+          {
+            "url": "https://www.statssa.gov.za/",
+            "text": "Boundaries © Statistics South Africa, Census 2022 main place / sub-place framework",
+            "source": "Statistics South Africa",
+            "license": "Stats SA copyright and licensing terms; not resold as a standalone product",
+            "statement": "Fascia uses the official Statistics South Africa (\"Stats SA\") 2022 placename geographic framework as the underlying spatial reference layer, acknowledges Stats SA as the source and rights holder of that placename framework, and confirms that the placename boundaries are not supplied, sold, or charged for as a standalone product but are made available only in accordance with Stats SA's applicable copyright and licensing terms; any fees charged by Fascia relate solely to Fascia's proprietary data, analysis, outputs, or other value-added commercial content created by Fascia and spatially linked to the placename boundary framework."
+          }
+        ]
+      }
+    },
+    "generations": {
+      "request": {
+        "method": "GET",
+        "path": "/v1/places/generations",
+        "needs_host_key": false
+      },
+      "why": "Every generation a country serves, and which is default.",
+      "response": {
+        "default_country": "ZA",
+        "default": "stats-sa-2022",
+        "generations": [
+          {
+            "generation": "stats-sa-2022",
+            "loaded_at": "2026-10-27T08:38:16.348Z",
+            "layers": [
+              "counts_buildings",
+              "coverage",
+              "derived",
+              "lines_streets",
+              "places_census",
+              "points_geonames",
+              "polygons_adm"
+            ],
+            "default": true
+          },
+          {
+            "generation": "mdb-zaf-2020",
+            "loaded_at": "2026-10-22T04:01:21.544Z",
+            "layers": [
+              "counts_buildings",
+              "coverage",
+              "derived",
+              "lines_streets",
+              "places_census",
+              "points_geonames",
+              "polygons_adm"
+            ],
+            "default": false
+          }
+        ],
+        "countries": [
+          {
+            "country": "ZA",
+            "default": "stats-sa-2022",
+            "loaded": true,
+            "generations": [
+              {
+                "generation": "stats-sa-2022",
+                "loaded_at": "2026-10-27T08:38:16.348Z",
+                "layers": [
+                  "counts_buildings",
+                  "coverage",
+                  "derived",
+                  "lines_streets",
+                  "places_census",
+                  "points_geonames",
+                  "polygons_adm"
+                ],
+                "default": true
+              },
+              {
+                "generation": "mdb-zaf-2020",
+                "loaded_at": "2026-10-22T04:01:21.544Z",
+                "layers": [
+                  "counts_buildings",
+                  "coverage",
+                  "derived",
+                  "lines_streets",
+                  "places_census",
+                  "points_geonames",
+                  "polygons_adm"
+                ],
+                "default": false
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "layers": {
+      "request": {
+        "method": "GET",
+        "path": "/v1/places/layers?country=ZA",
+        "needs_host_key": false
+      },
+      "why": "Vintages and supersession per layer, including a LOC row with none.",
+      "response": {
+        "country": "ZA",
+        "generation": "stats-sa-2022",
+        "layers": [
+          {
+            "adm": "ADM1",
+            "kind": "province",
+            "vintage": "2020",
+            "current": true
+          },
+          {
+            "adm": "ADM2",
+            "kind": "district",
+            "vintage": "2020",
+            "current": true
+          },
+          {
+            "adm": "ADM3",
+            "kind": "municipality",
+            "vintage": "2020",
+            "current": true
+          },
+          {
+            "adm": "ADM3",
+            "kind": "subdistrict"
+          },
+          {
+            "adm": "ADM4",
+            "kind": "ward",
+            "vintage": "2020",
+            "superseded_by": "MDB ward delimitation 2024/2026",
+            "superseded_from": "2026-11-04",
+            "current": true
+          },
+          {
+            "adm": "MP",
+            "kind": "mainplace",
+            "vintage": "2022",
+            "current": true
+          },
+          {
+            "adm": "SP",
+            "kind": "subplace",
+            "vintage": "2022",
+            "current": true
+          },
+          {
+            "adm": "LOC",
+            "kind": "locality"
+          },
+          {
+            "adm": "GN",
+            "kind": "geoname"
+          },
+          {
+            "adm": "ST",
+            "kind": "street"
+          }
+        ]
+      }
+    },
+    "coverage": {
+      "request": {
+        "method": "GET",
+        "path": "/v1/places/coverage?country=ZA",
+        "needs_host_key": false
+      },
+      "why": "The capability probe. `measured` is the field a gate reads.",
+      "response": {
+        "country": "ZA",
+        "generation": "stats-sa-2022",
+        "measured": true,
+        "layers": {
+          "cells": true,
+          "geonames": true,
+          "streets": true,
+          "cell_stats": true,
+          "neighbours": true,
+          "buildings": true
+        },
+        "measures": {
+          "buildings_any": {
+            "value": 0.9966455159034878,
+            "detail": {
+              "cells": 24743,
+              "source": "google_open_buildings",
+              "structures": 29766025,
+              "cells_with_any": 24660
+            }
+          },
+          "crowding_10m": {
+            "value": 0.44999998807907104,
+            "detail": {
+              "p50": 0.44999998807907104,
+              "p90": 0.949999988079071,
+              "note": "mean other structures within 10 m; sizes a building picker, per cell on /area/{id}",
+              "measured_cells": 24660
+            }
+          },
+          "osm_entrance_ref": {
+            "value": 0.015839041095890412,
+            "detail": {
+              "note": "an entrance picker is only worth building where this is high",
+              "with_ref": 74,
+              "entrances": 4672
+            }
+          },
+          "osm_housenumber": {
+            "value": 0.019473931722990247,
+            "detail": {
+              "with": 78720,
+              "buildings": 4042327
+            }
+          },
+          "osm_levels": {
+            "value": 0.014981469831609367,
+            "detail": {
+              "with": 60560,
+              "buildings": 4042327
+            }
+          }
+        },
+        "guidance": {
+          "building_candidates": 2,
+          "entrance_picker": false
+        }
+      }
+    },
+    "health": {
+      "request": {
+        "method": "GET",
+        "path": "/health",
+        "needs_host_key": false
+      },
+      "why": "Build fingerprint. A host comparing builds reads this.",
+      "response": {
+        "ok": true,
+        "build": "4d80cd6cbbd1"
+      }
+    },
+    "point": {
+      "request": {
+        "method": "GET",
+        "path": "/v1/places/point?lng=27.9&lat=-33.03&country=ZA",
+        "needs_host_key": true
+      },
+      "why": "A coordinate inside Igoda: every official tier present, which is what makes it the example worth asserting against. Chosen because it resolves six tiers, not five.",
+      "response": {
+        "area_id": "ca146e27-8221-608f-5f5d-48f192c00339",
+        "geoname_id": null,
+        "name": "Fort Glamorgan SP2",
+        "kind": "subplace",
+        "codes": {
+          "dc_mdb": "BUF",
+          "mn_mdb": "BUF",
+          "pr_mdb": "EC",
+          "source": "stats-sa-census-2022",
+          "dc_name": "Buffalo City",
+          "mn_name": "Buffalo City",
+          "mp_code": "2602013",
+          "pr_code": "2",
+          "pr_name": "Eastern Cape",
+          "sp_code": "260200351"
+        },
+        "parent_ids": [
+          "4d434b04-6692-a1f3-2ebf-6b422ac6cf49"
+        ],
+        "country": "ZA",
+        "generation": "stats-sa-2022",
+        "lng": 27.9,
+        "lat": -33.03,
+        "layers": {
+          "ADM2": {
+            "area_id": "d626f129-bdaa-53a4-be29-8f937364a633",
+            "geoname_id": null,
+            "name": "Buffalo City",
+            "kind": "district",
+            "codes": {
+              "adm": "ADM2",
+              "mdb": "Buffalo City",
+              "source": "geoboundaries-mdb",
+              "shape_id": "47623444B85184421345333"
+            },
+            "parent_ids": [
+              "047773f0-3d9c-5b68-b8b1-66647e28a5cc"
+            ],
+            "country": "ZA",
+            "generation": "stats-sa-2022"
+          },
+          "MP": {
+            "area_id": "4d434b04-6692-a1f3-2ebf-6b422ac6cf49",
+            "geoname_id": null,
+            "name": "East London",
+            "kind": "mainplace",
+            "codes": {
+              "dc_mdb": "BUF",
+              "mn_mdb": "BUF",
+              "pr_mdb": "EC",
+              "source": "stats-sa-census-2022",
+              "dc_name": "Buffalo City",
+              "mn_name": "Buffalo City",
+              "mp_code": "2602013",
+              "pr_code": "2",
+              "pr_name": "Eastern Cape"
+            },
+            "parent_ids": [
+              "25a371ea-04d5-5103-a2be-4d2e131fd978"
+            ],
+            "country": "ZA",
+            "generation": "stats-sa-2022"
+          },
+          "ADM3": {
+            "area_id": "25a371ea-04d5-5103-a2be-4d2e131fd978",
+            "geoname_id": null,
+            "name": "Buffalo City",
+            "kind": "municipality",
+            "codes": {
+              "adm": "ADM3",
+              "mdb": "Buffalo City",
+              "source": "geoboundaries-mdb",
+              "shape_id": "15628383B85184421345333"
+            },
+            "parent_ids": [
+              "d626f129-bdaa-53a4-be29-8f937364a633"
+            ],
+            "country": "ZA",
+            "generation": "stats-sa-2022"
+          },
+          "ADM1": {
+            "area_id": "047773f0-3d9c-5b68-b8b1-66647e28a5cc",
+            "geoname_id": null,
+            "name": "Eastern Cape",
+            "kind": "province",
+            "codes": {
+              "adm": "ADM1",
+              "mdb": "Eastern Cape",
+              "source": "geoboundaries-mdb",
+              "shape_id": "76434192B98113213215773"
+            },
+            "parent_ids": [],
+            "country": "ZA",
+            "generation": "stats-sa-2022"
+          },
+          "SP": {
+            "area_id": "ca146e27-8221-608f-5f5d-48f192c00339",
+            "geoname_id": null,
+            "name": "Fort Glamorgan SP2",
+            "kind": "subplace",
+            "codes": {
+              "dc_mdb": "BUF",
+              "mn_mdb": "BUF",
+              "pr_mdb": "EC",
+              "source": "stats-sa-census-2022",
+              "dc_name": "Buffalo City",
+              "mn_name": "Buffalo City",
+              "mp_code": "2602013",
+              "pr_code": "2",
+              "pr_name": "Eastern Cape",
+              "sp_code": "260200351"
+            },
+            "parent_ids": [
+              "4d434b04-6692-a1f3-2ebf-6b422ac6cf49"
+            ],
+            "country": "ZA",
+            "generation": "stats-sa-2022"
+          },
+          "ADM4": {
+            "area_id": "0a3994aa-8131-506e-9deb-4aaf03cd72f2",
+            "geoname_id": null,
+            "name": "Buffalo City 019",
+            "kind": "ward",
+            "codes": {
+              "adm": "ADM4",
+              "mdb": "Buffalo City 019",
+              "source": "geoboundaries-mdb",
+              "shape_id": "77130982B59956787066932"
+            },
+            "parent_ids": [
+              "25a371ea-04d5-5103-a2be-4d2e131fd978"
+            ],
+            "country": "ZA",
+            "generation": "stats-sa-2022"
+          }
+        },
+        "stack": [
+          {
+            "adm": "ADM1",
+            "area_id": "047773f0-3d9c-5b68-b8b1-66647e28a5cc",
+            "geoname_id": null,
+            "name": "Eastern Cape",
+            "kind": "province",
+            "codes": {
+              "adm": "ADM1",
+              "mdb": "Eastern Cape",
+              "source": "geoboundaries-mdb",
+              "shape_id": "76434192B98113213215773"
+            },
+            "parent_ids": [],
+            "country": "ZA",
+            "generation": "stats-sa-2022"
+          },
+          {
+            "adm": "ADM2",
+            "area_id": "d626f129-bdaa-53a4-be29-8f937364a633",
+            "geoname_id": null,
+            "name": "Buffalo City",
+            "kind": "district",
+            "codes": {
+              "adm": "ADM2",
+              "mdb": "Buffalo City",
+              "source": "geoboundaries-mdb",
+              "shape_id": "47623444B85184421345333"
+            },
+            "parent_ids": [
+              "047773f0-3d9c-5b68-b8b1-66647e28a5cc"
+            ],
+            "country": "ZA",
+            "generation": "stats-sa-2022"
+          },
+          {
+            "adm": "ADM3",
+            "area_id": "25a371ea-04d5-5103-a2be-4d2e131fd978",
+            "geoname_id": null,
+            "name": "Buffalo City",
+            "kind": "municipality",
+            "codes": {
+              "adm": "ADM3",
+              "mdb": "Buffalo City",
+              "source": "geoboundaries-mdb",
+              "shape_id": "15628383B85184421345333"
+            },
+            "parent_ids": [
+              "d626f129-bdaa-53a4-be29-8f937364a633"
+            ],
+            "country": "ZA",
+            "generation": "stats-sa-2022"
+          },
+          {
+            "adm": "ADM4",
+            "area_id": "0a3994aa-8131-506e-9deb-4aaf03cd72f2",
+            "geoname_id": null,
+            "name": "Buffalo City 019",
+            "kind": "ward",
+            "codes": {
+              "adm": "ADM4",
+              "mdb": "Buffalo City 019",
+              "source": "geoboundaries-mdb",
+              "shape_id": "77130982B59956787066932"
+            },
+            "parent_ids": [
+              "25a371ea-04d5-5103-a2be-4d2e131fd978"
+            ],
+            "country": "ZA",
+            "generation": "stats-sa-2022"
+          },
+          {
+            "adm": "MP",
+            "area_id": "4d434b04-6692-a1f3-2ebf-6b422ac6cf49",
+            "geoname_id": null,
+            "name": "East London",
+            "kind": "mainplace",
+            "codes": {
+              "dc_mdb": "BUF",
+              "mn_mdb": "BUF",
+              "pr_mdb": "EC",
+              "source": "stats-sa-census-2022",
+              "dc_name": "Buffalo City",
+              "mn_name": "Buffalo City",
+              "mp_code": "2602013",
+              "pr_code": "2",
+              "pr_name": "Eastern Cape"
+            },
+            "parent_ids": [
+              "25a371ea-04d5-5103-a2be-4d2e131fd978"
+            ],
+            "country": "ZA",
+            "generation": "stats-sa-2022"
+          },
+          {
+            "adm": "SP",
+            "area_id": "ca146e27-8221-608f-5f5d-48f192c00339",
+            "geoname_id": null,
+            "name": "Fort Glamorgan SP2",
+            "kind": "subplace",
+            "codes": {
+              "dc_mdb": "BUF",
+              "mn_mdb": "BUF",
+              "pr_mdb": "EC",
+              "source": "stats-sa-census-2022",
+              "dc_name": "Buffalo City",
+              "mn_name": "Buffalo City",
+              "mp_code": "2602013",
+              "pr_code": "2",
+              "pr_name": "Eastern Cape",
+              "sp_code": "260200351"
+            },
+            "parent_ids": [
+              "4d434b04-6692-a1f3-2ebf-6b422ac6cf49"
+            ],
+            "country": "ZA",
+            "generation": "stats-sa-2022"
+          }
+        ],
+        "place": {
+          "geoname_id": "940401",
+          "name": "West Bank",
+          "feature_class": "P",
+          "feature_code": "PPLX",
+          "capital_of": null,
+          "admin1": "05",
+          "lng": 27.90745,
+          "lat": -33.03443,
+          "meters": 852
+        },
+        "nearby": [
+          {
+            "geoname_id": "940401",
+            "name": "West Bank",
+            "feature_class": "P",
+            "feature_code": "PPLX",
+            "capital_of": null,
+            "admin1": "05",
+            "lng": 27.90745,
+            "lat": -33.03443,
+            "meters": 852
+          },
+          {
+            "geoname_id": "1015245",
+            "name": "Buffalo Harbor",
+            "feature_class": "P",
+            "feature_code": "PPLX",
+            "capital_of": null,
+            "admin1": "05",
+            "lng": 27.90985,
+            "lat": -33.03109,
+            "meters": 928
+          },
+          {
+            "geoname_id": "1002743",
+            "name": "Gately",
+            "feature_class": "P",
+            "feature_code": "PPLX",
+            "capital_of": null,
+            "admin1": "05",
+            "lng": 27.88317,
+            "lat": -33.03136,
+            "meters": 1579
+          },
+          {
+            "geoname_id": "1006984",
+            "name": "East London",
+            "feature_class": "P",
+            "feature_code": "PPLA2",
+            "capital_of": "district",
+            "admin1": "05",
+            "lng": 27.91162,
+            "lat": -33.01529,
+            "meters": 1960
+          },
+          {
+            "geoname_id": "963502",
+            "name": "Quigney",
+            "feature_class": "P",
+            "feature_code": "PPLX",
+            "capital_of": null,
+            "admin1": "05",
+            "lng": 27.91601,
+            "lat": -33.01623,
+            "meters": 2138
+          }
+        ],
+        "street": {
+          "street_id": "61173860-8a0c-3bd9-f2cf-34b867ef662a",
+          "name": "Jonker Crescent",
+          "highway": "residential",
+          "sp_area_id": "ca146e27-8221-608f-5f5d-48f192c00339",
+          "meters": 0
+        },
+        "attribution": [
+          {
+            "source": "OpenStreetMap",
+            "text": "© OpenStreetMap contributors",
+            "url": "https://www.openstreetmap.org/copyright",
+            "license": "ODbL 1.0"
+          },
+          {
+            "url": "https://www.statssa.gov.za/",
+            "text": "Boundaries © Statistics South Africa, Census 2022 main place / sub-place framework",
+            "source": "Statistics South Africa",
+            "license": "Stats SA copyright and licensing terms; not resold as a standalone product",
+            "statement": "Fascia uses the official Statistics South Africa (\"Stats SA\") 2022 placename geographic framework as the underlying spatial reference layer, acknowledges Stats SA as the source and rights holder of that placename framework, and confirms that the placename boundaries are not supplied, sold, or charged for as a standalone product but are made available only in accordance with Stats SA's applicable copyright and licensing terms; any fees charged by Fascia relate solely to Fascia's proprietary data, analysis, outputs, or other value-added commercial content created by Fascia and spatially linked to the placename boundary framework."
+          }
+        ]
+      }
+    },
+    "point_with_building": {
+      "request": {
+        "method": "GET",
+        "path": "/v1/places/point?lng=28.2756&lat=-25.7846&country=ZA&include=building",
+        "needs_host_key": true
+      },
+      "why": "Faerie Glen with `include=building`, so `building_id`, `area_m2` and `source_ref` are exercised. Replaced a second plain /point call that was added to cover `street` and covered nothing: the Igoda probe already carries a street, which the coverage report showed and the comment claiming otherwise did not.",
+      "response": {
+        "area_id": "84c51cdd-ec6d-b48a-d732-60eaec61a175",
+        "geoname_id": null,
+        "name": "Menlyn",
+        "kind": "subplace",
+        "codes": {
+          "dc_mdb": "TSH",
+          "mn_mdb": "TSH",
+          "pr_mdb": "GP",
+          "source": "stats-sa-census-2022",
+          "dc_name": "City of Tshwane",
+          "mn_name": "City of Tshwane",
+          "mp_code": "7992033",
+          "pr_code": "7",
+          "pr_name": "Gauteng",
+          "sp_code": "799200369"
+        },
+        "parent_ids": [
+          "389830d9-9a1e-54ce-4afc-ea523b9e7194"
+        ],
+        "country": "ZA",
+        "generation": "stats-sa-2022",
+        "lng": 28.2756,
+        "lat": -25.7846,
+        "layers": {
+          "ADM2": {
+            "area_id": "29d0adfe-bae1-57d7-a453-2462cda0611e",
+            "geoname_id": null,
+            "name": "City of Tshwane",
+            "kind": "district",
+            "codes": {
+              "adm": "ADM2",
+              "mdb": "City of Tshwane",
+              "source": "geoboundaries-mdb",
+              "shape_id": "47623444B80921072750836"
+            },
+            "parent_ids": [
+              "d459dc1e-bbfc-581d-9aa0-86aa1668b425"
+            ],
+            "country": "ZA",
+            "generation": "stats-sa-2022"
+          },
+          "MP": {
+            "area_id": "389830d9-9a1e-54ce-4afc-ea523b9e7194",
+            "geoname_id": null,
+            "name": "Pretoria",
+            "kind": "mainplace",
+            "codes": {
+              "dc_mdb": "TSH",
+              "mn_mdb": "TSH",
+              "pr_mdb": "GP",
+              "source": "stats-sa-census-2022",
+              "dc_name": "City of Tshwane",
+              "mn_name": "City of Tshwane",
+              "mp_code": "7992033",
+              "pr_code": "7",
+              "pr_name": "Gauteng"
+            },
+            "parent_ids": [
+              "c12a423a-bf13-5126-bbfe-a2e4b56af1ea"
+            ],
+            "country": "ZA",
+            "generation": "stats-sa-2022"
+          },
+          "ADM3": {
+            "area_id": "c12a423a-bf13-5126-bbfe-a2e4b56af1ea",
+            "geoname_id": null,
+            "name": "City of Tshwane",
+            "kind": "municipality",
+            "codes": {
+              "adm": "ADM3",
+              "mdb": "City of Tshwane",
+              "source": "geoboundaries-mdb",
+              "shape_id": "15628383B80921072750836"
+            },
+            "parent_ids": [
+              "29d0adfe-bae1-57d7-a453-2462cda0611e"
+            ],
+            "country": "ZA",
+            "generation": "stats-sa-2022"
+          },
+          "ADM1": {
+            "area_id": "d459dc1e-bbfc-581d-9aa0-86aa1668b425",
+            "geoname_id": null,
+            "name": "Gauteng",
+            "kind": "province",
+            "codes": {
+              "adm": "ADM1",
+              "mdb": "Gauteng",
+              "source": "geoboundaries-mdb",
+              "shape_id": "76434192B69392740373411"
+            },
+            "parent_ids": [],
+            "country": "ZA",
+            "generation": "stats-sa-2022"
+          },
+          "SP": {
+            "area_id": "84c51cdd-ec6d-b48a-d732-60eaec61a175",
+            "geoname_id": null,
+            "name": "Menlyn",
+            "kind": "subplace",
+            "codes": {
+              "dc_mdb": "TSH",
+              "mn_mdb": "TSH",
+              "pr_mdb": "GP",
+              "source": "stats-sa-census-2022",
+              "dc_name": "City of Tshwane",
+              "mn_name": "City of Tshwane",
+              "mp_code": "7992033",
+              "pr_code": "7",
+              "pr_name": "Gauteng",
+              "sp_code": "799200369"
+            },
+            "parent_ids": [
+              "389830d9-9a1e-54ce-4afc-ea523b9e7194"
+            ],
+            "country": "ZA",
+            "generation": "stats-sa-2022"
+          },
+          "ADM4": {
+            "area_id": "edae1f4d-d176-5c7d-b9fa-b7e6714fa00c",
+            "geoname_id": null,
+            "name": "City of Tshwane 046",
+            "kind": "ward",
+            "codes": {
+              "adm": "ADM4",
+              "mdb": "City of Tshwane 046",
+              "source": "geoboundaries-mdb",
+              "shape_id": "77130982B76085472820064"
+            },
+            "parent_ids": [
+              "c12a423a-bf13-5126-bbfe-a2e4b56af1ea"
+            ],
+            "country": "ZA",
+            "generation": "stats-sa-2022"
+          }
+        },
+        "stack": [
+          {
+            "adm": "ADM1",
+            "area_id": "d459dc1e-bbfc-581d-9aa0-86aa1668b425",
+            "geoname_id": null,
+            "name": "Gauteng",
+            "kind": "province",
+            "codes": {
+              "adm": "ADM1",
+              "mdb": "Gauteng",
+              "source": "geoboundaries-mdb",
+              "shape_id": "76434192B69392740373411"
+            },
+            "parent_ids": [],
+            "country": "ZA",
+            "generation": "stats-sa-2022"
+          },
+          {
+            "adm": "ADM2",
+            "area_id": "29d0adfe-bae1-57d7-a453-2462cda0611e",
+            "geoname_id": null,
+            "name": "City of Tshwane",
+            "kind": "district",
+            "codes": {
+              "adm": "ADM2",
+              "mdb": "City of Tshwane",
+              "source": "geoboundaries-mdb",
+              "shape_id": "47623444B80921072750836"
+            },
+            "parent_ids": [
+              "d459dc1e-bbfc-581d-9aa0-86aa1668b425"
+            ],
+            "country": "ZA",
+            "generation": "stats-sa-2022"
+          },
+          {
+            "adm": "ADM3",
+            "area_id": "c12a423a-bf13-5126-bbfe-a2e4b56af1ea",
+            "geoname_id": null,
+            "name": "City of Tshwane",
+            "kind": "municipality",
+            "codes": {
+              "adm": "ADM3",
+              "mdb": "City of Tshwane",
+              "source": "geoboundaries-mdb",
+              "shape_id": "15628383B80921072750836"
+            },
+            "parent_ids": [
+              "29d0adfe-bae1-57d7-a453-2462cda0611e"
+            ],
+            "country": "ZA",
+            "generation": "stats-sa-2022"
+          },
+          {
+            "adm": "ADM4",
+            "area_id": "edae1f4d-d176-5c7d-b9fa-b7e6714fa00c",
+            "geoname_id": null,
+            "name": "City of Tshwane 046",
+            "kind": "ward",
+            "codes": {
+              "adm": "ADM4",
+              "mdb": "City of Tshwane 046",
+              "source": "geoboundaries-mdb",
+              "shape_id": "77130982B76085472820064"
+            },
+            "parent_ids": [
+              "c12a423a-bf13-5126-bbfe-a2e4b56af1ea"
+            ],
+            "country": "ZA",
+            "generation": "stats-sa-2022"
+          },
+          {
+            "adm": "MP",
+            "area_id": "389830d9-9a1e-54ce-4afc-ea523b9e7194",
+            "geoname_id": null,
+            "name": "Pretoria",
+            "kind": "mainplace",
+            "codes": {
+              "dc_mdb": "TSH",
+              "mn_mdb": "TSH",
+              "pr_mdb": "GP",
+              "source": "stats-sa-census-2022",
+              "dc_name": "City of Tshwane",
+              "mn_name": "City of Tshwane",
+              "mp_code": "7992033",
+              "pr_code": "7",
+              "pr_name": "Gauteng"
+            },
+            "parent_ids": [
+              "c12a423a-bf13-5126-bbfe-a2e4b56af1ea"
+            ],
+            "country": "ZA",
+            "generation": "stats-sa-2022"
+          },
+          {
+            "adm": "SP",
+            "area_id": "84c51cdd-ec6d-b48a-d732-60eaec61a175",
+            "geoname_id": null,
+            "name": "Menlyn",
+            "kind": "subplace",
+            "codes": {
+              "dc_mdb": "TSH",
+              "mn_mdb": "TSH",
+              "pr_mdb": "GP",
+              "source": "stats-sa-census-2022",
+              "dc_name": "City of Tshwane",
+              "mn_name": "City of Tshwane",
+              "mp_code": "7992033",
+              "pr_code": "7",
+              "pr_name": "Gauteng",
+              "sp_code": "799200369"
+            },
+            "parent_ids": [
+              "389830d9-9a1e-54ce-4afc-ea523b9e7194"
+            ],
+            "country": "ZA",
+            "generation": "stats-sa-2022"
+          }
+        ],
+        "place": {
+          "geoname_id": "7870446",
+          "name": "Menlyn",
+          "feature_class": "P",
+          "feature_code": "PPL",
+          "capital_of": null,
+          "admin1": "06",
+          "lng": 28.27713,
+          "lat": -25.78208,
+          "meters": 319
+        },
+        "nearby": [
+          {
+            "geoname_id": "7870446",
+            "name": "Menlyn",
+            "feature_class": "P",
+            "feature_code": "PPL",
+            "capital_of": null,
+            "admin1": "06",
+            "lng": 28.27713,
+            "lat": -25.78208,
+            "meters": 319
+          },
+          {
+            "geoname_id": "941688",
+            "name": "Waterkloof Glen",
+            "feature_class": "P",
+            "feature_code": "PPLX",
+            "capital_of": null,
+            "admin1": "06",
+            "lng": 28.26667,
+            "lat": -25.78333,
+            "meters": 907
+          },
+          {
+            "geoname_id": "12450933",
+            "name": "Lynnwood Glen",
+            "feature_class": "P",
+            "feature_code": "PPL",
+            "capital_of": null,
+            "admin1": "06",
+            "lng": 28.27955,
+            "lat": -25.77164,
+            "meters": 1489
+          },
+          {
+            "geoname_id": "11256964",
+            "name": "Newlands",
+            "feature_class": "P",
+            "feature_code": "PPL",
+            "capital_of": null,
+            "admin1": "06",
+            "lng": 28.26215,
+            "lat": -25.79076,
+            "meters": 1512
+          },
+          {
+            "geoname_id": "11429176",
+            "name": "Lynwood Glen",
+            "feature_class": "P",
+            "feature_code": "PPLX",
+            "capital_of": null,
+            "admin1": "06",
+            "lng": 28.26433,
+            "lat": -25.77438,
+            "meters": 1600
+          }
+        ],
+        "street": {
+          "street_id": "468305af-a288-44c4-971e-76455535bf0c",
+          "name": "Gobie Street",
+          "highway": "service",
+          "sp_area_id": "94c7793e-9ef9-fbdc-8046-3145aaf50c22",
+          "meters": 49
+        },
+        "attribution": [
+          {
+            "source": "OpenStreetMap",
+            "text": "© OpenStreetMap contributors",
+            "url": "https://www.openstreetmap.org/copyright",
+            "license": "ODbL 1.0"
+          },
+          {
+            "url": "https://www.statssa.gov.za/",
+            "text": "Boundaries © Statistics South Africa, Census 2022 main place / sub-place framework",
+            "source": "Statistics South Africa",
+            "license": "Stats SA copyright and licensing terms; not resold as a standalone product",
+            "statement": "Fascia uses the official Statistics South Africa (\"Stats SA\") 2022 placename geographic framework as the underlying spatial reference layer, acknowledges Stats SA as the source and rights holder of that placename framework, and confirms that the placename boundaries are not supplied, sold, or charged for as a standalone product but are made available only in accordance with Stats SA's applicable copyright and licensing terms; any fees charged by Fascia relate solely to Fascia's proprietary data, analysis, outputs, or other value-added commercial content created by Fascia and spatially linked to the placename boundary framework."
+          },
+          {
+            "source": "Google Open Buildings",
+            "text": "© Google Open Buildings",
+            "url": "https://sites.research.google/gr/open-buildings/",
+            "license": "CC BY 4.0"
+          }
+        ],
+        "building": {
+          "candidates": [
+            {
+              "building_id": "c086dd8e-6f84-65bc-afa0-4b88c280aa67",
+              "source": "google_open_buildings",
+              "area_m2": 610,
+              "meters": 42.4
+            }
+          ],
+          "crowding_10m": 0.18,
+          "confirm_required": true
+        }
+      }
+    },
+    "geojson": {
+      "request": {
+        "method": "GET",
+        "path": "/v1/places/geojson?west=27.88&south=-33.06&east=27.95&north=-33.00&kind=subplace&limit=5&country=ZA",
+        "needs_host_key": true
+      },
+      "why": "A FeatureCollection: `type`, `features` and the per-feature shape a map layer reads.",
+      "response": {
+        "type": "FeatureCollection",
+        "generation": "stats-sa-2022",
+        "kind": "subplace",
+        "adm": "SP",
+        "count": 5,
+        "total": 23,
+        "features": [
+          {
+            "type": "Feature",
+            "id": "46d2401a-0501-7edc-c879-6d59d393df42",
+            "geometry": {
+              "type": "Polygon",
+              "coordinates": [
+                [
+                  [
+                    27.89433,
+                    -33.01248
+                  ],
+                  [
+                    27.90227,
+                    -33.018
+                  ],
+                  [
+                    27.90303,
+                    -33.02012
+                  ],
+                  [
+                    27.90204,
+                    -33.02036
+                  ],
+                  [
+                    27.90354,
+                    -33.02269
+                  ],
+                  [
+                    27.89964,
+                    -33.0221
+                  ],
+                  [
+                    27.89609,
+                    -33.02005
+                  ],
+                  [
+                    27.89466,
+                    -33.02208
+                  ],
+                  [
+                    27.89487,
+                    -33.02352
+                  ],
+                  [
+                    27.88356,
+                    -33.02545
+                  ],
+                  [
+                    27.883,
+                    -33.02042
+                  ],
+                  [
+                    27.88168,
+                    -33.01858
+                  ],
+                  [
+                    27.88285,
+                    -33.01579
+                  ],
+                  [
+                    27.88249,
+                    -33.013
+                  ],
+                  [
+                    27.88477,
+                    -33.0137
+                  ],
+                  [
+                    27.88598,
+                    -33.01255
+                  ],
+                  [
+                    27.88866,
+                    -33.0129
+                  ],
+                  [
+                    27.89127,
+                    -33.01156
+                  ],
+                  [
+                    27.89433,
+                    -33.01248
+                  ]
+                ]
+              ]
+            },
+            "properties": {
+              "area_id": "46d2401a-0501-7edc-c879-6d59d393df42",
+              "name": "Parkside",
+              "kind": "subplace",
+              "adm": "SP",
+              "generation": "stats-sa-2022"
+            }
+          },
+          {
+            "type": "Feature",
+            "id": "b41434a4-7a9e-7535-31fa-10c9099cf342",
+            "geometry": {
+              "type": "Polygon",
+              "coordinates": [
+                [
+                  [
+                    27.9212,
+                    -33.01126
+                  ],
+                  [
+                    27.9227,
+                    -33.01154
+                  ],
+                  [
+                    27.92139,
+                    -33.0186
+                  ],
+                  [
+                    27.91636,
+                    -33.02402
+                  ],
+                  [
+                    27.91645,
+                    -33.02665
+                  ],
+                  [
+                    27.91427,
+                    -33.02524
+                  ],
+                  [
+                    27.91403,
+                    -33.02391
+                  ],
+                  [
+                    27.91198,
+                    -33.02511
+                  ],
+                  [
+                    27.91009,
+                    -33.02438
+                  ],
+                  [
+                    27.90807,
+                    -33.02405
+                  ],
+                  [
+                    27.90692,
+                    -33.0236
+                  ],
+                  [
+                    27.90836,
+                    -33.02315
+                  ],
+                  [
+                    27.90891,
+                    -33.02092
+                  ],
+                  [
+                    27.91088,
+                    -33.01907
+                  ],
+                  [
+                    27.91058,
+                    -33.01827
+                  ],
+                  [
+                    27.90802,
+                    -33.01882
+                  ],
+                  [
+                    27.90577,
+                    -33.01213
+                  ],
+                  [
+                    27.9081,
+                    -33.01056
+                  ],
+                  [
+                    27.91422,
+                    -33.00897
+                  ],
+                  [
+                    27.91488,
+                    -33.01234
+                  ],
+                  [
+                    27.919,
+                    -33.01161
+                  ],
+                  [
+                    27.92105,
+                    -33.00824
+                  ],
+                  [
+                    27.92205,
+                    -33.00876
+                  ],
+                  [
+                    27.9212,
+                    -33.01126
+                  ]
+                ]
+              ]
+            },
+            "properties": {
+              "area_id": "b41434a4-7a9e-7535-31fa-10c9099cf342",
+              "name": "Quigney Beach",
+              "kind": "subplace",
+              "adm": "SP",
+              "generation": "stats-sa-2022"
+            }
+          },
+          {
+            "type": "Feature",
+            "id": "c902b248-122a-3c51-5f59-d8a973469c30",
+            "geometry": {
+              "type": "Polygon",
+              "coordinates": [
+                [
+                  [
+                    27.88546,
+                    -33.03485
+                  ],
+                  [
+                    27.88084,
+                    -33.03511
+                  ],
+                  [
+                    27.88192,
+                    -33.03417
+                  ],
+                  [
+                    27.87996,
+                    -33.03266
+                  ],
+                  [
+                    27.87824,
+                    -33.02622
+                  ],
+                  [
+                    27.89487,
+                    -33.02352
+                  ],
+                  [
+                    27.89515,
+                    -33.02458
+                  ],
+                  [
+                    27.90279,
+                    -33.02844
+                  ],
+                  [
+                    27.89224,
+                    -33.03322
+                  ],
+                  [
+                    27.88546,
+                    -33.03485
+                  ]
+                ]
+              ]
+            },
+            "properties": {
+              "area_id": "c902b248-122a-3c51-5f59-d8a973469c30",
+              "name": "Gately",
+              "kind": "subplace",
+              "adm": "SP",
+              "generation": "stats-sa-2022"
+            }
+          },
+          {
+            "type": "Feature",
+            "id": "dcf91044-ca6a-0780-ecce-5e46ff1c1001",
+            "geometry": {
+              "type": "Polygon",
+              "coordinates": [
+                [
+                  [
+                    27.89146,
+                    -33.03858
+                  ],
+                  [
+                    27.89316,
+                    -33.0408
+                  ],
+                  [
+                    27.90221,
+                    -33.0376
+                  ],
+                  [
+                    27.90633,
+                    -33.04036
+                  ],
+                  [
+                    27.89902,
+                    -33.04455
+                  ],
+                  [
+                    27.89403,
+                    -33.04408
+                  ],
+                  [
+                    27.88809,
+                    -33.04519
+                  ],
+                  [
+                    27.88175,
+                    -33.04945
+                  ],
+                  [
+                    27.87561,
+                    -33.05179
+                  ],
+                  [
+                    27.87104,
+                    -33.0556
+                  ],
+                  [
+                    27.86345,
+                    -33.05725
+                  ],
+                  [
+                    27.86382,
+                    -33.05914
+                  ],
+                  [
+                    27.862,
+                    -33.06052
+                  ],
+                  [
+                    27.85938,
+                    -33.05673
+                  ],
+                  [
+                    27.86175,
+                    -33.05423
+                  ],
+                  [
+                    27.85917,
+                    -33.05148
+                  ],
+                  [
+                    27.85614,
+                    -33.05077
+                  ],
+                  [
+                    27.8556,
+                    -33.04947
+                  ],
+                  [
+                    27.85356,
+                    -33.04971
+                  ],
+                  [
+                    27.85065,
+                    -33.04502
+                  ],
+                  [
+                    27.86113,
+                    -33.04054
+                  ],
+                  [
+                    27.86232,
+                    -33.04329
+                  ],
+                  [
+                    27.86437,
+                    -33.04477
+                  ],
+                  [
+                    27.87266,
+                    -33.04329
+                  ],
+                  [
+                    27.8696,
+                    -33.04112
+                  ],
+                  [
+                    27.86818,
+                    -33.03826
+                  ],
+                  [
+                    27.87767,
+                    -33.0398
+                  ],
+                  [
+                    27.88348,
+                    -33.03878
+                  ],
+                  [
+                    27.88468,
+                    -33.03984
+                  ],
+                  [
+                    27.89045,
+                    -33.03726
+                  ],
+                  [
+                    27.89146,
+                    -33.03858
+                  ]
+                ]
+              ]
+            },
+            "properties": {
+              "area_id": "dcf91044-ca6a-0780-ecce-5e46ff1c1001",
+              "name": "Potters Pass Local Authority Nature Reserve",
+              "kind": "subplace",
+              "adm": "SP",
+              "generation": "stats-sa-2022"
+            }
+          },
+          {
+            "type": "Feature",
+            "id": "4c9895b7-7b42-b498-c44b-317c9fda89ae",
+            "geometry": {
+              "type": "Polygon",
+              "coordinates": [
+                [
+                  [
+                    27.89631,
+                    -33.02024
+                  ],
+                  [
+                    27.89964,
+                    -33.0221
+                  ],
+                  [
+                    27.91198,
+                    -33.02511
+                  ],
+                  [
+                    27.91403,
+                    -33.02391
+                  ],
+                  [
+                    27.91427,
+                    -33.02524
+                  ],
+                  [
+                    27.91604,
+                    -33.02663
+                  ],
+                  [
+                    27.92121,
+                    -33.02599
+                  ],
+                  [
+                    27.9255,
+                    -33.02838
+                  ],
+                  [
+                    27.91916,
+                    -33.02978
+                  ],
+                  [
+                    27.9134,
+                    -33.03293
+                  ],
+                  [
+                    27.9121,
+                    -33.03189
+                  ],
+                  [
+                    27.91208,
+                    -33.03059
+                  ],
+                  [
+                    27.90802,
+                    -33.02903
+                  ],
+                  [
+                    27.90279,
+                    -33.02844
+                  ],
+                  [
+                    27.89515,
+                    -33.02458
+                  ],
+                  [
+                    27.89466,
+                    -33.02208
+                  ],
+                  [
+                    27.89534,
+                    -33.02041
+                  ],
+                  [
+                    27.89631,
+                    -33.02024
+                  ]
+                ]
+              ]
+            },
+            "properties": {
+              "area_id": "4c9895b7-7b42-b498-c44b-317c9fda89ae",
+              "name": "Harbour",
+              "kind": "subplace",
+              "adm": "SP",
+              "generation": "stats-sa-2022"
+            }
+          }
+        ],
+        "attribution": [
+          {
+            "url": "https://www.statssa.gov.za/",
+            "text": "Boundaries © Statistics South Africa, Census 2022 main place / sub-place framework",
+            "source": "Statistics South Africa",
+            "license": "Stats SA copyright and licensing terms; not resold as a standalone product",
+            "statement": "Fascia uses the official Statistics South Africa (\"Stats SA\") 2022 placename geographic framework as the underlying spatial reference layer, acknowledges Stats SA as the source and rights holder of that placename framework, and confirms that the placename boundaries are not supplied, sold, or charged for as a standalone product but are made available only in accordance with Stats SA's applicable copyright and licensing terms; any fees charged by Fascia relate solely to Fascia's proprietary data, analysis, outputs, or other value-added commercial content created by Fascia and spatially linked to the placename boundary framework."
+          }
+        ]
+      }
+    },
+    "building_by_id": {
+      "request": {
+        "method": "GET",
+        "path": "/v1/places/building/c086dd8e-6f84-65bc-afa0-4b88c280aa67",
+        "needs_host_key": true
+      },
+      "why": "One structure in full, which is where `source_ref` lives -- a point candidate does not carry it. The id comes from the building probe rather than being pinned.",
+      "response": {
+        "building_id": "c086dd8e-6f84-65bc-afa0-4b88c280aa67",
+        "generation": "stats-sa-2022",
+        "country": "ZA",
+        "source": "google_open_buildings",
+        "source_ref": "5G6C678G+634M",
+        "area_m2": 610,
+        "lng": 28.275197,
+        "lat": -25.784483,
+        "area": {
+          "area_id": "84c51cdd-ec6d-b48a-d732-60eaec61a175",
+          "name": "Menlyn",
+          "kind": "subplace",
+          "adm": "SP"
+        },
+        "attribution": [
+          {
+            "source": "Google Open Buildings",
+            "text": "© Google Open Buildings",
+            "url": "https://sites.research.google/gr/open-buildings/",
+            "license": "CC BY 4.0"
+          }
+        ]
+      }
+    },
+    "harvest_summary": {
+      "request": {
+        "method": "GET",
+        "path": "/v1/places/harvest?kind=SP&country=ZA&summary=1&west=27.9&south=-26.3&east=28.1&north=-26.1",
+        "needs_host_key": true
+      },
+      "why": "The gating numbers: `covered`, `uncovered` and `uncovered_totals`. A proxy that allowlists paths and drops these leaves a host's gate reading a confident zero.",
+      "response": {
+        "generation": "stats-sa-2022",
+        "kind": "subplace",
+        "uncovered": 454,
+        "covered": 0,
+        "uncovered_totals": {
+          "road_km": 7738.2,
+          "named_road_km": 5191.1,
+          "buildings": 579923
+        },
+        "attribution": [
+          {
+            "source": "OpenStreetMap",
+            "text": "© OpenStreetMap contributors",
+            "url": "https://www.openstreetmap.org/copyright",
+            "license": "ODbL 1.0"
+          },
+          {
+            "source": "Google Open Buildings",
+            "text": "© Google Open Buildings",
+            "url": "https://sites.research.google/gr/open-buildings/",
+            "license": "CC BY 4.0"
+          },
+          {
+            "url": "https://www.statssa.gov.za/",
+            "text": "Boundaries © Statistics South Africa, Census 2022 main place / sub-place framework",
+            "source": "Statistics South Africa",
+            "license": "Stats SA copyright and licensing terms; not resold as a standalone product",
+            "statement": "Fascia uses the official Statistics South Africa (\"Stats SA\") 2022 placename geographic framework as the underlying spatial reference layer, acknowledges Stats SA as the source and rights holder of that placename framework, and confirms that the placename boundaries are not supplied, sold, or charged for as a standalone product but are made available only in accordance with Stats SA's applicable copyright and licensing terms; any fees charged by Fascia relate solely to Fascia's proprietary data, analysis, outputs, or other value-added commercial content created by Fascia and spatially linked to the placename boundary framework."
+          }
+        ]
+      }
+    },
+    "streets": {
+      "request": {
+        "method": "GET",
+        "path": "/v1/places/streets?q=main&country=ZA&limit=3",
+        "needs_host_key": true
+      },
+      "why": "Street hits with `length_m`, and the ODbL credit that must ride with them.",
+      "response": {
+        "generation": "stats-sa-2022",
+        "attribution": [
+          {
+            "source": "OpenStreetMap",
+            "text": "© OpenStreetMap contributors",
+            "url": "https://www.openstreetmap.org/copyright",
+            "license": "ODbL 1.0"
+          }
+        ],
+        "count": 3,
+        "streets": [
+          {
+            "street_id": "5111107e-4a59-8fd8-0c39-4a49844a304a",
+            "name": "Main",
+            "highway": "secondary",
+            "length_m": 3985,
+            "subplace": {
+              "area_id": "beebf07f-fb11-cd92-7c66-0cd5b8b073f3",
+              "name": "Glencoe SP",
+              "kind": "subplace",
+              "adm": "SP"
+            },
+            "parents": [
+              {
+                "adm": "ADM1",
+                "area_id": "4b72d3a6-b51d-563a-a4c3-75b7e0add23f",
+                "name": "KwaZulu-Natal",
+                "kind": "province"
+              },
+              {
+                "adm": "ADM2",
+                "area_id": "00820744-59fe-57c1-8d6a-6fb73db697dd",
+                "name": "Umzinyathi",
+                "kind": "district"
+              },
+              {
+                "adm": "ADM3",
+                "area_id": "dc5345a0-b829-5fc4-bb4f-3d444c9458ea",
+                "name": "Endumeni",
+                "kind": "municipality"
+              },
+              {
+                "adm": "MP",
+                "area_id": "61a1b2fd-a927-dcd3-0825-2dc76fc479a9",
+                "name": "Glencoe",
+                "kind": "mainplace"
+              }
+            ],
+            "bbox": [
+              30.153547,
+              -28.191846,
+              30.185338,
+              -28.168959
+            ]
+          },
+          {
+            "street_id": "4dd6c2d5-3164-0423-ec10-d73c1ed86ffa",
+            "name": "Main",
+            "highway": "tertiary",
+            "length_m": 2763,
+            "subplace": {
+              "area_id": "3daadbe3-b9c5-8f57-96aa-c77b90fd2dae",
+              "name": "Bonnievale SP1",
+              "kind": "subplace",
+              "adm": "SP"
+            },
+            "parents": [
+              {
+                "adm": "ADM1",
+                "area_id": "afa335d1-378d-57a1-a61e-04eb9298d2e7",
+                "name": "Western Cape",
+                "kind": "province"
+              },
+              {
+                "adm": "ADM2",
+                "area_id": "a3dc3d52-aead-5db7-af84-4e000aac6b8c",
+                "name": "Cape Winelands",
+                "kind": "district"
+              },
+              {
+                "adm": "ADM3",
+                "area_id": "04074f8e-7442-5b37-80db-9cb544b85ff5",
+                "name": "Langeberg",
+                "kind": "municipality"
+              },
+              {
+                "adm": "MP",
+                "area_id": "3d510e35-af08-75c3-9f54-e1e966e89ee3",
+                "name": "Bonnievale",
+                "kind": "mainplace"
+              }
+            ],
+            "bbox": [
+              20.073375,
+              -33.941404,
+              20.110579,
+              -33.93788
+            ]
+          },
+          {
+            "street_id": "9f74bf90-4666-7651-59ce-11bd8ab68e7b",
+            "name": "Main",
+            "highway": "primary",
+            "length_m": 1721,
+            "subplace": {
+              "area_id": "d4950586-e701-ca54-f647-30ed99c23564",
+              "name": "Hoedspruit SP",
+              "kind": "subplace",
+              "adm": "SP"
+            },
+            "parents": [
+              {
+                "adm": "ADM1",
+                "area_id": "9b2b49e2-adcc-59bf-8a75-59ec041e771b",
+                "name": "Limpopo",
+                "kind": "province"
+              },
+              {
+                "adm": "ADM2",
+                "area_id": "dee86018-6abc-5233-ae41-4d077541d512",
+                "name": "Mopani",
+                "kind": "district"
+              },
+              {
+                "adm": "ADM3",
+                "area_id": "451f0caf-6d27-56b2-8523-85f76f26bc43",
+                "name": "Maruleng",
+                "kind": "municipality"
+              },
+              {
+                "adm": "MP",
+                "area_id": "0f792801-db71-9e92-b8c0-6e0b39be4a2c",
+                "name": "Hoedspruit",
+                "kind": "mainplace"
+              }
+            ],
+            "bbox": [
+              30.940094,
+              -24.360022,
+              30.952986,
+              -24.350722
+            ]
+          }
+        ]
+      }
+    },
+    "refused_no_pack": {
+      "request": {
+        "method": "GET",
+        "path": "/v1/places/generation?country=IN",
+        "needs_host_key": false
+      },
+      "why": "A refusal is forwarded too, and `code` is what a host branches on. One host's own layer answers the same code for two opposite conditions, so a transport that drops `code` leaves a host unable to tell what went wrong.",
+      "response": {
+        "error": {
+          "code": "no_pack_for_country",
+          "message": "no pack for country IN; this deployment serves ZA",
+          "country": "IN",
+          "countries": [
+            "ZA"
+          ]
+        },
+        "generation": null
+      }
+    },
+    "areas_search": {
+      "request": {
+        "method": "GET",
+        "path": "/v1/places/areas/search?q=Parktown&country=ZA&limit=3",
+        "needs_host_key": true
+      },
+      "why": "Hits with `bbox`, parents and codes. The shape a mapper consumes.",
+      "response": [
+        {
+          "area_id": "8ca66f8c-ef38-c53e-ba09-e77f874ac490",
+          "name": "Parktown",
+          "kind": "subplace",
+          "adm": "SP",
+          "country": "ZA",
+          "generation": "stats-sa-2022",
+          "parents": [
+            {
+              "adm": "ADM1",
+              "area_id": "d459dc1e-bbfc-581d-9aa0-86aa1668b425",
+              "name": "Gauteng",
+              "kind": "province"
+            },
+            {
+              "adm": "ADM2",
+              "area_id": "29d0adfe-bae1-57d7-a453-2462cda0611e",
+              "name": "City of Tshwane",
+              "kind": "district"
+            },
+            {
+              "adm": "ADM3",
+              "area_id": "c12a423a-bf13-5126-bbfe-a2e4b56af1ea",
+              "name": "City of Tshwane",
+              "kind": "municipality"
+            },
+            {
+              "adm": "MP",
+              "area_id": "b7c83431-ad1a-7eb5-af7b-c819337ba262",
+              "name": "Majaneng",
+              "kind": "mainplace"
+            }
+          ],
+          "bbox": [
+            28.239027,
+            -25.358131,
+            28.252709,
+            -25.349045
+          ]
+        },
+        {
+          "area_id": "10805070-8a0a-aaef-85dc-e103ee73c06e",
+          "name": "Parktown",
+          "kind": "subplace",
+          "adm": "SP",
+          "country": "ZA",
+          "generation": "stats-sa-2022",
+          "parents": [
+            {
+              "adm": "ADM1",
+              "area_id": "d459dc1e-bbfc-581d-9aa0-86aa1668b425",
+              "name": "Gauteng",
+              "kind": "province"
+            },
+            {
+              "adm": "ADM2",
+              "area_id": "812725e2-cd70-53d7-a737-7d74d25e1878",
+              "name": "City of Johannesburg",
+              "kind": "district"
+            },
+            {
+              "adm": "ADM3",
+              "area_id": "7f17c035-956e-59f9-86d1-b609305e33fd",
+              "name": "City of Johannesburg",
+              "kind": "municipality"
+            },
+            {
+              "adm": "MP",
+              "area_id": "51c7e7b1-b557-1b58-1ace-23166ae8d574",
+              "name": "Johannesburg",
+              "kind": "mainplace"
+            }
+          ],
+          "bbox": [
+            28.017381,
+            -26.187236,
+            28.050186,
+            -26.16484
+          ]
+        },
+        {
+          "area_id": "f439fbf0-7685-39ce-0f2a-c05fa0e36aaf",
+          "name": "Parktown North",
+          "kind": "subplace",
+          "adm": "SP",
+          "country": "ZA",
+          "generation": "stats-sa-2022",
+          "parents": [
+            {
+              "adm": "ADM1",
+              "area_id": "d459dc1e-bbfc-581d-9aa0-86aa1668b425",
+              "name": "Gauteng",
+              "kind": "province"
+            },
+            {
+              "adm": "ADM2",
+              "area_id": "812725e2-cd70-53d7-a737-7d74d25e1878",
+              "name": "City of Johannesburg",
+              "kind": "district"
+            },
+            {
+              "adm": "ADM3",
+              "area_id": "7f17c035-956e-59f9-86d1-b609305e33fd",
+              "name": "City of Johannesburg",
+              "kind": "municipality"
+            },
+            {
+              "adm": "MP",
+              "area_id": "51c7e7b1-b557-1b58-1ace-23166ae8d574",
+              "name": "Johannesburg",
+              "kind": "mainplace"
+            }
+          ],
+          "bbox": [
+            28.021794,
+            -26.149214,
+            28.036047,
+            -26.134088
+          ]
+        }
+      ]
+    },
+    "area_by_id": {
+      "request": {
+        "method": "GET",
+        "path": "/v1/places/area/8ca66f8c-ef38-c53e-ba09-e77f874ac490",
+        "needs_host_key": true
+      },
+      "why": "One cell in full, with its stats object. The id comes from the search above rather than being pinned, so this example cannot rot when a generation changes.",
+      "response": {
+        "area_id": "8ca66f8c-ef38-c53e-ba09-e77f874ac490",
+        "geoname_id": null,
+        "name": "Parktown",
+        "kind": "subplace",
+        "codes": {
+          "dc_mdb": "TSH",
+          "mn_mdb": "TSH",
+          "pr_mdb": "GP",
+          "source": "stats-sa-census-2022",
+          "dc_name": "City of Tshwane",
+          "mn_name": "City of Tshwane",
+          "mp_code": "7992032",
+          "pr_code": "7",
+          "pr_name": "Gauteng",
+          "sp_code": "799200533"
+        },
+        "parent_ids": [
+          "b7c83431-ad1a-7eb5-af7b-c819337ba262"
+        ],
+        "country": "ZA",
+        "generation": "stats-sa-2022",
+        "stats": {
+          "road_km": 7.9,
+          "named_road_km": null,
+          "buildings": 641,
+          "crowding_10m": 0.53,
+          "building_candidates": 2,
+          "area_km2": 0.6,
+          "land_class": "urban",
+          "centroid": {
+            "lng": 28.245887,
+            "lat": -25.353533
+          }
+        },
+        "attribution": [
+          {
+            "source": "OpenStreetMap",
+            "text": "© OpenStreetMap contributors",
+            "url": "https://www.openstreetmap.org/copyright",
+            "license": "ODbL 1.0"
+          },
+          {
+            "source": "Google Open Buildings",
+            "text": "© Google Open Buildings",
+            "url": "https://sites.research.google/gr/open-buildings/",
+            "license": "CC BY 4.0"
+          },
+          {
+            "url": "https://www.statssa.gov.za/",
+            "text": "Boundaries © Statistics South Africa, Census 2022 main place / sub-place framework",
+            "source": "Statistics South Africa",
+            "license": "Stats SA copyright and licensing terms; not resold as a standalone product",
+            "statement": "Fascia uses the official Statistics South Africa (\"Stats SA\") 2022 placename geographic framework as the underlying spatial reference layer, acknowledges Stats SA as the source and rights holder of that placename framework, and confirms that the placename boundaries are not supplied, sold, or charged for as a standalone product but are made available only in accordance with Stats SA's applicable copyright and licensing terms; any fees charged by Fascia relate solely to Fascia's proprietary data, analysis, outputs, or other value-added commercial content created by Fascia and spatially linked to the placename boundary framework."
+          }
+        ]
+      }
+    },
+    "crosswalk": {
+      "request": {
+        "method": "GET",
+        "path": "/v1/places/crosswalk?country=ZA&from=mdb-zaf-2020&to=stats-sa-2022&area_id=bb9095a1-d46b-9ced-9846-8ee875131ae5",
+        "needs_host_key": true
+      },
+      "why": "What became of a cell, with `basis` on every successor. New in 0.28.0.",
+      "response": {
+        "country": "ZA",
+        "from": "mdb-zaf-2020",
+        "to": "stats-sa-2022",
+        "results": [
+          {
+            "area_id": "bb9095a1-d46b-9ced-9846-8ee875131ae5",
+            "verdict": "same",
+            "from_name": "Rietpoort AH",
+            "to": [
+              {
+                "area_id": "0260a038-0307-c809-39f1-e49b93d6e0cf",
+                "name": "Mogale City NU",
+                "kind": "subplace",
+                "adm": "SP",
+                "basis": "overlap",
+                "share": 1
+              }
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "key_paths_covered": [
+    "[].adm",
+    "[].area_id",
+    "[].bbox",
+    "[].country",
+    "[].generation",
+    "[].kind",
+    "[].name",
+    "[].parents",
+    "[].parents[].adm",
+    "[].parents[].area_id",
+    "[].parents[].kind",
+    "[].parents[].name",
+    "adm",
+    "area",
+    "area.adm",
+    "area.area_id",
+    "area.kind",
+    "area.name",
+    "area_id",
+    "area_m2",
+    "attribution",
+    "attribution[].license",
+    "attribution[].source",
+    "attribution[].statement",
+    "attribution[].text",
+    "attribution[].url",
+    "build",
+    "building",
+    "building.candidates",
+    "building.candidates[].area_m2",
+    "building.candidates[].building_id",
+    "building.candidates[].meters",
+    "building.candidates[].source",
+    "building.confirm_required",
+    "building.crowding_10m",
+    "building_id",
+    "codes",
+    "codes.dc_mdb",
+    "codes.dc_name",
+    "codes.mn_mdb",
+    "codes.mn_name",
+    "codes.mp_code",
+    "codes.pr_code",
+    "codes.pr_mdb",
+    "codes.pr_name",
+    "codes.source",
+    "codes.sp_code",
+    "contract",
+    "count",
+    "countries",
+    "countries[].country",
+    "countries[].default",
+    "countries[].generations",
+    "countries[].generations[].default",
+    "countries[].generations[].generation",
+    "countries[].generations[].layers",
+    "countries[].generations[].loaded_at",
+    "countries[].loaded",
+    "country",
+    "covered",
+    "default",
+    "default_country",
+    "error",
+    "error.code",
+    "error.countries",
+    "error.country",
+    "error.message",
+    "features",
+    "features[].geometry",
+    "features[].geometry.coordinates",
+    "features[].geometry.type",
+    "features[].id",
+    "features[].properties",
+    "features[].properties.adm",
+    "features[].properties.area_id",
+    "features[].properties.generation",
+    "features[].properties.kind",
+    "features[].properties.name",
+    "features[].type",
+    "from",
+    "generation",
+    "generations",
+    "generations[].default",
+    "generations[].generation",
+    "generations[].layers",
+    "generations[].loaded_at",
+    "geoname_id",
+    "guidance",
+    "guidance.building_candidates",
+    "guidance.entrance_picker",
+    "kind",
+    "lat",
+    "layers",
+    "layers.ADM1",
+    "layers.ADM1.area_id",
+    "layers.ADM1.codes",
+    "layers.ADM1.codes.adm",
+    "layers.ADM1.codes.mdb",
+    "layers.ADM1.codes.shape_id",
+    "layers.ADM1.codes.source",
+    "layers.ADM1.country",
+    "layers.ADM1.generation",
+    "layers.ADM1.geoname_id",
+    "layers.ADM1.kind",
+    "layers.ADM1.name",
+    "layers.ADM1.parent_ids",
+    "layers.ADM2",
+    "layers.ADM2.area_id",
+    "layers.ADM2.codes",
+    "layers.ADM2.codes.adm",
+    "layers.ADM2.codes.mdb",
+    "layers.ADM2.codes.shape_id",
+    "layers.ADM2.codes.source",
+    "layers.ADM2.country",
+    "layers.ADM2.generation",
+    "layers.ADM2.geoname_id",
+    "layers.ADM2.kind",
+    "layers.ADM2.name",
+    "layers.ADM2.parent_ids",
+    "layers.ADM3",
+    "layers.ADM3.area_id",
+    "layers.ADM3.codes",
+    "layers.ADM3.codes.adm",
+    "layers.ADM3.codes.mdb",
+    "layers.ADM3.codes.shape_id",
+    "layers.ADM3.codes.source",
+    "layers.ADM3.country",
+    "layers.ADM3.generation",
+    "layers.ADM3.geoname_id",
+    "layers.ADM3.kind",
+    "layers.ADM3.name",
+    "layers.ADM3.parent_ids",
+    "layers.ADM4",
+    "layers.ADM4.area_id",
+    "layers.ADM4.codes",
+    "layers.ADM4.codes.adm",
+    "layers.ADM4.codes.mdb",
+    "layers.ADM4.codes.shape_id",
+    "layers.ADM4.codes.source",
+    "layers.ADM4.country",
+    "layers.ADM4.generation",
+    "layers.ADM4.geoname_id",
+    "layers.ADM4.kind",
+    "layers.ADM4.name",
+    "layers.ADM4.parent_ids",
+    "layers.MP",
+    "layers.MP.area_id",
+    "layers.MP.codes",
+    "layers.MP.codes.dc_mdb",
+    "layers.MP.codes.dc_name",
+    "layers.MP.codes.mn_mdb",
+    "layers.MP.codes.mn_name",
+    "layers.MP.codes.mp_code",
+    "layers.MP.codes.pr_code",
+    "layers.MP.codes.pr_mdb",
+    "layers.MP.codes.pr_name",
+    "layers.MP.codes.source",
+    "layers.MP.country",
+    "layers.MP.generation",
+    "layers.MP.geoname_id",
+    "layers.MP.kind",
+    "layers.MP.name",
+    "layers.MP.parent_ids",
+    "layers.SP",
+    "layers.SP.area_id",
+    "layers.SP.codes",
+    "layers.SP.codes.dc_mdb",
+    "layers.SP.codes.dc_name",
+    "layers.SP.codes.mn_mdb",
+    "layers.SP.codes.mn_name",
+    "layers.SP.codes.mp_code",
+    "layers.SP.codes.pr_code",
+    "layers.SP.codes.pr_mdb",
+    "layers.SP.codes.pr_name",
+    "layers.SP.codes.source",
+    "layers.SP.codes.sp_code",
+    "layers.SP.country",
+    "layers.SP.generation",
+    "layers.SP.geoname_id",
+    "layers.SP.kind",
+    "layers.SP.name",
+    "layers.SP.parent_ids",
+    "layers.buildings",
+    "layers.cell_stats",
+    "layers.cells",
+    "layers.geonames",
+    "layers.neighbours",
+    "layers.streets",
+    "layers[].adm",
+    "layers[].current",
+    "layers[].kind",
+    "layers[].superseded_by",
+    "layers[].superseded_from",
+    "layers[].vintage",
+    "lng",
+    "loaded",
+    "measured",
+    "measures",
+    "measures.buildings_any",
+    "measures.buildings_any.detail",
+    "measures.buildings_any.detail.cells",
+    "measures.buildings_any.detail.cells_with_any",
+    "measures.buildings_any.detail.source",
+    "measures.buildings_any.detail.structures",
+    "measures.buildings_any.value",
+    "measures.crowding_10m",
+    "measures.crowding_10m.detail",
+    "measures.crowding_10m.detail.measured_cells",
+    "measures.crowding_10m.detail.note",
+    "measures.crowding_10m.detail.p50",
+    "measures.crowding_10m.detail.p90",
+    "measures.crowding_10m.value",
+    "measures.osm_entrance_ref",
+    "measures.osm_entrance_ref.detail",
+    "measures.osm_entrance_ref.detail.entrances",
+    "measures.osm_entrance_ref.detail.note",
+    "measures.osm_entrance_ref.detail.with_ref",
+    "measures.osm_entrance_ref.value",
+    "measures.osm_housenumber",
+    "measures.osm_housenumber.detail",
+    "measures.osm_housenumber.detail.buildings",
+    "measures.osm_housenumber.detail.with",
+    "measures.osm_housenumber.value",
+    "measures.osm_levels",
+    "measures.osm_levels.detail",
+    "measures.osm_levels.detail.buildings",
+    "measures.osm_levels.detail.with",
+    "measures.osm_levels.value",
+    "name",
+    "nearby",
+    "nearby[].admin1",
+    "nearby[].capital_of",
+    "nearby[].feature_class",
+    "nearby[].feature_code",
+    "nearby[].geoname_id",
+    "nearby[].lat",
+    "nearby[].lng",
+    "nearby[].meters",
+    "nearby[].name",
+    "ok",
+    "parent_ids",
+    "place",
+    "place.admin1",
+    "place.capital_of",
+    "place.feature_class",
+    "place.feature_code",
+    "place.geoname_id",
+    "place.lat",
+    "place.lng",
+    "place.meters",
+    "place.name",
+    "results",
+    "results[].area_id",
+    "results[].from_name",
+    "results[].to",
+    "results[].to[].adm",
+    "results[].to[].area_id",
+    "results[].to[].basis",
+    "results[].to[].kind",
+    "results[].to[].name",
+    "results[].to[].share",
+    "results[].verdict",
+    "source",
+    "source_ref",
+    "stack",
+    "stack[].adm",
+    "stack[].area_id",
+    "stack[].codes",
+    "stack[].codes.adm",
+    "stack[].codes.dc_mdb",
+    "stack[].codes.dc_name",
+    "stack[].codes.mdb",
+    "stack[].codes.mn_mdb",
+    "stack[].codes.mn_name",
+    "stack[].codes.mp_code",
+    "stack[].codes.pr_code",
+    "stack[].codes.pr_mdb",
+    "stack[].codes.pr_name",
+    "stack[].codes.shape_id",
+    "stack[].codes.source",
+    "stack[].codes.sp_code",
+    "stack[].country",
+    "stack[].generation",
+    "stack[].geoname_id",
+    "stack[].kind",
+    "stack[].name",
+    "stack[].parent_ids",
+    "stats",
+    "stats.area_km2",
+    "stats.building_candidates",
+    "stats.buildings",
+    "stats.centroid",
+    "stats.centroid.lat",
+    "stats.centroid.lng",
+    "stats.crowding_10m",
+    "stats.land_class",
+    "stats.named_road_km",
+    "stats.road_km",
+    "street",
+    "street.highway",
+    "street.meters",
+    "street.name",
+    "street.sp_area_id",
+    "street.street_id",
+    "streets",
+    "streets[].bbox",
+    "streets[].highway",
+    "streets[].length_m",
+    "streets[].name",
+    "streets[].parents",
+    "streets[].parents[].adm",
+    "streets[].parents[].area_id",
+    "streets[].parents[].kind",
+    "streets[].parents[].name",
+    "streets[].street_id",
+    "streets[].subplace",
+    "streets[].subplace.adm",
+    "streets[].subplace.area_id",
+    "streets[].subplace.kind",
+    "streets[].subplace.name",
+    "to",
+    "total",
+    "type",
+    "uncovered",
+    "uncovered_totals",
+    "uncovered_totals.buildings",
+    "uncovered_totals.named_road_km",
+    "uncovered_totals.road_km"
+  ],
+  "_not_covered_note": "Fields no example here exercises are not protected by this file. An optional field only appears when the data warrants it, so coverage is a property of the calls above.",
+  "documented_properties_not_covered": [
+    "effective_from"
+  ],
+  "_not_covered_why": {
+    "effective_from": "No layer in this deployment carries one. `effective_from` appears on a layer that is published and not yet in force, and none is today -- so no call against this pack can produce it. It is listed rather than quietly omitted: a host asserting against this file is not protected on that field."
+  }
+}

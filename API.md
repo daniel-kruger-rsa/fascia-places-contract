@@ -124,6 +124,42 @@ Always persist `area_id` **with** `generation`. An id without a generation is no
 
 ---
 
+## Checking your transport
+
+**If anything between you and this API rebuilds a response rather than forwarding it, read this.**
+A layer that enumerates the fields it passes on drops every field added after it was written, and
+we add fields additively and deliberately. One host's Edge layer dropped three of ours over five
+weeks — `loaded`, then `contract`, then `attribution`. The third meant a rights holder's
+acknowledgement was absent from a member's licence screen for at least three hours while every
+check on either side passed: their source was correct, our response was correct, and the deployed
+thing in between was not. Nothing knew what a complete answer looked like, so nothing could tell.
+
+**So every tag publishes `examples.v1.json`: a complete real response per path, generated from a
+live deployment rather than written by hand.**
+
+```
+https://raw.githubusercontent.com/daniel-kruger-rsa/fascia-places-contract/<tag>/examples.v1.json
+```
+
+| It | Because |
+|---|---|
+| Is an **example**, not a schema | A schema makes you build a validator, and a validator is one more thing that can be wrong in the same silent direction. The assertion here is blunt: every key path in the file survives your transport |
+| Needs **no host key** to fetch | A check that needs a production credential either does not run, or the credential ends up somewhere it should not be. Both end with the check not running |
+| **Carries the contract version** in `contract` | Drift between the tag you pinned and the version we serve becomes a signal rather than something noticed later |
+| Lists **`key_paths_covered`** | Every key path across every example, flattened, so the assertion can be a set comparison instead of a tree walk |
+| Says what it **does not** cover | An optional field only appears when the data warrants it, so coverage is a property of the calls in the file. A field no example exercises is one this cannot protect, and that is stated rather than left to be discovered |
+
+**Point it at your deployed component, not your source.** This is the whole of the incident above:
+source was correct for three days while the thing serving members was not, and every check either
+side had looked at source. The shape that would have caught all three fields is — fetch the
+example, send the same call through your own deployed proxy, assert recursively that no key was
+lost. That makes it a deployment gate rather than a build gate, which is a different thing and the
+one that matters.
+
+**And if the file cannot be fetched, report that you could not check — never pass.** A check whose
+silence cannot be told from its absence is not a check, and that applies to this instrument as much
+as to anything it measures.
+
 ## Public
 
 ### `GET /health`
@@ -458,7 +494,7 @@ GET /v1/places/crosswalk?country=ZA&from=mdb-zaf-2020&to=stats-sa-2022&area_id=<
 { "country": "ZA", "from": "mdb-zaf-2020", "to": "stats-sa-2022",
   "results": [
     { "area_id": "…", "verdict": "same", "from_name": "Rietpoort SP",
-      "to": [ { "area_id": "…", "name": "Rietpoort SP", "kind": "subplace", "adm": "SP", "share": 0.997 } ] },
+      "to": [ { "area_id": "…", "name": "Rietpoort SP", "kind": "subplace", "adm": "SP", "basis": "overlap", "share": 0.997 } ] },
     { "area_id": "…", "verdict": "split",
       "to": [ { "area_id": "…", "name": "Ennerdale Ext 14", "share": 0.41, "…": "…" },
               { "area_id": "…", "name": "Ennerdale Ext 12", "share": 0.33, "…": "…" },
@@ -479,6 +515,16 @@ So: `split` and `unresolved` need a person because the geometry demands it. `sam
 
 **Branch on `verdict`.** Not on the shares — the thresholds are ours to tune and yours to ignore.
 
+**And read `basis` before you read a number.** It says *how* a successor was found, and only the field that basis measured is present:
+
+| `basis` | Carries | Means |
+|---|---|---|
+| `overlap` | `share` | The polygons intersect, and `share` is how much of the old cell this one holds |
+| `feature` | neither | The same underlying source feature on both sides — its own evidence, so nothing was computed |
+| `proximity` | `meters` | No overlap and no shared feature: the nearest candidate to the old cell's point. **A locality has no polygon, so this is the only basis available to it** |
+
+`verdict` says what to do; `basis` says on what evidence. A cell measured to overlap its successor and a cell that was merely the nearest thing to the old one can both come back `moved`, and those deserve different confidence. `share` is **absent** rather than `0` on the other two bases, because a zero would read as a measured absence of overlap.
+
 | `verdict` | Means | What to do |
 | --- | --- | --- |
 | `same` | One successor holding ≥ 98% of the old cell | Re-point the stored id. No human needed |
@@ -491,7 +537,7 @@ Up to **200** `area_id`s per call; re-link in batches. Results come back in the 
 
 **A generation pair with no crosswalk computed answers `404 crosswalk_not_loaded`,** naming the pair. That is not a claim that the cells are unchanged — it means the mapping does not exist yet. A crosswalk is built per layer pair and takes minutes of compute, so it exists for the pairs someone has needed. A misspelled generation lands here too, and the refusal names the pair so you can see it.
 
-**Neither generation has to still be loaded.** A crosswalk outlives the generations it maps between, and that is the point: once we drop the old generation, a host still holding its ids needs this answer more than it did before. A successor's `name` and `kind` are omitted if the target generation is gone; `area_id` and `share` are always there.
+**Neither generation has to still be loaded.** A crosswalk outlives the generations it maps between, and that is the point: once we drop the old generation, a host still holding its ids needs this answer more than it did before. A successor's `name` and `kind` are omitted if the target generation is gone; `area_id` and `basis` are always there.
 
 **Names change too, and the crosswalk does not carry them.** 35% of 2011 sub-places have a differently-spelled or differently-named 2022 successor. If you stored a name string rather than reading it from us, re-read it.
 

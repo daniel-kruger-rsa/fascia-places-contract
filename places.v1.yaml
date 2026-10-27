@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: Fascia Places
-  version: 0.27.0
+  version: 0.28.0
   description: |
     Host-facing geography rail for platforms that organise people by place.
 
@@ -610,7 +610,13 @@ paths:
         maps between, which is the point of it: once the old generation is dropped, a host
         still holding its ids needs this answer more than it did before. A successor's `name`
         and `kind` are omitted when the target generation is no longer loaded; its `area_id`
-        and `share` are always there.
+        and `basis` are always there.
+
+        **`basis` says how a successor was found, and only the field that basis measured is
+        present.** `overlap` carries `share`, `proximity` carries `meters`, `feature` carries
+        neither. A host branching on `verdict` alone cannot tell a cell measured to overlap its
+        successor from one that was merely the nearest thing to it, and those warrant different
+        confidence.
       parameters:
         - $ref: "#/components/parameters/country"
         - name: from
@@ -667,7 +673,8 @@ paths:
                         to:
                           type: array
                           description: |
-                            Successors, largest share first. Empty for `unknown`, and for an
+                            Successors, best first: largest `share` where one was measured,
+                            then nearest `meters`. Empty for `unknown`, and for an
                             `unresolved` cell that has no successor above the threshold at all.
                             An `unresolved` cell with partial overlaps still lists them: the
                             verdict says do not re-point automatically, not that nothing is known.
@@ -678,10 +685,32 @@ paths:
                               name: { type: string, example: Ennerdale Ext 14 }
                               kind: { type: string, example: subplace }
                               adm: { type: string, example: SP }
+                              basis:
+                                type: string
+                                enum: [overlap, feature, proximity]
+                                example: overlap
+                                description: |
+                                  HOW this successor was found, and it decides which of the two
+                                  fields below is present. `overlap` carries `share` and no
+                                  `meters`; `proximity` carries `meters` and no `share`;
+                                  `feature` carries neither, because the same source feature on
+                                  both sides is its own evidence. Branch on this before reading
+                                  either number.
                               share:
                                 type: number
                                 example: 0.41
-                                description: Fraction of the OLD cell's area that this successor holds
+                                description: |
+                                  Fraction of the OLD cell's area that this successor holds.
+                                  Present only when `basis` is `overlap`, because it is what an
+                                  overlap measured. Absent, not zero, otherwise: a zero would
+                                  read as a measured absence of overlap.
+                              meters:
+                                type: number
+                                example: 413
+                                description: |
+                                  Distance from the old cell's point to this successor, in whole
+                                  meters. Present only when `basis` is `proximity`. Spelt
+                                  `meters`, as on a GeoNames hit.
         "400": { $ref: "#/components/responses/BadRequest" }
         "401": { $ref: "#/components/responses/Unauthorized" }
         "404":
