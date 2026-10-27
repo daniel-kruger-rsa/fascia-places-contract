@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: Fascia Places
-  version: 0.26.0
+  version: 0.27.0
   description: |
     Host-facing geography rail for platforms that organise people by place.
 
@@ -12,7 +12,7 @@ info:
 
     Pack generation mdb-zaf-2020 (MDB ADM1–4 + Stats SA MP/SP + GeoNames P).
     Harvest cells are subplaces. GeoNames are labels/search only.
-    Levels are compared with `adm` (ADM1..ADM4, MP, SP), never with `kind`. A `kind` is the
+    Levels are compared with `adm` (ADM1..ADM4, MP, SP, LOC), never with `kind`. A `kind` is the
     word a source uses for a level, and it differs by country: South Africa's ADM3 is a
     municipality, India's is a subdistrict. A `kind=` parameter accepts either, and an adm
     code resolves to whichever word that country's pack uses.
@@ -281,7 +281,7 @@ paths:
         - $ref: "#/components/parameters/generation"
       responses:
         "200":
-          description: ADM1–4, MP, SP, GN, ST, each with its vintage where the pack records one
+          description: ADM1–4, MP, SP, LOC, GN, ST, each with its vintage where the pack records one
           content:
             application/json:
               schema:
@@ -355,7 +355,7 @@ paths:
         - in: query
           name: kind
           schema: { type: string }
-          description: Filter to one layer (ADM1|ADM2|ADM3|ADM4|MP|SP or kind name). Omit for full stack.
+          description: Filter to one layer (ADM1|ADM2|ADM3|ADM4|MP|SP or kind name). Omit for full stack. LOC never answers here, because a locality holds no polygon and so no coordinate is inside one.
         - in: query
           name: include
           schema: { type: string, example: building }
@@ -402,7 +402,7 @@ paths:
   /v1/places/areas/search:
     get:
       tags: [resolve]
-      summary: Search polygon layers (ADM1–4, MP, SP) by name
+      summary: Search polygon layers (ADM1–4, MP, SP) and unofficial cells (LOC) by name
       description: |
         Case-insensitive match on the area name; the query is matched literally.
         Order: exact name, then prefix, then contains; larger layers first; shorter names first.
@@ -415,7 +415,7 @@ paths:
         - in: query
           name: kind
           schema: { type: string }
-          description: One layer or a comma-separated list (ADM1|ADM2|ADM3|ADM4|MP|SP or kind names). Default all six. GN is not an area layer; use /v1/places/search.
+          description: One layer or a comma-separated list (ADM1|ADM2|ADM3|ADM4|MP|SP|LOC or kind names). Default all seven. A layer the pack does not hold answers 200 with an empty array, not 400. GN is not an area layer; use /v1/places/search.
         - in: query
           name: within
           schema: { type: string, format: uuid }
@@ -888,7 +888,7 @@ components:
         name: { type: string }
         kind:
           type: string
-          enum: [province, district, municipality, subdistrict, ward, mainplace, subplace]
+          enum: [province, district, municipality, subdistrict, ward, mainplace, subplace, locality]
           description: |
             The word the source itself uses, which differs by country at the same level:
             South Africa's ADM3 is a `municipality`, India's is a `subdistrict` (a taluk,
@@ -934,7 +934,7 @@ components:
         name: { type: string }
         kind:
           type: string
-          enum: [province, district, municipality, ward, mainplace, subplace]
+          enum: [province, district, municipality, subdistrict, ward, mainplace, subplace, locality]
         adm: { type: string, example: SP }
         country: { type: string, example: ZA }
         generation: { type: string }

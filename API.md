@@ -112,7 +112,9 @@ Polygons (harvest cells and admin stack) and named points (labels/search only).
 | MP | `mainplace` | — | Stats SA Census 2011 | Place |
 | SP | `subplace` | `subplace` (a village) | Stats SA Census 2011 · SOI ABDB | **Harvest cell** |
 | GN | `geoname` | — | GeoNames (feature class P) | Label / search — **not** a harvest cell. Hits carry `capital_of`: `national`, `province`, `district`, `municipality` or `null` |
+| LOC | — | `locality` *(not built)* | OpenStreetMap (ODbL) | **Unofficial cell** — named by OSM, by no government. No polygon, so containment never reaches one and it never answers `/point`; reached by name. **No pack holds a locality yet**, so `kind=LOC` answers `200` with an empty array rather than `400` — a fallback onto it can be written and tested before the tier exists |
 | ST | `street` | — | OpenStreetMap (ODbL) | Label / search — **not** a harvest cell. One row per street per SP |
+
 
 `kind` query params accept either the code (`SP`) or the name (`subplace`). **An `adm` code resolves to whichever word that country's pack uses**, so `kind=ADM3` finds municipalities in South Africa and sub-districts in India without the caller knowing which. A literal word that the country does not use returns nothing rather than an error, the same as a bbox over the sea.
 
@@ -343,17 +345,19 @@ GeoNames name search (labels, not harvest cells). Host then calls `/point` on th
 
 ## `GET /v1/places/areas/search`
 
-Name search over the polygon layers: ADM1–4, MP and SP. Use it when the member or mapping team knows the area's name ("Parktown", "City of Tshwane", "Ga-Rankuwa Unit 16"); use `/search` for GeoNames labels.
+Name search over the polygon layers — ADM1–4, MP and SP — and over unofficial cells at LOC, which have no polygon. Use it when the member or mapping team knows the area's name ("Parktown", "City of Tshwane", "Ga-Rankuwa Unit 16"); use `/search` for GeoNames labels.
+
+For a city whose official cells carry no name a member would use, this is the **only** route to a cell: LOC holds no geometry, so `/point` cannot reach it. Greater Mumbai's official cells are `F/South - Ward No. 203` and the like.
 
 | Query | Required | Notes |
 |---|---|---|
 | `q` | yes, min 2 chars | Case-insensitive; matched literally (`%` and `_` are not wildcards) |
-| `kind` | no | One layer or a comma-separated list, codes or names (`SP`, `ADM3,MP`, `subplace`). Default: all six. `GN` is `400` — use `/search` |
+| `kind` | no | One layer or a comma-separated list, codes or names (`SP`, `ADM3,MP`, `subplace`, `LOC`). Default: all seven. A layer this pack does not hold answers `200` with `[]`, not `400`, so you may widen onto `LOC` before any locality exists. `GN` is `400` — use `/search` |
 | `within` | no | An `area_id` of any layer. Resolved by **geometry** where the target has a polygon (point-on-surface inside it), and by **ancestry** where it does not — for a pack built from one hierarchy, ancestry is containment rather than an approximation. Unknown id still gives `[]`; a target with neither geometry nor anything claiming it as a parent is refused, see below |
 | `limit` | no | Default 20, max 50 |
 | `country` | no | Default `ZA` |
 
-Order: exact name, then prefix, then contains; within each, larger layers first (ADM1 … SP), then shorter names.
+Order: exact name, then prefix, then contains; within each, larger layers first (ADM1 … SP … LOC), then shorter names.
 
 Response (values illustrative):
 
