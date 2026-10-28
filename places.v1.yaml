@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: Fascia Places
-  version: 0.28.0
+  version: 0.29.0
   description: |
     Host-facing geography rail for platforms that organise people by place.
 
@@ -972,12 +972,41 @@ components:
           description: Parent chain, large → small (e.g. ADM1, ADM2, ADM3, MP for a subplace). Empty for provinces.
           items:
             $ref: "#/components/schemas/AreaRef"
+        codes:
+          type: object
+          additionalProperties: true
+          description: |
+            The source's own identifiers for this cell, as
+            `GET /v1/places/area/{area_id}` has always returned them — a Stats SA `sp_code`, an
+            MDB `ward_no`, an LGD `vill_lgd`, an OSM `osm_type` and `osm_id`. Keys vary by
+            country and layer, so treat it as an open map and read only what you need.
+
+            **New in 0.29.0.** A `locality` carries its `osm_type` and `osm_id` here, which are
+            its identity — the name is explicitly not — and `same_name_as_parent: true` where its
+            name matches its official parent's. This endpoint is the only way to reach a
+            locality, because `LOC` never answers `/point`, so a mark absent here cannot be read
+            at all. Always present; `{}` for a cell whose source supplies no codes.
         bbox:
           type: array
-          description: "[west, south, east, north], WGS84"
+          description: |
+            `[west, south, east, north]`, WGS84. Present only for a cell with a real extent.
+            **Omitted entirely for a cell with no geometry** (since `0.18.0`) **and for a cell
+            whose geometry is a point** (since `0.29.0`) — a point's extent is zero, and
+            `[x, y, x, y]` is a degenerate box a pipeline is right to reject. A `locality` is
+            always a point, so a `LOC` hit never carries this and always carries `lng`/`lat`.
           minItems: 4
           maxItems: 4
           items: { type: number }
+        lng:
+          type: number
+          example: 73.898845
+          description: |
+            Present instead of `bbox` for a cell whose geometry is a point — today that means
+            every `locality`. Same shape a GeoNames hit has always had. **New in 0.29.0.**
+        lat:
+          type: number
+          example: 17.108466
+          description: See `lng`. **New in 0.29.0.**
 
     Attribution:
       type: object
@@ -1011,6 +1040,21 @@ components:
             $ref: "#/components/schemas/AreaRef"
         bbox:
           type: array
+          description: |
+            `[west, south, east, north]`, WGS84. Always present: a street always has geometry.
+
+            **A street's box may be degenerate in one axis, and that is not a defect.** A street
+            drawn exactly north–south has `west == east`; one drawn exactly east–west has
+            `south == north`. Both are the street's true extent, so do not reject the hit and do
+            not widen the box. This is said because the rule for an *area* is the opposite — an
+            area with no extent omits `bbox` and answers `lng`/`lat` instead (`0.29.0`) — and a
+            pipeline that learned the area rule and applied it here would drop real streets. The
+            difference is that a point has no extent in either axis while a line has one in at
+            least one, so a street is never reduced to a coordinate pair.
+
+            Stated as a property of the geometry, not as a count: how many streets in a given
+            pack are axis-aligned has not been measured, and a host must not assume the answer
+            is zero because its own sample found none.
           minItems: 4
           maxItems: 4
           items: { type: number }

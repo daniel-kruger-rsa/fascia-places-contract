@@ -1,6 +1,6 @@
 {
   "_read_me": "A complete real response per path, generated from a live deployment rather than written by hand. Assert that every key path here survives your transport, recursively. If this file cannot be fetched, report that you could not check -- never pass.",
-  "contract": "0.28.0",
+  "contract": "0.29.0",
   "generated_from": "https://places.fascia.network",
   "examples": {
     "generation": {
@@ -10,11 +10,13 @@
         "needs_host_key": false
       },
       "why": "The attribution a licence screen reads. The field that was dropped. No host key.",
+      "generated_from": "https://places.fascia.network",
+      "generated_from_public": true,
       "response": {
         "country": "ZA",
         "generation": "stats-sa-2022",
         "loaded": true,
-        "contract": "0.28.0",
+        "contract": "0.29.0",
         "attribution": [
           {
             "url": "https://www.statssa.gov.za/",
@@ -33,6 +35,8 @@
         "needs_host_key": false
       },
       "why": "Every generation a country serves, and which is default.",
+      "generated_from": "https://places.fascia.network",
+      "generated_from_public": true,
       "response": {
         "default_country": "ZA",
         "default": "stats-sa-2022",
@@ -112,6 +116,8 @@
         "needs_host_key": false
       },
       "why": "Vintages and supersession per layer, including a LOC row with none.",
+      "generated_from": "https://places.fascia.network",
+      "generated_from_public": true,
       "response": {
         "country": "ZA",
         "generation": "stats-sa-2022",
@@ -180,6 +186,8 @@
         "needs_host_key": false
       },
       "why": "The capability probe. `measured` is the field a gate reads.",
+      "generated_from": "https://places.fascia.network",
+      "generated_from_public": true,
       "response": {
         "country": "ZA",
         "generation": "stats-sa-2022",
@@ -247,9 +255,11 @@
         "needs_host_key": false
       },
       "why": "Build fingerprint. A host comparing builds reads this.",
+      "generated_from": "https://places.fascia.network",
+      "generated_from_public": true,
       "response": {
         "ok": true,
-        "build": "4d80cd6cbbd1"
+        "build": "2ed04c219831"
       }
     },
     "point": {
@@ -259,6 +269,8 @@
         "needs_host_key": true
       },
       "why": "A coordinate inside Igoda: every official tier present, which is what makes it the example worth asserting against. Chosen because it resolves six tiers, not five.",
+      "generated_from": "https://places.fascia.network",
+      "generated_from_public": true,
       "response": {
         "area_id": "ca146e27-8221-608f-5f5d-48f192c00339",
         "geoname_id": null,
@@ -614,6 +626,8 @@
         "needs_host_key": true
       },
       "why": "Faerie Glen with `include=building`, so `building_id`, `area_m2` and `source_ref` are exercised. Replaced a second plain /point call that was added to cover `street` and covered nothing: the Igoda probe already carries a street, which the coverage report showed and the comment claiming otherwise did not.",
+      "generated_from": "https://places.fascia.network",
+      "generated_from_public": true,
       "response": {
         "area_id": "84c51cdd-ec6d-b48a-d732-60eaec61a175",
         "geoname_id": null,
@@ -987,6 +1001,8 @@
         "needs_host_key": true
       },
       "why": "A FeatureCollection: `type`, `features` and the per-feature shape a map layer reads.",
+      "generated_from": "https://places.fascia.network",
+      "generated_from_public": true,
       "response": {
         "type": "FeatureCollection",
         "generation": "stats-sa-2022",
@@ -1512,6 +1528,8 @@
         "needs_host_key": true
       },
       "why": "One structure in full, which is where `source_ref` lives -- a point candidate does not carry it. The id comes from the building probe rather than being pinned.",
+      "generated_from": "https://places.fascia.network",
+      "generated_from_public": true,
       "response": {
         "building_id": "c086dd8e-6f84-65bc-afa0-4b88c280aa67",
         "generation": "stats-sa-2022",
@@ -1544,6 +1562,8 @@
         "needs_host_key": true
       },
       "why": "The gating numbers: `covered`, `uncovered` and `uncovered_totals`. A proxy that allowlists paths and drops these leaves a host's gate reading a confident zero.",
+      "generated_from": "https://places.fascia.network",
+      "generated_from_public": true,
       "response": {
         "generation": "stats-sa-2022",
         "kind": "subplace",
@@ -1584,6 +1604,8 @@
         "needs_host_key": true
       },
       "why": "Street hits with `length_m`, and the ODbL credit that must ride with them.",
+      "generated_from": "https://places.fascia.network",
+      "generated_from_public": true,
       "response": {
         "generation": "stats-sa-2022",
         "attribution": [
@@ -1738,6 +1760,8 @@
         "needs_host_key": false
       },
       "why": "A refusal is forwarded too, and `code` is what a host branches on. One host's own layer answers the same code for two opposite conditions, so a transport that drops `code` leaves a host unable to tell what went wrong.",
+      "generated_from": "https://places.fascia.network",
+      "generated_from_public": true,
       "response": {
         "error": {
           "code": "no_pack_for_country",
@@ -1757,6 +1781,8 @@
         "needs_host_key": true
       },
       "why": "Hits with `bbox`, parents and codes. The shape a mapper consumes.",
+      "generated_from": "https://places.fascia.network",
+      "generated_from_public": true,
       "response": [
         {
           "area_id": "8ca66f8c-ef38-c53e-ba09-e77f874ac490",
@@ -1791,6 +1817,18 @@
               "kind": "mainplace"
             }
           ],
+          "codes": {
+            "dc_mdb": "TSH",
+            "mn_mdb": "TSH",
+            "pr_mdb": "GP",
+            "source": "stats-sa-census-2022",
+            "dc_name": "City of Tshwane",
+            "mn_name": "City of Tshwane",
+            "mp_code": "7992032",
+            "pr_code": "7",
+            "pr_name": "Gauteng",
+            "sp_code": "799200533"
+          },
           "bbox": [
             28.239027,
             -25.358131,
@@ -1831,6 +1869,18 @@
               "kind": "mainplace"
             }
           ],
+          "codes": {
+            "dc_mdb": "JHB",
+            "mn_mdb": "JHB",
+            "pr_mdb": "GP",
+            "source": "stats-sa-census-2022",
+            "dc_name": "City of Johannesburg",
+            "mn_name": "City of Johannesburg",
+            "mp_code": "7982007",
+            "pr_code": "7",
+            "pr_name": "Gauteng",
+            "sp_code": "798200831"
+          },
           "bbox": [
             28.017381,
             -26.187236,
@@ -1871,6 +1921,18 @@
               "kind": "mainplace"
             }
           ],
+          "codes": {
+            "dc_mdb": "JHB",
+            "mn_mdb": "JHB",
+            "pr_mdb": "GP",
+            "source": "stats-sa-census-2022",
+            "dc_name": "City of Johannesburg",
+            "mn_name": "City of Johannesburg",
+            "mp_code": "7982007",
+            "pr_code": "7",
+            "pr_name": "Gauteng",
+            "sp_code": "798200875"
+          },
           "bbox": [
             28.021794,
             -26.149214,
@@ -1887,6 +1949,8 @@
         "needs_host_key": true
       },
       "why": "One cell in full, with its stats object. The id comes from the search above rather than being pinned, so this example cannot rot when a generation changes.",
+      "generated_from": "https://places.fascia.network",
+      "generated_from_public": true,
       "response": {
         "area_id": "8ca66f8c-ef38-c53e-ba09-e77f874ac490",
         "geoname_id": null,
@@ -1945,6 +2009,61 @@
         ]
       }
     },
+    "locality_search_in": {
+      "request": {
+        "method": "GET",
+        "path": "/v1/places/areas/search?q=Sonavade&country=IN&kind=LOC&limit=1",
+        "needs_host_key": true
+      },
+      "why": "A locality hit, from the dev deployment because India is not in production. The only example covering three things a host cannot otherwise assert against: `codes.same_name_as_parent`, which 18,672 India localities carry and a host's gate reads; and `lng`/`lat` with `bbox` ABSENT, which is what a point-shaped cell returns -- a transport that substitutes a zero-extent box for the missing bbox would pass every other example here.",
+      "generated_from": "http://127.0.0.1:8099",
+      "generated_from_public": false,
+      "response": [
+        {
+          "area_id": "aca8fe31-0e1e-51d0-b7f0-096e26ea07b3",
+          "name": "Sonavade",
+          "kind": "locality",
+          "adm": "LOC",
+          "country": "IN",
+          "generation": "in-abdb-2025",
+          "parents": [
+            {
+              "adm": "ADM1",
+              "area_id": "a753332a-17f4-3f65-3afe-2a2dc3bd35b9",
+              "name": "MAHARASHTRA",
+              "kind": "province"
+            },
+            {
+              "adm": "ADM2",
+              "area_id": "78bcc34e-f0e7-0217-40ca-dccf22827ff1",
+              "name": "KOLHĀPUR",
+              "kind": "district"
+            },
+            {
+              "adm": "ADM3",
+              "area_id": "fd5800a6-6768-964d-34cb-02fbc20eb5da",
+              "name": "HATKANANGLE",
+              "kind": "subdistrict"
+            },
+            {
+              "adm": "SP",
+              "area_id": "6d6964ee-5e04-117c-b443-0ee6ed725c50",
+              "name": "Sonavade",
+              "kind": "subplace"
+            }
+          ],
+          "codes": {
+            "place": "village",
+            "osm_id": "1460184994",
+            "vintage": "2026-01-01",
+            "osm_type": "way",
+            "same_name_as_parent": true
+          },
+          "lng": 73.898845,
+          "lat": 17.108466
+        }
+      ]
+    },
     "crosswalk": {
       "request": {
         "method": "GET",
@@ -1952,6 +2071,8 @@
         "needs_host_key": true
       },
       "why": "What became of a cell, with `basis` on every successor. New in 0.28.0.",
+      "generated_from": "https://places.fascia.network",
+      "generated_from_public": true,
       "response": {
         "country": "ZA",
         "from": "mdb-zaf-2020",
@@ -1976,13 +2097,39 @@
       }
     }
   },
+  "generated_elsewhere": [
+    {
+      "example": "locality_search_in",
+      "generated_from": "http://127.0.0.1:8099",
+      "generation": "in-abdb-2025"
+    }
+  ],
+  "_generated_elsewhere_why": "These examples come from a non-production deployment, because the field they exercise exists only where a pack exists and that pack is not in production. Both deployments serve contract 0.29.0, asserted at generation time. The response shape is the shape production returns for the same path; the DATA in these examples is not fetchable from https://places.fascia.network, so assert their key paths and not their values. Every example carries `generated_from_public`: branch on that boolean rather than on the URL, which for a non-public deployment is a loopback address that means nothing from where you are reading it. Do not send these paths through your transport and expect a match.",
   "key_paths_covered": [
     "[].adm",
     "[].area_id",
     "[].bbox",
+    "[].codes",
+    "[].codes.dc_mdb",
+    "[].codes.dc_name",
+    "[].codes.mn_mdb",
+    "[].codes.mn_name",
+    "[].codes.mp_code",
+    "[].codes.osm_id",
+    "[].codes.osm_type",
+    "[].codes.place",
+    "[].codes.pr_code",
+    "[].codes.pr_mdb",
+    "[].codes.pr_name",
+    "[].codes.same_name_as_parent",
+    "[].codes.source",
+    "[].codes.sp_code",
+    "[].codes.vintage",
     "[].country",
     "[].generation",
     "[].kind",
+    "[].lat",
+    "[].lng",
     "[].name",
     "[].parents",
     "[].parents[].adm",
