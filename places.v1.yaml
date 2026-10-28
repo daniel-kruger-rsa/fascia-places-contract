@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: Fascia Places
-  version: 0.29.0
+  version: 0.30.0
   description: |
     Host-facing geography rail for platforms that organise people by place.
 
@@ -596,7 +596,7 @@ paths:
         | `same` | One successor holding 98% or more of the old cell | Re-point the id |
         | `moved` | One successor, 50-98% | Re-point it; the boundary moved materially |
         | `split` | Two or more successors | Ask a person. Which one a member belongs to is not a geometry question |
-        | `unresolved` | No successor holds half the old cell | Do not guess. Keep the old id, or send someone to look |
+        | `unresolved` | No successor holds half the old cell | Do not guess. Keep the old id, or send someone to look -- and read `rejected`, which says what was considered and refused |
         | `unknown` | This generation does not hold that `area_id` | Your id is wrong, not your cell |
 
         `unknown` is deliberately not `unresolved`: an id from the wrong country, the wrong
@@ -617,6 +617,13 @@ paths:
         neither. A host branching on `verdict` alone cannot tell a cell measured to overlap its
         successor from one that was merely the nearest thing to it, and those warrant different
         confidence.
+
+        **An `unresolved` can now say what it refused.** `rejected` lists the candidates the
+        crosswalk considered and declined, nearest first, each with a distance and a reason. It
+        is a **separate array from `to`** so that a refusal can never be picked up by the loop a
+        client already writes over successors -- "do not guess" enforced by the shape rather than
+        by this paragraph. It appears where candidates were refused and is omitted where none
+        were, which on every crosswalk computed before 28 October 2026 is all of them.
       parameters:
         - $ref: "#/components/parameters/country"
         - name: from
@@ -711,6 +718,73 @@ paths:
                                   Distance from the old cell's point to this successor, in whole
                                   meters. Present only when `basis` is `proximity`. Spelt
                                   `meters`, as on a GeoNames hit.
+                        rejected:
+                          type: array
+                          description: |
+                            Candidates this cell's crosswalk **considered and refused**, nearest
+                            first, each with why. Present only where some were refused -- omitted,
+                            never `[]`, because an empty array would say we looked and found
+                            nothing, and on a polygon crosswalk nothing looks.
+
+                            **Nothing here is a successor.** It is a separate array from `to`
+                            precisely so that the loop you already write over `to` can never pick
+                            one up. Do not re-point a member onto one of these on the strength of
+                            a short distance: the verdict is `unresolved`, and these are the
+                            reasons it is.
+
+                            **What it is for.** A bare `unresolved` invites whoever implements
+                            the screen next to go and fetch candidates themselves, unbounded --
+                            which is exactly what the measurement rules out: the distance a
+                            disappeared place feature sits from the nearest surviving one has a
+                            median that swings **27x** between consecutive years, so a radius
+                            fitted anywhere but the one place it was measured is wrong. The
+                            refusals travel with the answer so nobody re-derives them. Asked for
+                            by a host on 28 October 2026, in those terms.
+
+                            It is also what makes an `unresolved` something a screen can render
+                            and a person can decide, rather than a null that renders as nothing.
+                          items:
+                            type: object
+                            properties:
+                              area_id: { type: string, format: uuid }
+                              name: { type: string, example: Sonavade }
+                              meters:
+                                type: number
+                                example: 1841
+                                description: |
+                                  Distance from the old cell's point to this candidate, in whole
+                                  meters. Always present -- a refusal with no distance on it is
+                                  the thing this array exists to replace.
+                              reason:
+                                type: string
+                                enum: [ambiguous, outside_radius, outside_parent, no_radius, no_parent, parent_unresolved]
+                                example: outside_radius
+                                description: |
+                                  Why this candidate was refused. Not interchangeable -- a thing
+                                  400 m away in the wrong parent and a thing 1.8 km away in the
+                                  right one are different problems for whoever looks:
+
+                                  | | |
+                                  | --- | --- |
+                                  | `ambiguous` | Inside the parent's successor and within the radius, but another candidate was nearly as close, so which one succeeded the cell is not decidable from distance |
+                                  | `outside_radius` | Inside the parent's successor, farther than the radius |
+                                  | `outside_parent` | Within the radius, not inside the parent's successor |
+                                  | `no_radius` | The old cell's parent has no measured movement distribution, so no radius was applied at all |
+                                  | `no_parent` | The old cell had no official parent, so no candidate set could be formed |
+                                  | `parent_unresolved` | The parent itself has no successor |
+
+                                  `no_radius`, `no_parent` and `ambiguous` are the **common**
+                                  answers, not edges. Of 39,699 localities in the first
+                                  Maharashtra pack, 6,622 have no official parent at all and
+                                  only **282** have a parent whose class has a measured radius —
+                                  and within those 282 there are on average **8.8** other
+                                  localities inside the same parent and within 1 km, because the
+                                  parent there *is* the city. So the nearest candidate is usually
+                                  not identifiably the successor, and **243 of the 282** are
+                                  `ambiguous` rather than matched. A locality crosswalk refuses
+                                  far more often than it matches by proximity, deliberately: a
+                                  `moved` verdict is issued only where the nearest candidate is
+                                  at least three times closer than the next one.
         "400": { $ref: "#/components/responses/BadRequest" }
         "401": { $ref: "#/components/responses/Unauthorized" }
         "404":

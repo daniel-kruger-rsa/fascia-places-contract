@@ -3,14 +3,14 @@
 The OpenAPI 3.0 document for the Fascia Places v1 API, published so that a host can read
 it, vendor a copy, and diff against it when it changes, with the prose reference beside it.
 
-- **[places.v1.yaml](places.v1.yaml)** — the contract. Current version: **0.29.0**.
+- **[places.v1.yaml](places.v1.yaml)** — the contract. Current version: **0.30.0**.
 - **[API.md](API.md)** — the API documentation: what each endpoint is for, worked responses, and
   the rules a host must follow (persist `area_id` with `generation`, switch on `error.code`,
   show attribution). Where it and the contract disagree, the contract wins.
 - **[Browse the contract](https://daniel-kruger-rsa.github.io/fascia-places-contract/)** — the same
   file rendered as a page (Redoc), always the version on `main`.
-- Every published version is tagged (`v0.29.0`), so a vendored copy can pin one:
-  `https://raw.githubusercontent.com/daniel-kruger-rsa/fascia-places-contract/v0.29.0/places.v1.yaml`
+- Every published version is tagged (`v0.30.0`), so a vendored copy can pin one:
+  `https://raw.githubusercontent.com/daniel-kruger-rsa/fascia-places-contract/v0.30.0/places.v1.yaml`
 
 **Host**, used throughout: a platform that builds Places into its own product. Its members use
 the host's app, and the host's backend calls this API on their behalf. The host owns its members,

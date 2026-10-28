@@ -1,6 +1,6 @@
 {
   "_read_me": "A complete real response per path, generated from a live deployment rather than written by hand. Assert that every key path here survives your transport, recursively. If this file cannot be fetched, report that you could not check -- never pass.",
-  "contract": "0.29.0",
+  "contract": "0.30.0",
   "generated_from": "https://places.fascia.network",
   "examples": {
     "generation": {
@@ -16,7 +16,7 @@
         "country": "ZA",
         "generation": "stats-sa-2022",
         "loaded": true,
-        "contract": "0.29.0",
+        "contract": "0.30.0",
         "attribution": [
           {
             "url": "https://www.statssa.gov.za/",
@@ -26,7 +26,11 @@
             "statement": "Fascia uses the official Statistics South Africa (\"Stats SA\") 2022 placename geographic framework as the underlying spatial reference layer, acknowledges Stats SA as the source and rights holder of that placename framework, and confirms that the placename boundaries are not supplied, sold, or charged for as a standalone product but are made available only in accordance with Stats SA's applicable copyright and licensing terms; any fees charged by Fascia relate solely to Fascia's proprietary data, analysis, outputs, or other value-added commercial content created by Fascia and spatially linked to the placename boundary framework."
           }
         ]
-      }
+      },
+      "key_paths_unique_to_this_example": [
+        "contract",
+        "loaded"
+      ]
     },
     "generations": {
       "request": {
@@ -107,7 +111,25 @@
             ]
           }
         ]
-      }
+      },
+      "key_paths_unique_to_this_example": [
+        "countries",
+        "countries[].country",
+        "countries[].default",
+        "countries[].generations",
+        "countries[].generations[].default",
+        "countries[].generations[].generation",
+        "countries[].generations[].layers",
+        "countries[].generations[].loaded_at",
+        "countries[].loaded",
+        "default",
+        "default_country",
+        "generations",
+        "generations[].default",
+        "generations[].generation",
+        "generations[].layers",
+        "generations[].loaded_at"
+      ]
     },
     "layers": {
       "request": {
@@ -177,7 +199,15 @@
             "kind": "street"
           }
         ]
-      }
+      },
+      "key_paths_unique_to_this_example": [
+        "layers[].adm",
+        "layers[].current",
+        "layers[].kind",
+        "layers[].superseded_by",
+        "layers[].superseded_from",
+        "layers[].vintage"
+      ]
     },
     "coverage": {
       "request": {
@@ -246,7 +276,50 @@
           "building_candidates": 2,
           "entrance_picker": false
         }
-      }
+      },
+      "key_paths_unique_to_this_example": [
+        "guidance",
+        "guidance.building_candidates",
+        "guidance.entrance_picker",
+        "layers.buildings",
+        "layers.cell_stats",
+        "layers.cells",
+        "layers.geonames",
+        "layers.neighbours",
+        "layers.streets",
+        "measured",
+        "measures",
+        "measures.buildings_any",
+        "measures.buildings_any.detail",
+        "measures.buildings_any.detail.cells",
+        "measures.buildings_any.detail.cells_with_any",
+        "measures.buildings_any.detail.source",
+        "measures.buildings_any.detail.structures",
+        "measures.buildings_any.value",
+        "measures.crowding_10m",
+        "measures.crowding_10m.detail",
+        "measures.crowding_10m.detail.measured_cells",
+        "measures.crowding_10m.detail.note",
+        "measures.crowding_10m.detail.p50",
+        "measures.crowding_10m.detail.p90",
+        "measures.crowding_10m.value",
+        "measures.osm_entrance_ref",
+        "measures.osm_entrance_ref.detail",
+        "measures.osm_entrance_ref.detail.entrances",
+        "measures.osm_entrance_ref.detail.note",
+        "measures.osm_entrance_ref.detail.with_ref",
+        "measures.osm_entrance_ref.value",
+        "measures.osm_housenumber",
+        "measures.osm_housenumber.detail",
+        "measures.osm_housenumber.detail.buildings",
+        "measures.osm_housenumber.detail.with",
+        "measures.osm_housenumber.value",
+        "measures.osm_levels",
+        "measures.osm_levels.detail",
+        "measures.osm_levels.detail.buildings",
+        "measures.osm_levels.detail.with",
+        "measures.osm_levels.value"
+      ]
     },
     "health": {
       "request": {
@@ -259,8 +332,12 @@
       "generated_from_public": true,
       "response": {
         "ok": true,
-        "build": "2ed04c219831"
-      }
+        "build": "fb5141cf4210"
+      },
+      "key_paths_unique_to_this_example": [
+        "build",
+        "ok"
+      ]
     },
     "point": {
       "request": {
@@ -617,7 +694,8 @@
             "statement": "Fascia uses the official Statistics South Africa (\"Stats SA\") 2022 placename geographic framework as the underlying spatial reference layer, acknowledges Stats SA as the source and rights holder of that placename framework, and confirms that the placename boundaries are not supplied, sold, or charged for as a standalone product but are made available only in accordance with Stats SA's applicable copyright and licensing terms; any fees charged by Fascia relate solely to Fascia's proprietary data, analysis, outputs, or other value-added commercial content created by Fascia and spatially linked to the placename boundary framework."
           }
         ]
-      }
+      },
+      "key_paths_unique_to_this_example": []
     },
     "point_with_building": {
       "request": {
@@ -992,7 +1070,17 @@
           "crowding_10m": 0.18,
           "confirm_required": true
         }
-      }
+      },
+      "key_paths_unique_to_this_example": [
+        "building",
+        "building.candidates",
+        "building.candidates[].area_m2",
+        "building.candidates[].building_id",
+        "building.candidates[].meters",
+        "building.candidates[].source",
+        "building.confirm_required",
+        "building.crowding_10m"
+      ]
     },
     "geojson": {
       "request": {
@@ -1519,7 +1607,24 @@
             "statement": "Fascia uses the official Statistics South Africa (\"Stats SA\") 2022 placename geographic framework as the underlying spatial reference layer, acknowledges Stats SA as the source and rights holder of that placename framework, and confirms that the placename boundaries are not supplied, sold, or charged for as a standalone product but are made available only in accordance with Stats SA's applicable copyright and licensing terms; any fees charged by Fascia relate solely to Fascia's proprietary data, analysis, outputs, or other value-added commercial content created by Fascia and spatially linked to the placename boundary framework."
           }
         ]
-      }
+      },
+      "key_paths_unique_to_this_example": [
+        "adm",
+        "features",
+        "features[].geometry",
+        "features[].geometry.coordinates",
+        "features[].geometry.type",
+        "features[].id",
+        "features[].properties",
+        "features[].properties.adm",
+        "features[].properties.area_id",
+        "features[].properties.generation",
+        "features[].properties.kind",
+        "features[].properties.name",
+        "features[].type",
+        "total",
+        "type"
+      ]
     },
     "building_by_id": {
       "request": {
@@ -1553,7 +1658,18 @@
             "license": "CC BY 4.0"
           }
         ]
-      }
+      },
+      "key_paths_unique_to_this_example": [
+        "area",
+        "area.adm",
+        "area.area_id",
+        "area.kind",
+        "area.name",
+        "area_m2",
+        "building_id",
+        "source",
+        "source_ref"
+      ]
     },
     "harvest_summary": {
       "request": {
@@ -1595,7 +1711,15 @@
             "statement": "Fascia uses the official Statistics South Africa (\"Stats SA\") 2022 placename geographic framework as the underlying spatial reference layer, acknowledges Stats SA as the source and rights holder of that placename framework, and confirms that the placename boundaries are not supplied, sold, or charged for as a standalone product but are made available only in accordance with Stats SA's applicable copyright and licensing terms; any fees charged by Fascia relate solely to Fascia's proprietary data, analysis, outputs, or other value-added commercial content created by Fascia and spatially linked to the placename boundary framework."
           }
         ]
-      }
+      },
+      "key_paths_unique_to_this_example": [
+        "covered",
+        "uncovered",
+        "uncovered_totals",
+        "uncovered_totals.buildings",
+        "uncovered_totals.named_road_km",
+        "uncovered_totals.road_km"
+      ]
     },
     "streets": {
       "request": {
@@ -1751,7 +1875,25 @@
             ]
           }
         ]
-      }
+      },
+      "key_paths_unique_to_this_example": [
+        "streets",
+        "streets[].bbox",
+        "streets[].highway",
+        "streets[].length_m",
+        "streets[].name",
+        "streets[].parents",
+        "streets[].parents[].adm",
+        "streets[].parents[].area_id",
+        "streets[].parents[].kind",
+        "streets[].parents[].name",
+        "streets[].street_id",
+        "streets[].subplace",
+        "streets[].subplace.adm",
+        "streets[].subplace.area_id",
+        "streets[].subplace.kind",
+        "streets[].subplace.name"
+      ]
     },
     "refused_no_pack": {
       "request": {
@@ -1772,7 +1914,30 @@
           ]
         },
         "generation": null
-      }
+      },
+      "key_paths_unique_to_this_example": []
+    },
+    "refused_no_pack_point": {
+      "request": {
+        "method": "GET",
+        "path": "/v1/places/point?lng=27.9&lat=-33.03&country=IN",
+        "needs_host_key": true
+      },
+      "why": "The same 404 `no_pack_for_country` as `refused_no_pack`, on /v1/places/point. Added 28 Oct 2026 for a host whose proxy allowlists paths and does not admit /v1/places/generation: their own layer answered that example before it left them, so their check on `error.code` passed without ever reaching us. Same coordinate as the `point` example, so the only difference between the two is the country and therefore the refusal. Needs a host key: requireHost runs before the country check, so a keyless call here is 401 and never refuses on the pack.",
+      "generated_from": "https://places.fascia.network",
+      "generated_from_public": true,
+      "response": {
+        "error": {
+          "code": "no_pack_for_country",
+          "message": "no pack for country IN; this deployment serves ZA",
+          "country": "IN",
+          "countries": [
+            "ZA"
+          ]
+        },
+        "generation": null
+      },
+      "key_paths_unique_to_this_example": []
     },
     "areas_search": {
       "request": {
@@ -1940,6 +2105,19 @@
             -26.134088
           ]
         }
+      ],
+      "key_paths_unique_to_this_example": [
+        "[].bbox",
+        "[].codes.dc_mdb",
+        "[].codes.dc_name",
+        "[].codes.mn_mdb",
+        "[].codes.mn_name",
+        "[].codes.mp_code",
+        "[].codes.pr_code",
+        "[].codes.pr_mdb",
+        "[].codes.pr_name",
+        "[].codes.source",
+        "[].codes.sp_code"
       ]
     },
     "area_by_id": {
@@ -2007,7 +2185,20 @@
             "statement": "Fascia uses the official Statistics South Africa (\"Stats SA\") 2022 placename geographic framework as the underlying spatial reference layer, acknowledges Stats SA as the source and rights holder of that placename framework, and confirms that the placename boundaries are not supplied, sold, or charged for as a standalone product but are made available only in accordance with Stats SA's applicable copyright and licensing terms; any fees charged by Fascia relate solely to Fascia's proprietary data, analysis, outputs, or other value-added commercial content created by Fascia and spatially linked to the placename boundary framework."
           }
         ]
-      }
+      },
+      "key_paths_unique_to_this_example": [
+        "stats",
+        "stats.area_km2",
+        "stats.building_candidates",
+        "stats.buildings",
+        "stats.centroid",
+        "stats.centroid.lat",
+        "stats.centroid.lng",
+        "stats.crowding_10m",
+        "stats.land_class",
+        "stats.named_road_km",
+        "stats.road_km"
+      ]
     },
     "locality_search_in": {
       "request": {
@@ -2016,7 +2207,7 @@
         "needs_host_key": true
       },
       "why": "A locality hit, from the dev deployment because India is not in production. The only example covering three things a host cannot otherwise assert against: `codes.same_name_as_parent`, which 18,672 India localities carry and a host's gate reads; and `lng`/`lat` with `bbox` ABSENT, which is what a point-shaped cell returns -- a transport that substitutes a zero-extent box for the missing bbox would pass every other example here.",
-      "generated_from": "http://127.0.0.1:8099",
+      "generated_from": "http://127.0.0.1:8080",
       "generated_from_public": false,
       "response": [
         {
@@ -2062,6 +2253,15 @@
           "lng": 73.898845,
           "lat": 17.108466
         }
+      ],
+      "key_paths_unique_to_this_example": [
+        "[].codes.osm_id",
+        "[].codes.osm_type",
+        "[].codes.place",
+        "[].codes.same_name_as_parent",
+        "[].codes.vintage",
+        "[].lat",
+        "[].lng"
       ]
     },
     "crosswalk": {
@@ -2094,17 +2294,32 @@
             ]
           }
         ]
-      }
+      },
+      "key_paths_unique_to_this_example": [
+        "from",
+        "results",
+        "results[].area_id",
+        "results[].from_name",
+        "results[].to",
+        "results[].to[].adm",
+        "results[].to[].area_id",
+        "results[].to[].basis",
+        "results[].to[].kind",
+        "results[].to[].name",
+        "results[].to[].share",
+        "results[].verdict",
+        "to"
+      ]
     }
   },
   "generated_elsewhere": [
     {
       "example": "locality_search_in",
-      "generated_from": "http://127.0.0.1:8099",
+      "generated_from": "http://127.0.0.1:8080",
       "generation": "in-abdb-2025"
     }
   ],
-  "_generated_elsewhere_why": "These examples come from a non-production deployment, because the field they exercise exists only where a pack exists and that pack is not in production. Both deployments serve contract 0.29.0, asserted at generation time. The response shape is the shape production returns for the same path; the DATA in these examples is not fetchable from https://places.fascia.network, so assert their key paths and not their values. Every example carries `generated_from_public`: branch on that boolean rather than on the URL, which for a non-public deployment is a loopback address that means nothing from where you are reading it. Do not send these paths through your transport and expect a match.",
+  "_generated_elsewhere_why": "These examples come from a non-production deployment, because the field they exercise exists only where a pack exists and that pack is not in production. Both deployments serve contract 0.30.0, asserted at generation time. The response shape is the shape production returns for the same path; the DATA in these examples is not fetchable from https://places.fascia.network, so assert their key paths and not their values. Every example carries `generated_from_public`: branch on that boolean rather than on the URL, which for a non-public deployment is a loopback address that means nothing from where you are reading it. Do not send these paths through your transport and expect a match.",
   "key_paths_covered": [
     "[].adm",
     "[].area_id",
@@ -2453,11 +2668,15 @@
     "uncovered_totals.named_road_km",
     "uncovered_totals.road_km"
   ],
-  "_not_covered_note": "Fields no example here exercises are not protected by this file. An optional field only appears when the data warrants it, so coverage is a property of the calls above.",
+  "_not_covered_note": "Fields no example here exercises are not protected by this file. An optional field only appears when the data warrants it, so coverage is a property of the calls above. And coverage is a property of the calls you actually RUN: every example carries `key_paths_unique_to_this_example`, the key paths produced by that example and no other. If your gate skips an example -- because your own layer will not forward its path, or because `generated_from_public` is false and you have no route to the deployment it came from -- those paths stop being tested at that moment. Print them beside the reason for the skip. An empty list means the skip costs nothing.",
   "documented_properties_not_covered": [
-    "effective_from"
+    "effective_from",
+    "reason",
+    "rejected"
   ],
   "_not_covered_why": {
-    "effective_from": "No layer in this deployment carries one. `effective_from` appears on a layer that is published and not yet in force, and none is today -- so no call against this pack can produce it. It is listed rather than quietly omitted: a host asserting against this file is not protected on that field."
+    "effective_from": "No layer in this deployment carries one. `effective_from` appears on a layer that is published and not yet in force, and none is today -- so no call against this pack can produce it. It is listed rather than quietly omitted: a host asserting against this file is not protected on that field.",
+    "rejected": "New in 0.30.0, and not reachable from any public deployment -- a named gap, not an oversight. `rejected` is written only by the LOCALITY crosswalk, and a locality crosswalk needs TWO locality vintages of one country. No locality layer is in production at all today, and the first country to get one will still have a single vintage until its next extract. The `crosswalk` example above is sub-place ground computed from polygon overlap, which refuses nothing and so carries no `rejected`. Earliest it can be covered: one extract after a locality layer goes public. Until then, assert nothing on `rejected` through this file and treat your transport as unverified for it.",
+    "reason": "`rejected[].reason` cannot be covered while `rejected` is not -- same cause, listed separately because a host searching this list for one field should not have to know it is a child of the other."
   }
 }
