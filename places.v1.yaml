@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: Fascia Places
-  version: 0.30.0
+  version: 0.30.1
   description: |
     Host-facing geography rail for platforms that organise people by place.
 
@@ -16,6 +16,20 @@ info:
     word a source uses for a level, and it differs by country: South Africa's ADM3 is a
     municipality, India's is a subdistrict. A `kind=` parameter accepts either, and an adm
     code resolves to whichever word that country's pack uses.
+
+    A country may hold NO cell at a level, and that is not a gap: ADM4, MP, GN and ST are
+    absent from the India pack, LOC from South Africa's. Such a layer answers 200 with an
+    empty array, never 400, and /v1/places/layers reports what a country actually carries.
+
+    SP means THE FINEST OFFICIAL CELL, not "a subdivision of a settlement". South Africa has
+    two place levels below ADM3, a mainplace and the subplace inside it; India has one, the
+    revenue village, and it is SP because SP is the floor of the official stack — harvest
+    cells are SP, streets merge one row per street per SP, and a LOC cell's official parent
+    is the SP containing it. So an Indian village is not the counterpart of a South African
+    sub-place despite sharing the code: it hangs directly off ADM3, where a South African
+    MAIN place hangs, and its median area is larger than one. Logic of the form "register at
+    MP, SP is too fine" inverts between the two packs, because in India MP is empty and SP
+    is the settlement.
 
     Every response carries the header x-places-generation, except the two that assert no
     generation because none applies: a 404 for a country with no pack, and a 404 for a path that
@@ -774,17 +788,34 @@ paths:
                                   | `parent_unresolved` | The parent itself has no successor |
 
                                   `no_radius`, `no_parent` and `ambiguous` are the **common**
-                                  answers, not edges. Of 39,699 localities in the first
-                                  Maharashtra pack, 6,622 have no official parent at all and
-                                  only **282** have a parent whose class has a measured radius —
-                                  and within those 282 there are on average **8.8** other
-                                  localities inside the same parent and within 1 km, because the
-                                  parent there *is* the city. So the nearest candidate is usually
-                                  not identifiably the successor, and **243 of the 282** are
-                                  `ambiguous` rather than matched. A locality crosswalk refuses
-                                  far more often than it matches by proximity, deliberately: a
-                                  `moved` verdict is issued only where the nearest candidate is
-                                  at least three times closer than the next one.
+                                  answers, not edges. Re-measured on 29 October 2026 against the
+                                  Maharashtra pack as it now stands — 34,424 localities, filtered
+                                  to the ground the official layer covers: **692** have no
+                                  official parent at all, and only **937** have a parent whose
+                                  class has a measured radius. Within those 937 there are on
+                                  average **9.7** other localities inside the same parent and
+                                  within 1 km, up to **27**, and only **11** of the 937 have
+                                  none — because the parent there *is* the city. So the nearest
+                                  candidate is usually not identifiably the successor: **926 of
+                                  the 937** have at least one competing candidate inside the
+                                  radius, which is the condition that produces `ambiguous`.
+
+                                  These figures replace the ones this prose carried at `0.30.0`
+                                  (39,699 / 6,622 / 282 / 8.8 / 243 of 282). Two changes moved
+                                  them: the locality tier is now filtered to the official
+                                  layer's coverage, and a shared-code union made Greater Mumbai
+                                  one cell rather than a truncated part, so it parents 858
+                                  localities instead of 203. The counts above are measured
+                                  directly on the pack. The `926` is the count of cells meeting
+                                  the condition for `ambiguous`, **not** a verdict count from a
+                                  crosswalk run — the `243` it replaces was the latter, and the
+                                  two are not the same measurement. A run's own verdict counts
+                                  will ship with the version that carries `unresolved`.
+
+                                  A locality crosswalk refuses far more often than it matches by
+                                  proximity, deliberately: a `moved` verdict is issued only where
+                                  the nearest candidate is at least three times closer than the
+                                  next one.
         "400": { $ref: "#/components/responses/BadRequest" }
         "401": { $ref: "#/components/responses/Unauthorized" }
         "404":
@@ -998,6 +1029,14 @@ components:
             tehsil or mandal), and the two are nothing alike as things. **Branch on `adm`,
             not on `kind`** — adm is the comparable level, kind is local vocabulary and the
             list grows as countries are added.
+
+            **And `adm` being comparable does not make the tiers equivalent.** `SP` is the
+            finest official cell a country publishes, not "a subdivision of a settlement".
+            South Africa fills two levels below ADM3 — `mainplace`, then `subplace` inside
+            it — and India fills one, the revenue village, which is therefore `SP`. An
+            Indian `subplace` hangs directly off ADM3, where a South African *main* place
+            hangs, and is larger than one by median area. Read `/v1/places/layers` for what
+            a country holds; `MP` is empty for India and `LOC` for South Africa.
         country: { type: string, example: ZA }
         codes: { type: object }
         parent_ids:
@@ -1085,10 +1124,10 @@ components:
     Attribution:
       type: object
       properties:
-        source: { type: string, example: OpenStreetMap }
+        source: { type: string, example: OpenStreetMap contributors }
         text: { type: string, example: "© OpenStreetMap contributors" }
         url: { type: string, example: "https://www.openstreetmap.org/copyright" }
-        license: { type: string, example: ODbL 1.0 }
+        license: { type: string, example: "Open Database License (ODbL) 1.0" }
         statement:
           type: string
           description: |

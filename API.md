@@ -109,14 +109,40 @@ Polygons (harvest cells and admin stack) and named points (labels/search only).
 | ADM2 | `district` | `district` | geoBoundaries / MDB · SOI ABDB | Admin |
 | ADM3 | `municipality` | `subdistrict` | geoBoundaries / MDB · SOI ABDB | Admin — **the same level, a different thing** |
 | ADM4 | `ward` | — | geoBoundaries / MDB | Admin |
-| MP | `mainplace` | — | Stats SA Census 2011 | Place |
+| MP | `mainplace` | — *(none; see below)* | Stats SA Census 2011 | Place |
 | SP | `subplace` | `subplace` (a village) | Stats SA Census 2011 · SOI ABDB | **Harvest cell** |
 | GN | `geoname` | — | GeoNames (feature class P) | Label / search — **not** a harvest cell. Hits carry `capital_of`: `national`, `province`, `district`, `municipality` or `null` |
-| LOC | — | `locality` *(not built)* | OpenStreetMap (ODbL) | **Unofficial cell** — named by OSM, by no government. No polygon, so containment never reaches one and it never answers `/point`; reached by name. **No pack holds a locality yet**, so `kind=LOC` answers `200` with an empty array rather than `400` — a fallback onto it can be written and tested before the tier exists |
+| LOC | — | `locality` | OpenStreetMap (ODbL) | **Unofficial cell** — named by OSM, by no government. No polygon, so containment never reaches one and it never answers `/point`; reached by name. **South Africa's pack holds 9,215 of them since 29 October 2026**, 2,134 carrying `codes.same_name_as_parent`; a pack that holds none answers `200` with an empty array rather than `400`, so a fallback onto this tier can still be written and tested against a country that has no localities. A locality carries `lng`/`lat` and **no `bbox`**, and its identity is `codes.osm_type` plus `codes.osm_id`, never its name |
 | ST | `street` | — | OpenStreetMap (ODbL) | Label / search — **not** a harvest cell. One row per street per SP |
 
 
 `kind` query params accept either the code (`SP`) or the name (`subplace`). **An `adm` code resolves to whichever word that country's pack uses**, so `kind=ADM3` finds municipalities in South Africa and sub-districts in India without the caller knowing which. A literal word that the country does not use returns nothing rather than an error, the same as a bbox over the sea.
+
+**A country may hold no cell at a level, and that is not a gap in the pack.** `ADM4`, `MP`, `GN`
+and `ST` are all absent from the India pack; `LOC` is absent from South Africa's. A layer a pack
+does not hold answers `200` with an empty array rather than `400`, and
+[`/v1/places/layers`](#layers) reports what a country actually carries — read it rather than
+assuming the South African stack.
+
+**`SP` means the finest official cell, not "a subdivision of a settlement".** This is the one
+place where reading the code's English will mislead you. South Africa has two place levels below
+ADM3 — a `mainplace` and the `subplace` inside it — and India has one, the revenue village. The
+village is `SP` because `SP` is the floor of the official stack, and the floor is what the rest of
+the API is built on: harvest cells are `SP`, streets are merged one row per street per `SP`, and a
+`LOC` cell's official parent is the `SP` containing it.
+
+So an Indian village is **not** the counterpart of a South African sub-place, despite sharing the
+code:
+
+| | cells | median km² | hangs off |
+|---|---:|---:|---|
+| ZA `mainplace` | 13,698 | 3.23 | `municipality` (ADM3) |
+| ZA `subplace` | 24,743 | 1.93 | `mainplace` |
+| IN `subplace` (a village) | 44,262 | 4.81 | `subdistrict` (ADM3) |
+
+A village hangs **directly off ADM3**, which is where a South African *main* place hangs, and by
+median area it is larger than one. If your logic is "register at `MP`, `SP` is too fine", that
+logic inverts between the two packs: in India `MP` is empty and `SP` is the settlement.
 
 **NU** on MP/SP names = Stats SA **Non-Urban** (farm/rural remainder), not a suburb.
 
@@ -440,8 +466,9 @@ Order: exact normalised name, then prefix, then contains; real streets before na
 {
   "generation": "mdb-zaf-2020",
   "attribution": [
-    { "source": "OpenStreetMap", "text": "© OpenStreetMap contributors",
-      "url": "https://www.openstreetmap.org/copyright", "license": "ODbL 1.0" }
+    { "source": "OpenStreetMap contributors", "text": "© OpenStreetMap contributors",
+      "url": "https://www.openstreetmap.org/copyright",
+      "license": "Open Database License (ODbL) 1.0" }
   ],
   "count": 1,
   "streets": [
@@ -613,7 +640,7 @@ When an ingest has measured the cell, the response also carries `stats` and the 
   "stats": { "road_km": 30.0, "named_road_km": 5.0, "buildings": 2500,
              "area_km2": 8.3, "land_class": "urban",
              "centroid": { "lng": 28.318136, "lat": -25.786582 } },
-  "attribution": [ { "source": "OpenStreetMap", "…": "…" }, { "source": "Google Open Buildings", "…": "…" } ]
+  "attribution": [ { "source": "OpenStreetMap contributors", "…": "…" }, { "source": "Google Open Buildings", "…": "…" } ]
 }
 ```
 

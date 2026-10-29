@@ -1,6 +1,6 @@
 {
   "_read_me": "A complete real response per path, generated from a live deployment rather than written by hand. Assert that every key path here survives your transport, recursively. If this file cannot be fetched, report that you could not check -- never pass.",
-  "contract": "0.30.0",
+  "contract": "0.30.1",
   "generated_from": "https://places.fascia.network",
   "examples": {
     "generation": {
@@ -16,8 +16,14 @@
         "country": "ZA",
         "generation": "stats-sa-2022",
         "loaded": true,
-        "contract": "0.30.0",
+        "contract": "0.30.1",
         "attribution": [
+          {
+            "url": "https://www.openstreetmap.org/copyright",
+            "text": "© OpenStreetMap contributors",
+            "source": "OpenStreetMap contributors",
+            "license": "Open Database License (ODbL) 1.0"
+          },
           {
             "url": "https://www.statssa.gov.za/",
             "text": "Boundaries © Statistics South Africa, Census 2022 main place / sub-place framework",
@@ -54,6 +60,7 @@
               "derived",
               "lines_streets",
               "places_census",
+              "places_osm",
               "points_geonames",
               "polygons_adm"
             ],
@@ -89,6 +96,7 @@
                   "derived",
                   "lines_streets",
                   "places_census",
+                  "places_osm",
                   "points_geonames",
                   "polygons_adm"
                 ],
@@ -332,7 +340,7 @@
       "generated_from_public": true,
       "response": {
         "ok": true,
-        "build": "fb5141cf4210"
+        "build": "c10defdb6ad3"
       },
       "key_paths_unique_to_this_example": [
         "build",
@@ -681,10 +689,10 @@
         },
         "attribution": [
           {
-            "source": "OpenStreetMap",
+            "source": "OpenStreetMap contributors",
             "text": "© OpenStreetMap contributors",
             "url": "https://www.openstreetmap.org/copyright",
-            "license": "ODbL 1.0"
+            "license": "Open Database License (ODbL) 1.0"
           },
           {
             "url": "https://www.statssa.gov.za/",
@@ -1039,10 +1047,10 @@
         },
         "attribution": [
           {
-            "source": "OpenStreetMap",
+            "source": "OpenStreetMap contributors",
             "text": "© OpenStreetMap contributors",
             "url": "https://www.openstreetmap.org/copyright",
-            "license": "ODbL 1.0"
+            "license": "Open Database License (ODbL) 1.0"
           },
           {
             "url": "https://www.statssa.gov.za/",
@@ -1600,6 +1608,12 @@
         ],
         "attribution": [
           {
+            "url": "https://www.openstreetmap.org/copyright",
+            "text": "© OpenStreetMap contributors",
+            "source": "OpenStreetMap contributors",
+            "license": "Open Database License (ODbL) 1.0"
+          },
+          {
             "url": "https://www.statssa.gov.za/",
             "text": "Boundaries © Statistics South Africa, Census 2022 main place / sub-place framework",
             "source": "Statistics South Africa",
@@ -1692,10 +1706,10 @@
         },
         "attribution": [
           {
-            "source": "OpenStreetMap",
+            "source": "OpenStreetMap contributors",
             "text": "© OpenStreetMap contributors",
             "url": "https://www.openstreetmap.org/copyright",
-            "license": "ODbL 1.0"
+            "license": "Open Database License (ODbL) 1.0"
           },
           {
             "source": "Google Open Buildings",
@@ -1734,10 +1748,10 @@
         "generation": "stats-sa-2022",
         "attribution": [
           {
-            "source": "OpenStreetMap",
+            "source": "OpenStreetMap contributors",
             "text": "© OpenStreetMap contributors",
             "url": "https://www.openstreetmap.org/copyright",
-            "license": "ODbL 1.0"
+            "license": "Open Database License (ODbL) 1.0"
           }
         ],
         "count": 3,
@@ -2054,10 +2068,10 @@
           ]
         },
         {
-          "area_id": "f439fbf0-7685-39ce-0f2a-c05fa0e36aaf",
-          "name": "Parktown North",
-          "kind": "subplace",
-          "adm": "SP",
+          "area_id": "6323e9bd-8b34-5e92-b3a1-5690851d53f5",
+          "name": "Parktown",
+          "kind": "locality",
+          "adm": "LOC",
           "country": "ZA",
           "generation": "stats-sa-2022",
           "parents": [
@@ -2084,26 +2098,23 @@
               "area_id": "51c7e7b1-b557-1b58-1ace-23166ae8d574",
               "name": "Johannesburg",
               "kind": "mainplace"
+            },
+            {
+              "adm": "SP",
+              "area_id": "10805070-8a0a-aaef-85dc-e103ee73c06e",
+              "name": "Parktown",
+              "kind": "subplace"
             }
           ],
           "codes": {
-            "dc_mdb": "JHB",
-            "mn_mdb": "JHB",
-            "pr_mdb": "GP",
-            "source": "stats-sa-census-2022",
-            "dc_name": "City of Johannesburg",
-            "mn_name": "City of Johannesburg",
-            "mp_code": "7982007",
-            "pr_code": "7",
-            "pr_name": "Gauteng",
-            "sp_code": "798200875"
+            "place": "suburb",
+            "osm_id": "262721888",
+            "vintage": "2026-10-19",
+            "osm_type": "node",
+            "same_name_as_parent": true
           },
-          "bbox": [
-            28.021794,
-            -26.149214,
-            28.036047,
-            -26.134088
-          ]
+          "lng": 28.027778,
+          "lat": -26.181667
         }
       ],
       "key_paths_unique_to_this_example": [
@@ -2166,10 +2177,10 @@
         },
         "attribution": [
           {
-            "source": "OpenStreetMap",
+            "source": "OpenStreetMap contributors",
             "text": "© OpenStreetMap contributors",
             "url": "https://www.openstreetmap.org/copyright",
-            "license": "ODbL 1.0"
+            "license": "Open Database License (ODbL) 1.0"
           },
           {
             "source": "Google Open Buildings",
@@ -2200,18 +2211,80 @@
         "stats.road_km"
       ]
     },
+    "locality_search_za": {
+      "request": {
+        "method": "GET",
+        "path": "/v1/places/areas/search?q=Aeroton&country=ZA&kind=LOC&limit=1",
+        "needs_host_key": true
+      },
+      "why": "A locality hit from PRODUCTION, reproducible with your own host key. Covers `codes.same_name_as_parent`, which 2,134 of South Africa's 9,215 localities carry and a host's gate reads; `codes.osm_type`/`codes.osm_id`, which are a locality's identity rather than its name; and `lng`/`lat` with `bbox` ABSENT, which is what a point-shaped cell returns -- a transport that substitutes a zero-extent box for the missing bbox would pass every other example here. Aeroton is a locality whose name matches its sub-place parent's, which is why it carries the mark.",
+      "generated_from": "https://places.fascia.network",
+      "generated_from_public": true,
+      "response": [
+        {
+          "area_id": "26e282cc-cacc-5cfe-9f5f-762ece184ffc",
+          "name": "Aeroton",
+          "kind": "locality",
+          "adm": "LOC",
+          "country": "ZA",
+          "generation": "stats-sa-2022",
+          "parents": [
+            {
+              "adm": "ADM1",
+              "area_id": "d459dc1e-bbfc-581d-9aa0-86aa1668b425",
+              "name": "Gauteng",
+              "kind": "province"
+            },
+            {
+              "adm": "ADM2",
+              "area_id": "812725e2-cd70-53d7-a737-7d74d25e1878",
+              "name": "City of Johannesburg",
+              "kind": "district"
+            },
+            {
+              "adm": "ADM3",
+              "area_id": "7f17c035-956e-59f9-86d1-b609305e33fd",
+              "name": "City of Johannesburg",
+              "kind": "municipality"
+            },
+            {
+              "adm": "MP",
+              "area_id": "5a6c042d-4110-c918-7d3f-c811aaa0f939",
+              "name": "Johannesburg South",
+              "kind": "mainplace"
+            },
+            {
+              "adm": "SP",
+              "area_id": "53e93115-3bc6-b2b9-0d2c-2d7a0b52e43e",
+              "name": "Aeroton",
+              "kind": "subplace"
+            }
+          ],
+          "codes": {
+            "place": "suburb",
+            "osm_id": "4152078936",
+            "vintage": "2026-10-19",
+            "osm_type": "node",
+            "same_name_as_parent": true
+          },
+          "lng": 27.974188,
+          "lat": -26.254146
+        }
+      ],
+      "key_paths_unique_to_this_example": []
+    },
     "locality_search_in": {
       "request": {
         "method": "GET",
         "path": "/v1/places/areas/search?q=Sonavade&country=IN&kind=LOC&limit=1",
         "needs_host_key": true
       },
-      "why": "A locality hit, from the dev deployment because India is not in production. The only example covering three things a host cannot otherwise assert against: `codes.same_name_as_parent`, which 18,672 India localities carry and a host's gate reads; and `lng`/`lat` with `bbox` ABSENT, which is what a point-shaped cell returns -- a transport that substitutes a zero-extent box for the missing bbox would pass every other example here.",
-      "generated_from": "http://127.0.0.1:8080",
+      "why": "The same shape from a pack whose official tiers differ: India fills one place level below ADM3, so this locality's parent chain is shorter than the South African one above. From the dev deployment, because India is not in production -- so a host that cannot reach that deployment should skip it and read `locality_search_za` instead. It stays after South Africa made it non-essential, for two reasons: the second-deployment mechanism has to keep running to keep working, and the mark is the COMMON case there and the uncommon case here -- 18,672 of the 34,424 localities in the India pack this generator reads carry it, against 2,134 of South Africa's 9,215 -- so a host sizing a gate on it from South Africa alone would be measuring the rarer half.",
+      "generated_from": "http://127.0.0.1:8099",
       "generated_from_public": false,
       "response": [
         {
-          "area_id": "aca8fe31-0e1e-51d0-b7f0-096e26ea07b3",
+          "area_id": "8cb8005c-6bfe-5806-9ad2-2f73f12c68ef",
           "name": "Sonavade",
           "kind": "locality",
           "adm": "LOC",
@@ -2245,24 +2318,16 @@
           ],
           "codes": {
             "place": "village",
-            "osm_id": "1460184994",
+            "osm_id": "6562602599",
             "vintage": "2026-01-01",
-            "osm_type": "way",
+            "osm_type": "node",
             "same_name_as_parent": true
           },
-          "lng": 73.898845,
-          "lat": 17.108466
+          "lng": 73.89805,
+          "lat": 17.107975
         }
       ],
-      "key_paths_unique_to_this_example": [
-        "[].codes.osm_id",
-        "[].codes.osm_type",
-        "[].codes.place",
-        "[].codes.same_name_as_parent",
-        "[].codes.vintage",
-        "[].lat",
-        "[].lng"
-      ]
+      "key_paths_unique_to_this_example": []
     },
     "crosswalk": {
       "request": {
@@ -2315,11 +2380,11 @@
   "generated_elsewhere": [
     {
       "example": "locality_search_in",
-      "generated_from": "http://127.0.0.1:8080",
+      "generated_from": "http://127.0.0.1:8099",
       "generation": "in-abdb-2025"
     }
   ],
-  "_generated_elsewhere_why": "These examples come from a non-production deployment, because the field they exercise exists only where a pack exists and that pack is not in production. Both deployments serve contract 0.30.0, asserted at generation time. The response shape is the shape production returns for the same path; the DATA in these examples is not fetchable from https://places.fascia.network, so assert their key paths and not their values. Every example carries `generated_from_public`: branch on that boolean rather than on the URL, which for a non-public deployment is a loopback address that means nothing from where you are reading it. Do not send these paths through your transport and expect a match.",
+  "_generated_elsewhere_why": "These examples come from a non-production deployment, because the field they exercise exists only where a pack exists and that pack is not in production. Both deployments serve contract 0.30.1, asserted at generation time. The response shape is the shape production returns for the same path; the DATA in these examples is not fetchable from https://places.fascia.network, so assert their key paths and not their values. Every example carries `generated_from_public`: branch on that boolean rather than on the URL, which for a non-public deployment is a loopback address that means nothing from where you are reading it. Do not send these paths through your transport and expect a match.",
   "key_paths_covered": [
     "[].adm",
     "[].area_id",
