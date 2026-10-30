@@ -1,6 +1,6 @@
 {
   "_read_me": "A complete real response per path, generated from a live deployment rather than written by hand. Assert that every key path here survives your transport, recursively. If this file cannot be fetched, report that you could not check -- never pass.",
-  "contract": "0.30.1",
+  "contract": "0.31.0",
   "generated_from": "https://places.fascia.network",
   "examples": {
     "generation": {
@@ -16,20 +16,36 @@
         "country": "ZA",
         "generation": "stats-sa-2022",
         "loaded": true,
-        "contract": "0.30.1",
+        "contract": "0.31.0",
         "attribution": [
-          {
-            "url": "https://www.openstreetmap.org/copyright",
-            "text": "© OpenStreetMap contributors",
-            "source": "OpenStreetMap contributors",
-            "license": "Open Database License (ODbL) 1.0"
-          },
           {
             "url": "https://www.statssa.gov.za/",
             "text": "Boundaries © Statistics South Africa, Census 2022 main place / sub-place framework",
             "source": "Statistics South Africa",
             "license": "Stats SA copyright and licensing terms; not resold as a standalone product",
-            "statement": "Fascia uses the official Statistics South Africa (\"Stats SA\") 2022 placename geographic framework as the underlying spatial reference layer, acknowledges Stats SA as the source and rights holder of that placename framework, and confirms that the placename boundaries are not supplied, sold, or charged for as a standalone product but are made available only in accordance with Stats SA's applicable copyright and licensing terms; any fees charged by Fascia relate solely to Fascia's proprietary data, analysis, outputs, or other value-added commercial content created by Fascia and spatially linked to the placename boundary framework."
+            "statement": "Fascia uses the official Statistics South Africa (\"Stats SA\") 2022 placename geographic framework as the underlying spatial reference layer, acknowledges Stats SA as the source and rights holder of that placename framework, and confirms that the placename boundaries are not supplied, sold, or charged for as a standalone product but are made available only in accordance with Stats SA's applicable copyright and licensing terms; any fees charged by Fascia relate solely to Fascia's proprietary data, analysis, outputs, or other value-added commercial content created by Fascia and spatially linked to the placename boundary framework.",
+            "layers": [
+              "places_census"
+            ]
+          },
+          {
+            "url": "https://www.openstreetmap.org/copyright",
+            "text": "© OpenStreetMap contributors",
+            "source": "OpenStreetMap contributors",
+            "license": "Open Database License (ODbL) 1.0",
+            "layers": [
+              "lines_streets",
+              "places_osm"
+            ]
+          },
+          {
+            "source": "Google Open Buildings",
+            "text": "© Google Open Buildings",
+            "url": "https://sites.research.google/gr/open-buildings/",
+            "license": "CC BY 4.0",
+            "layers": [
+              "counts_buildings"
+            ]
           }
         ]
       },
@@ -156,18 +172,21 @@
             "adm": "ADM1",
             "kind": "province",
             "vintage": "2020",
+            "vintage_source": "read from geoBoundaries ADM1 metaData.json at commit 9469f09",
             "current": true
           },
           {
             "adm": "ADM2",
             "kind": "district",
             "vintage": "2020",
+            "vintage_source": "read from geoBoundaries ADM2 metaData.json at commit 9469f09",
             "current": true
           },
           {
             "adm": "ADM3",
             "kind": "municipality",
             "vintage": "2020",
+            "vintage_source": "read from geoBoundaries ADM3 metaData.json at commit 9469f09",
             "current": true
           },
           {
@@ -178,6 +197,7 @@
             "adm": "ADM4",
             "kind": "ward",
             "vintage": "2020",
+            "vintage_source": "read from geoBoundaries ADM4 metaData.json at commit 9469f09",
             "superseded_by": "MDB ward delimitation 2024/2026",
             "superseded_from": "2026-11-04",
             "current": true
@@ -186,25 +206,39 @@
             "adm": "MP",
             "kind": "mainplace",
             "vintage": "2022",
+            "vintage_source": "asserted: the release supplied is Stats SA Census 2022 Placenames (MainPlace2022, SubPlace2022)",
             "current": true
           },
           {
             "adm": "SP",
             "kind": "subplace",
             "vintage": "2022",
+            "vintage_source": "asserted: the release supplied is Stats SA Census 2022 Placenames (MainPlace2022, SubPlace2022)",
             "current": true
           },
           {
             "adm": "LOC",
-            "kind": "locality"
+            "kind": "locality",
+            "vintage": "2026-10-19",
+            "vintage_source": "read: osmosis_replication_timestamp in the header of south-africa-261019.osm.pbf, cross-checked against this entry by ingest-osm-places.js",
+            "superseded_by": "a newer OpenStreetMap extract, which exists continuously",
+            "current": true
           },
           {
             "adm": "GN",
-            "kind": "geoname"
+            "kind": "geoname",
+            "vintage": "2026-09-21",
+            "vintage_source": "asserted: the download date of https://download.geonames.org/export/dump/ZA.zip, sha256 04a5e6ac…, retrieved 2026-09-21T11:04:49Z. GeoNames regenerates its country files daily and stamps no version in them, so this is when we took the snapshot and not a date GeoNames published -- accurate to about a day, and the sha256 is what identifies the file exactly",
+            "superseded_by": "a newer GeoNames daily dump, which exists continuously",
+            "current": true
           },
           {
             "adm": "ST",
-            "kind": "street"
+            "kind": "street",
+            "vintage": "2026-10-19",
+            "vintage_source": "read: osm_replication_timestamp 2026-10-19T20:21:11Z recorded by ingest-streets.js from the header of south-africa-261019.osm.pbf, sha256 12296c46…",
+            "superseded_by": "a newer OpenStreetMap extract, which exists continuously",
+            "current": true
           }
         ]
       },
@@ -214,7 +248,8 @@
         "layers[].kind",
         "layers[].superseded_by",
         "layers[].superseded_from",
-        "layers[].vintage"
+        "layers[].vintage",
+        "layers[].vintage_source"
       ]
     },
     "coverage": {
@@ -340,7 +375,7 @@
       "generated_from_public": true,
       "response": {
         "ok": true,
-        "build": "c10defdb6ad3"
+        "build": "c72d53370dbb"
       },
       "key_paths_unique_to_this_example": [
         "build",
@@ -692,14 +727,21 @@
             "source": "OpenStreetMap contributors",
             "text": "© OpenStreetMap contributors",
             "url": "https://www.openstreetmap.org/copyright",
-            "license": "Open Database License (ODbL) 1.0"
+            "license": "Open Database License (ODbL) 1.0",
+            "layers": [
+              "lines_streets",
+              "places_osm"
+            ]
           },
           {
             "url": "https://www.statssa.gov.za/",
             "text": "Boundaries © Statistics South Africa, Census 2022 main place / sub-place framework",
             "source": "Statistics South Africa",
             "license": "Stats SA copyright and licensing terms; not resold as a standalone product",
-            "statement": "Fascia uses the official Statistics South Africa (\"Stats SA\") 2022 placename geographic framework as the underlying spatial reference layer, acknowledges Stats SA as the source and rights holder of that placename framework, and confirms that the placename boundaries are not supplied, sold, or charged for as a standalone product but are made available only in accordance with Stats SA's applicable copyright and licensing terms; any fees charged by Fascia relate solely to Fascia's proprietary data, analysis, outputs, or other value-added commercial content created by Fascia and spatially linked to the placename boundary framework."
+            "statement": "Fascia uses the official Statistics South Africa (\"Stats SA\") 2022 placename geographic framework as the underlying spatial reference layer, acknowledges Stats SA as the source and rights holder of that placename framework, and confirms that the placename boundaries are not supplied, sold, or charged for as a standalone product but are made available only in accordance with Stats SA's applicable copyright and licensing terms; any fees charged by Fascia relate solely to Fascia's proprietary data, analysis, outputs, or other value-added commercial content created by Fascia and spatially linked to the placename boundary framework.",
+            "layers": [
+              "places_census"
+            ]
           }
         ]
       },
@@ -1050,20 +1092,30 @@
             "source": "OpenStreetMap contributors",
             "text": "© OpenStreetMap contributors",
             "url": "https://www.openstreetmap.org/copyright",
-            "license": "Open Database License (ODbL) 1.0"
+            "license": "Open Database License (ODbL) 1.0",
+            "layers": [
+              "lines_streets",
+              "places_osm"
+            ]
           },
           {
             "url": "https://www.statssa.gov.za/",
             "text": "Boundaries © Statistics South Africa, Census 2022 main place / sub-place framework",
             "source": "Statistics South Africa",
             "license": "Stats SA copyright and licensing terms; not resold as a standalone product",
-            "statement": "Fascia uses the official Statistics South Africa (\"Stats SA\") 2022 placename geographic framework as the underlying spatial reference layer, acknowledges Stats SA as the source and rights holder of that placename framework, and confirms that the placename boundaries are not supplied, sold, or charged for as a standalone product but are made available only in accordance with Stats SA's applicable copyright and licensing terms; any fees charged by Fascia relate solely to Fascia's proprietary data, analysis, outputs, or other value-added commercial content created by Fascia and spatially linked to the placename boundary framework."
+            "statement": "Fascia uses the official Statistics South Africa (\"Stats SA\") 2022 placename geographic framework as the underlying spatial reference layer, acknowledges Stats SA as the source and rights holder of that placename framework, and confirms that the placename boundaries are not supplied, sold, or charged for as a standalone product but are made available only in accordance with Stats SA's applicable copyright and licensing terms; any fees charged by Fascia relate solely to Fascia's proprietary data, analysis, outputs, or other value-added commercial content created by Fascia and spatially linked to the placename boundary framework.",
+            "layers": [
+              "places_census"
+            ]
           },
           {
             "source": "Google Open Buildings",
             "text": "© Google Open Buildings",
             "url": "https://sites.research.google/gr/open-buildings/",
-            "license": "CC BY 4.0"
+            "license": "CC BY 4.0",
+            "layers": [
+              "counts_buildings"
+            ]
           }
         ],
         "building": {
@@ -1608,17 +1660,23 @@
         ],
         "attribution": [
           {
-            "url": "https://www.openstreetmap.org/copyright",
-            "text": "© OpenStreetMap contributors",
-            "source": "OpenStreetMap contributors",
-            "license": "Open Database License (ODbL) 1.0"
-          },
-          {
             "url": "https://www.statssa.gov.za/",
             "text": "Boundaries © Statistics South Africa, Census 2022 main place / sub-place framework",
             "source": "Statistics South Africa",
             "license": "Stats SA copyright and licensing terms; not resold as a standalone product",
-            "statement": "Fascia uses the official Statistics South Africa (\"Stats SA\") 2022 placename geographic framework as the underlying spatial reference layer, acknowledges Stats SA as the source and rights holder of that placename framework, and confirms that the placename boundaries are not supplied, sold, or charged for as a standalone product but are made available only in accordance with Stats SA's applicable copyright and licensing terms; any fees charged by Fascia relate solely to Fascia's proprietary data, analysis, outputs, or other value-added commercial content created by Fascia and spatially linked to the placename boundary framework."
+            "statement": "Fascia uses the official Statistics South Africa (\"Stats SA\") 2022 placename geographic framework as the underlying spatial reference layer, acknowledges Stats SA as the source and rights holder of that placename framework, and confirms that the placename boundaries are not supplied, sold, or charged for as a standalone product but are made available only in accordance with Stats SA's applicable copyright and licensing terms; any fees charged by Fascia relate solely to Fascia's proprietary data, analysis, outputs, or other value-added commercial content created by Fascia and spatially linked to the placename boundary framework.",
+            "layers": [
+              "places_census"
+            ]
+          },
+          {
+            "url": "https://www.openstreetmap.org/copyright",
+            "text": "© OpenStreetMap contributors",
+            "source": "OpenStreetMap contributors",
+            "license": "Open Database License (ODbL) 1.0",
+            "layers": [
+              "places_osm"
+            ]
           }
         ]
       },
@@ -1669,7 +1727,10 @@
             "source": "Google Open Buildings",
             "text": "© Google Open Buildings",
             "url": "https://sites.research.google/gr/open-buildings/",
-            "license": "CC BY 4.0"
+            "license": "CC BY 4.0",
+            "layers": [
+              "counts_buildings"
+            ]
           }
         ]
       },
@@ -1709,20 +1770,30 @@
             "source": "OpenStreetMap contributors",
             "text": "© OpenStreetMap contributors",
             "url": "https://www.openstreetmap.org/copyright",
-            "license": "Open Database License (ODbL) 1.0"
+            "license": "Open Database License (ODbL) 1.0",
+            "layers": [
+              "lines_streets",
+              "places_osm"
+            ]
           },
           {
             "source": "Google Open Buildings",
             "text": "© Google Open Buildings",
             "url": "https://sites.research.google/gr/open-buildings/",
-            "license": "CC BY 4.0"
+            "license": "CC BY 4.0",
+            "layers": [
+              "counts_buildings"
+            ]
           },
           {
             "url": "https://www.statssa.gov.za/",
             "text": "Boundaries © Statistics South Africa, Census 2022 main place / sub-place framework",
             "source": "Statistics South Africa",
             "license": "Stats SA copyright and licensing terms; not resold as a standalone product",
-            "statement": "Fascia uses the official Statistics South Africa (\"Stats SA\") 2022 placename geographic framework as the underlying spatial reference layer, acknowledges Stats SA as the source and rights holder of that placename framework, and confirms that the placename boundaries are not supplied, sold, or charged for as a standalone product but are made available only in accordance with Stats SA's applicable copyright and licensing terms; any fees charged by Fascia relate solely to Fascia's proprietary data, analysis, outputs, or other value-added commercial content created by Fascia and spatially linked to the placename boundary framework."
+            "statement": "Fascia uses the official Statistics South Africa (\"Stats SA\") 2022 placename geographic framework as the underlying spatial reference layer, acknowledges Stats SA as the source and rights holder of that placename framework, and confirms that the placename boundaries are not supplied, sold, or charged for as a standalone product but are made available only in accordance with Stats SA's applicable copyright and licensing terms; any fees charged by Fascia relate solely to Fascia's proprietary data, analysis, outputs, or other value-added commercial content created by Fascia and spatially linked to the placename boundary framework.",
+            "layers": [
+              "places_census"
+            ]
           }
         ]
       },
@@ -1751,7 +1822,10 @@
             "source": "OpenStreetMap contributors",
             "text": "© OpenStreetMap contributors",
             "url": "https://www.openstreetmap.org/copyright",
-            "license": "Open Database License (ODbL) 1.0"
+            "license": "Open Database License (ODbL) 1.0",
+            "layers": [
+              "lines_streets"
+            ]
           }
         ],
         "count": 3,
@@ -2180,20 +2254,30 @@
             "source": "OpenStreetMap contributors",
             "text": "© OpenStreetMap contributors",
             "url": "https://www.openstreetmap.org/copyright",
-            "license": "Open Database License (ODbL) 1.0"
+            "license": "Open Database License (ODbL) 1.0",
+            "layers": [
+              "lines_streets",
+              "places_osm"
+            ]
           },
           {
             "source": "Google Open Buildings",
             "text": "© Google Open Buildings",
             "url": "https://sites.research.google/gr/open-buildings/",
-            "license": "CC BY 4.0"
+            "license": "CC BY 4.0",
+            "layers": [
+              "counts_buildings"
+            ]
           },
           {
             "url": "https://www.statssa.gov.za/",
             "text": "Boundaries © Statistics South Africa, Census 2022 main place / sub-place framework",
             "source": "Statistics South Africa",
             "license": "Stats SA copyright and licensing terms; not resold as a standalone product",
-            "statement": "Fascia uses the official Statistics South Africa (\"Stats SA\") 2022 placename geographic framework as the underlying spatial reference layer, acknowledges Stats SA as the source and rights holder of that placename framework, and confirms that the placename boundaries are not supplied, sold, or charged for as a standalone product but are made available only in accordance with Stats SA's applicable copyright and licensing terms; any fees charged by Fascia relate solely to Fascia's proprietary data, analysis, outputs, or other value-added commercial content created by Fascia and spatially linked to the placename boundary framework."
+            "statement": "Fascia uses the official Statistics South Africa (\"Stats SA\") 2022 placename geographic framework as the underlying spatial reference layer, acknowledges Stats SA as the source and rights holder of that placename framework, and confirms that the placename boundaries are not supplied, sold, or charged for as a standalone product but are made available only in accordance with Stats SA's applicable copyright and licensing terms; any fees charged by Fascia relate solely to Fascia's proprietary data, analysis, outputs, or other value-added commercial content created by Fascia and spatially linked to the placename boundary framework.",
+            "layers": [
+              "places_census"
+            ]
           }
         ]
       },
@@ -2384,7 +2468,7 @@
       "generation": "in-abdb-2025"
     }
   ],
-  "_generated_elsewhere_why": "These examples come from a non-production deployment, because the field they exercise exists only where a pack exists and that pack is not in production. Both deployments serve contract 0.30.1, asserted at generation time. The response shape is the shape production returns for the same path; the DATA in these examples is not fetchable from https://places.fascia.network, so assert their key paths and not their values. Every example carries `generated_from_public`: branch on that boolean rather than on the URL, which for a non-public deployment is a loopback address that means nothing from where you are reading it. Do not send these paths through your transport and expect a match.",
+  "_generated_elsewhere_why": "These examples come from a non-production deployment, because the field they exercise exists only where a pack exists and that pack is not in production. Both deployments serve contract 0.31.0, asserted at generation time. The response shape is the shape production returns for the same path; the DATA in these examples is not fetchable from https://places.fascia.network, so assert their key paths and not their values. Every example carries `generated_from_public`: branch on that boolean rather than on the URL, which for a non-public deployment is a loopback address that means nothing from where you are reading it. Do not send these paths through your transport and expect a match.",
   "key_paths_covered": [
     "[].adm",
     "[].area_id",
@@ -2425,6 +2509,7 @@
     "area_id",
     "area_m2",
     "attribution",
+    "attribution[].layers",
     "attribution[].license",
     "attribution[].source",
     "attribution[].statement",
@@ -2598,6 +2683,7 @@
     "layers[].superseded_by",
     "layers[].superseded_from",
     "layers[].vintage",
+    "layers[].vintage_source",
     "lng",
     "loaded",
     "measured",

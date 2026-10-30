@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: Fascia Places
-  version: 0.30.1
+  version: 0.31.0
   description: |
     Host-facing geography rail for platforms that organise people by place.
 
@@ -318,6 +318,41 @@ paths:
                             fields below, on a layer whose pack records no vintage — omitted
                             rather than null, so a client reads undefined instead of having to
                             pattern-match a placeholder.
+
+                            A vintage is not always a year: an OpenStreetMap-derived layer
+                            carries the extract's replication date, `2026-10-19`, because a
+                            crowd-edited map has no editions and rounding it to a year would
+                            discard a fact we hold exactly.
+                        vintage_source:
+                          type: string
+                          example: "read: osmosis_replication_timestamp in the extract header"
+                          description: |
+                            Where that date came from, and **whether it was read or asserted**.
+                            **New in 0.31.0.** Present whenever `vintage` is.
+
+                            **Its first word is `read` or `asserted`, and that word is the
+                            promise.** `read` where the date came out of the source itself — a
+                            custodian's own metadata, an extract's replication timestamp —
+                            and `asserted` where we are naming the release we were given. The
+                            rest of the string is the evidence that identifies it, written for
+                            a person rather than parsed.
+
+                            **Match the word, not the punctuation.** Most layers read
+                            `read: …` or `asserted: …`, but layers ingested before this field
+                            existed read `read from …` with no colon — four of South Africa's
+                            ten do today. A host keying on `read:` would call those unknown.
+                            Nothing may record a `vintage_source` whose first word is neither;
+                            the ingest refuses it rather than publishing a string you cannot
+                            branch on.
+
+                            **Branch on that word if you display a vintage to a person.** An
+                            asserted date can be approximate: the GeoNames layer's is the date
+                            we downloaded the dump, because GeoNames regenerates its country
+                            files daily and stamps no version in them, so it is accurate to
+                            about a day. A demarcation year from the Municipal Demarcation
+                            Board is not approximate at all. Those looked identical on the wire
+                            until this field, and a screen showing both as plain dates reports
+                            a precision one of them does not have.
                         effective_from:
                           type: string
                           format: date
@@ -1123,11 +1158,42 @@ components:
 
     Attribution:
       type: object
+      # Stated from 0.31.0, and deliberately only these TWO. Until now nothing in this document
+      # said any field was always present, so a client generated from it had to treat `source` as
+      # optional -- and at least one host wrote a `source`-or-`text` fallback for exactly that
+      # reason. The wire does not change; the document catches up with it.
+      #
+      # `url` and `license` are NOT required, and the first draft of this line listed them. Every
+      # credit this API serves in production carries both, so the claim looked safe -- and the
+      # fixture pack's own Stats SA credit has no `url`, which the suite caught immediately. A
+      # rights holder with no canonical URL is an ordinary thing, and `required` is a promise
+      # that cannot be withdrawn inside v1. `source` and `text` are the two we can guarantee and
+      # the two a host matches on, and scripts/check-credit-strings.js pins exactly those.
+      required: [source, text]
       properties:
         source: { type: string, example: OpenStreetMap contributors }
         text: { type: string, example: "© OpenStreetMap contributors" }
         url: { type: string, example: "https://www.openstreetmap.org/copyright" }
         license: { type: string, example: "Open Database License (ODbL) 1.0" }
+        layers:
+          type: array
+          items: { type: string }
+          example: ["lines_streets", "places_osm"]
+          description: |
+            Which of this generation's layers this rights holder supplied, naming the same
+            layers `/v1/places/generations` lists. **New in 0.31.0.** Always present, never
+            empty, and sorted so two responses can be compared.
+
+            **One entry per rights holder, not per layer.** A source that supplied two layers
+            appears once with both named here — South Africa's OpenStreetMap credit carries
+            `["lines_streets", "places_osm"]`, because the street names and the locality tier
+            come from the same rights holder under the same licence. A licence screen that
+            renders one card per source can therefore read this rather than re-deriving it.
+
+            It exists because `source` says who to credit and said nothing about what they
+            supplied, so a screen showing credits beneath a fixed heading had to assert what
+            the heading meant. One host's read "THE OFFICIAL BOUNDARIES", which was true of a
+            census boundary and false of a volunteer map the moment a country carried both.
         statement:
           type: string
           description: |
@@ -1137,6 +1203,12 @@ components:
             a licence or about screen. Statistics South Africa supplied theirs on
             20 October 2026, and it covers both acknowledgement and the terms on which the
             boundaries may be charged for.
+
+            **Two entries can share a `source` and differ here**, and both must be shown: a
+            rights holder may approve different wording for different vintages. `source` is
+            therefore not a safe deduplication key for a licence card — use the whole credit
+            apart from `layers`, which is what this API does. One host deduplicated on the name
+            and silently drew only the first of two statements.
 
     StreetHit:
       type: object
