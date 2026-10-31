@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: Fascia Places
-  version: 0.31.0
+  version: 0.32.0
   description: |
     Host-facing geography rail for platforms that organise people by place.
 
@@ -609,7 +609,10 @@ paths:
           schema: { type: integer, default: 250, minimum: 1, maximum: 500 }
       responses:
         "200":
-          description: Point FeatureCollection (generation, kind geoname, adm GN, count)
+          description: |
+            Point FeatureCollection (generation, kind geoname, adm GN, count), and from
+            0.32.0 `attribution`. This response carried no `attribution` member at all until
+            then — not an empty one — while the GeoNames layer it serves is CC BY 4.0.
           content:
             application/json:
               schema:
@@ -1194,6 +1197,13 @@ components:
             supplied, so a screen showing credits beneath a fixed heading had to assert what
             the heading meant. One host's read "THE OFFICIAL BOUNDARIES", which was true of a
             census boundary and false of a volunteer map the moment a country carried both.
+
+            **One layer can owe more than one rights holder, so this is not a key either.**
+            **New in 0.32.0.** South Africa's `polygons_adm` carries two entries whose `layers`
+            both read `["polygons_adm"]`: the Municipal Demarcation Board demarcated those
+            boundaries and geoBoundaries publishes, under CC BY 3.0 IGO, the copy we ingest.
+            Both are owed and both must be shown. Deduplicate on the whole credit apart from
+            `layers`, as the note on `statement` says — not on `source`, and not on this.
         statement:
           type: string
           description: |

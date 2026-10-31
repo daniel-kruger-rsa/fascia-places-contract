@@ -1,6 +1,6 @@
 {
   "_read_me": "A complete real response per path, generated from a live deployment rather than written by hand. Assert that every key path here survives your transport, recursively. If this file cannot be fetched, report that you could not check -- never pass.",
-  "contract": "0.31.0",
+  "contract": "0.32.0",
   "generated_from": "https://places.fascia.network",
   "examples": {
     "generation": {
@@ -16,7 +16,7 @@
         "country": "ZA",
         "generation": "stats-sa-2022",
         "loaded": true,
-        "contract": "0.31.0",
+        "contract": "0.32.0",
         "attribution": [
           {
             "url": "https://www.statssa.gov.za/",
@@ -36,6 +36,33 @@
             "layers": [
               "lines_streets",
               "places_osm"
+            ]
+          },
+          {
+            "url": "https://www.geonames.org/",
+            "text": "© GeoNames",
+            "source": "GeoNames",
+            "license": "CC BY 4.0",
+            "layers": [
+              "points_geonames"
+            ]
+          },
+          {
+            "url": "https://www.demarcation.org.za/",
+            "text": "Administrative boundaries: Municipal Demarcation Board, South Africa",
+            "source": "Municipal Demarcation Board",
+            "license": "MDB open data; attribute the Municipal Demarcation Board",
+            "layers": [
+              "polygons_adm"
+            ]
+          },
+          {
+            "url": "https://www.geoboundaries.org/",
+            "text": "Boundaries via geoBoundaries (gbOpen), after OCHA ROSEA",
+            "source": "geoBoundaries",
+            "license": "CC BY 3.0 IGO",
+            "layers": [
+              "polygons_adm"
             ]
           },
           {
@@ -375,7 +402,7 @@
       "generated_from_public": true,
       "response": {
         "ok": true,
-        "build": "c72d53370dbb"
+        "build": "77d5770add3f"
       },
       "key_paths_unique_to_this_example": [
         "build",
@@ -742,6 +769,33 @@
             "layers": [
               "places_census"
             ]
+          },
+          {
+            "url": "https://www.geonames.org/",
+            "text": "© GeoNames",
+            "source": "GeoNames",
+            "license": "CC BY 4.0",
+            "layers": [
+              "points_geonames"
+            ]
+          },
+          {
+            "url": "https://www.demarcation.org.za/",
+            "text": "Administrative boundaries: Municipal Demarcation Board, South Africa",
+            "source": "Municipal Demarcation Board",
+            "license": "MDB open data; attribute the Municipal Demarcation Board",
+            "layers": [
+              "polygons_adm"
+            ]
+          },
+          {
+            "url": "https://www.geoboundaries.org/",
+            "text": "Boundaries via geoBoundaries (gbOpen), after OCHA ROSEA",
+            "source": "geoBoundaries",
+            "license": "CC BY 3.0 IGO",
+            "layers": [
+              "polygons_adm"
+            ]
           }
         ]
       },
@@ -1106,6 +1160,33 @@
             "statement": "Fascia uses the official Statistics South Africa (\"Stats SA\") 2022 placename geographic framework as the underlying spatial reference layer, acknowledges Stats SA as the source and rights holder of that placename framework, and confirms that the placename boundaries are not supplied, sold, or charged for as a standalone product but are made available only in accordance with Stats SA's applicable copyright and licensing terms; any fees charged by Fascia relate solely to Fascia's proprietary data, analysis, outputs, or other value-added commercial content created by Fascia and spatially linked to the placename boundary framework.",
             "layers": [
               "places_census"
+            ]
+          },
+          {
+            "url": "https://www.geonames.org/",
+            "text": "© GeoNames",
+            "source": "GeoNames",
+            "license": "CC BY 4.0",
+            "layers": [
+              "points_geonames"
+            ]
+          },
+          {
+            "url": "https://www.demarcation.org.za/",
+            "text": "Administrative boundaries: Municipal Demarcation Board, South Africa",
+            "source": "Municipal Demarcation Board",
+            "license": "MDB open data; attribute the Municipal Demarcation Board",
+            "layers": [
+              "polygons_adm"
+            ]
+          },
+          {
+            "url": "https://www.geoboundaries.org/",
+            "text": "Boundaries via geoBoundaries (gbOpen), after OCHA ROSEA",
+            "source": "geoBoundaries",
+            "license": "CC BY 3.0 IGO",
+            "layers": [
+              "polygons_adm"
             ]
           },
           {
@@ -1677,6 +1758,33 @@
             "layers": [
               "places_osm"
             ]
+          },
+          {
+            "url": "https://www.geonames.org/",
+            "text": "© GeoNames",
+            "source": "GeoNames",
+            "license": "CC BY 4.0",
+            "layers": [
+              "points_geonames"
+            ]
+          },
+          {
+            "url": "https://www.demarcation.org.za/",
+            "text": "Administrative boundaries: Municipal Demarcation Board, South Africa",
+            "source": "Municipal Demarcation Board",
+            "license": "MDB open data; attribute the Municipal Demarcation Board",
+            "layers": [
+              "polygons_adm"
+            ]
+          },
+          {
+            "url": "https://www.geoboundaries.org/",
+            "text": "Boundaries via geoBoundaries (gbOpen), after OCHA ROSEA",
+            "source": "geoBoundaries",
+            "license": "CC BY 3.0 IGO",
+            "layers": [
+              "polygons_adm"
+            ]
           }
         ]
       },
@@ -1793,6 +1901,33 @@
             "statement": "Fascia uses the official Statistics South Africa (\"Stats SA\") 2022 placename geographic framework as the underlying spatial reference layer, acknowledges Stats SA as the source and rights holder of that placename framework, and confirms that the placename boundaries are not supplied, sold, or charged for as a standalone product but are made available only in accordance with Stats SA's applicable copyright and licensing terms; any fees charged by Fascia relate solely to Fascia's proprietary data, analysis, outputs, or other value-added commercial content created by Fascia and spatially linked to the placename boundary framework.",
             "layers": [
               "places_census"
+            ]
+          },
+          {
+            "url": "https://www.geonames.org/",
+            "text": "© GeoNames",
+            "source": "GeoNames",
+            "license": "CC BY 4.0",
+            "layers": [
+              "points_geonames"
+            ]
+          },
+          {
+            "url": "https://www.demarcation.org.za/",
+            "text": "Administrative boundaries: Municipal Demarcation Board, South Africa",
+            "source": "Municipal Demarcation Board",
+            "license": "MDB open data; attribute the Municipal Demarcation Board",
+            "layers": [
+              "polygons_adm"
+            ]
+          },
+          {
+            "url": "https://www.geoboundaries.org/",
+            "text": "Boundaries via geoBoundaries (gbOpen), after OCHA ROSEA",
+            "source": "geoBoundaries",
+            "license": "CC BY 3.0 IGO",
+            "layers": [
+              "polygons_adm"
             ]
           }
         ]
@@ -2278,6 +2413,33 @@
             "layers": [
               "places_census"
             ]
+          },
+          {
+            "url": "https://www.geonames.org/",
+            "text": "© GeoNames",
+            "source": "GeoNames",
+            "license": "CC BY 4.0",
+            "layers": [
+              "points_geonames"
+            ]
+          },
+          {
+            "url": "https://www.demarcation.org.za/",
+            "text": "Administrative boundaries: Municipal Demarcation Board, South Africa",
+            "source": "Municipal Demarcation Board",
+            "license": "MDB open data; attribute the Municipal Demarcation Board",
+            "layers": [
+              "polygons_adm"
+            ]
+          },
+          {
+            "url": "https://www.geoboundaries.org/",
+            "text": "Boundaries via geoBoundaries (gbOpen), after OCHA ROSEA",
+            "source": "geoBoundaries",
+            "license": "CC BY 3.0 IGO",
+            "layers": [
+              "polygons_adm"
+            ]
           }
         ]
       },
@@ -2364,7 +2526,7 @@
         "needs_host_key": true
       },
       "why": "The same shape from a pack whose official tiers differ: India fills one place level below ADM3, so this locality's parent chain is shorter than the South African one above. From the dev deployment, because India is not in production -- so a host that cannot reach that deployment should skip it and read `locality_search_za` instead. It stays after South Africa made it non-essential, for two reasons: the second-deployment mechanism has to keep running to keep working, and the mark is the COMMON case there and the uncommon case here -- 18,672 of the 34,424 localities in the India pack this generator reads carry it, against 2,134 of South Africa's 9,215 -- so a host sizing a gate on it from South Africa alone would be measuring the rarer half.",
-      "generated_from": "http://127.0.0.1:8099",
+      "generated_from": "http://localhost:8099",
       "generated_from_public": false,
       "response": [
         {
@@ -2464,11 +2626,11 @@
   "generated_elsewhere": [
     {
       "example": "locality_search_in",
-      "generated_from": "http://127.0.0.1:8099",
+      "generated_from": "http://localhost:8099",
       "generation": "in-abdb-2025"
     }
   ],
-  "_generated_elsewhere_why": "These examples come from a non-production deployment, because the field they exercise exists only where a pack exists and that pack is not in production. Both deployments serve contract 0.31.0, asserted at generation time. The response shape is the shape production returns for the same path; the DATA in these examples is not fetchable from https://places.fascia.network, so assert their key paths and not their values. Every example carries `generated_from_public`: branch on that boolean rather than on the URL, which for a non-public deployment is a loopback address that means nothing from where you are reading it. Do not send these paths through your transport and expect a match.",
+  "_generated_elsewhere_why": "These examples come from a non-production deployment, because the field they exercise exists only where a pack exists and that pack is not in production. Both deployments serve contract 0.32.0, asserted at generation time. The response shape is the shape production returns for the same path; the DATA in these examples is not fetchable from https://places.fascia.network, so assert their key paths and not their values. Every example carries `generated_from_public`: branch on that boolean rather than on the URL, which for a non-public deployment is a loopback address that means nothing from where you are reading it. Do not send these paths through your transport and expect a match.",
   "key_paths_covered": [
     "[].adm",
     "[].area_id",

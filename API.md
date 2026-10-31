@@ -507,6 +507,10 @@ Street data is OpenStreetMap under ODbL. Every response carrying streets carries
 
 **South Africa, from 0.21.0.** Boundaries derive from Statistics South Africa's Census 2011 place-name framework. Stats SA supplied the wording they accept on 20 October 2026; the pack carries it as `statement` and it is the text to show. It covers two things at once — that Stats SA is the source and rights holder, and that the boundaries are not sold or charged for as a standalone product, any fee attaching to work built on top of them.
 
+**South Africa's duty is six holders, not three, from 0.32.0 — and all three additions were owed from the first day the pack existed.** The administrative layers (`polygons_adm`: province, district, municipality, ward) come from the **Municipal Demarcation Board**, by way of **geoBoundaries'** release of the OCHA ROSEA copy under CC BY 3.0 IGO, and the populated-place points (`points_geonames`) come from **GeoNames** under CC BY 4.0. All three licences make acknowledgement a condition; none of the three reached a response until 31 October 2026, because each layer recorded its licence and no credit object, and this API serves a credit only where the layer records one. `GET /v1/places/geojson?kind=ward` was returning MDB ward polygons under a credit to Stats SA and OpenStreetMap, neither of whom supplied a cell in it. If you built a licence screen from the duty before `0.32.0`, it is short by three cards; re-read it.
+
+**One layer can owe two rights holders.** `polygons_adm` carries two entries whose `layers` both read `["polygons_adm"]` — the MDB demarcated those boundaries, geoBoundaries publishes the copy we ingest, and CC BY requires crediting the licensor. So `layers` is not a deduplication key any more than `source` is: dedupe on the whole credit apart from `layers`.
+
 ---
 
 ## `GET /v1/places/crosswalk`
