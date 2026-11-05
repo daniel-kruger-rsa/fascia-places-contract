@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: Fascia Places
-  version: 0.34.0
+  version: 0.34.1
   description: |
     Host-facing geography rail for platforms that organise people by place.
 
@@ -12,11 +12,19 @@ info:
 
     THIS DOCUMENT NAMES NO GENERATION. Read /v1/places/generations for which one is default
     and what each holds, and /v1/places/layers for the levels. Until 0.34.0 this line asserted
-    `mdb-zaf-2020` and the pack's four layers by hand; the default had been `stats-sa-2022`
-    since before the oldest tag we can measure, and production serves nine layers rather than
-    four. It was wrong on all six tags from 0.29.0 to 0.33.0 and a host reported it on the
-    release whose own correction pointed here. A generation example elsewhere in this document
-    is an example of the parameter, never a claim about what is loaded.
+    `mdb-zaf-2020` and the pack's four layers by hand. It named the default correctly for 17
+    tags and then went stale: `stats-sa-2022` loaded on 2026-10-27 at 08:38 UTC and became the
+    default on loading, ten hours before 0.27.0 was tagged, so the line was WRONG ON EIGHT
+    TAGS, 0.27.0 through 0.33.0 -- and production serves nine layers rather than four. A host
+    reported it on the release whose own correction pointed here.
+    0.34.1 CORRECTS THIS PARAGRAPH'S OWN CORRECTION. At 0.34.0 it read "the default had been
+    `stats-sa-2022` since before the oldest tag we can measure [...] wrong on all six tags from
+    0.29.0 to 0.33.0". Both halves were false: the oldest tag is 0.13.1 of 2026-10-01, at which
+    `mdb-zaf-2020` genuinely WAS the default, and the count was eight rather than six. It was
+    written from the tail of the tag list read as the whole of it -- a hand-maintained claim
+    about a hand-maintained claim, caught by re-measuring before sending a host the correction.
+    A generation example elsewhere in this document is an example of the parameter, never a
+    claim about what is loaded.
     Harvest cells are subplaces. GeoNames are labels/search only.
     Levels are compared with `adm` (ADM1..ADM4, MP, SP, LOC), never with `kind`. A `kind` is the
     word a source uses for a level, and it differs by country: South Africa's ADM3 is a
