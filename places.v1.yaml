@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: Fascia Places
-  version: 0.33.0
+  version: 0.34.0
   description: |
     Host-facing geography rail for platforms that organise people by place.
 
@@ -10,7 +10,13 @@ info:
     client. The host owns its members, its communities and which cells they cover; Places
     answers questions about geography and knows nothing of members or communities.
 
-    Pack generation mdb-zaf-2020 (MDB ADM1–4 + Stats SA MP/SP + GeoNames P).
+    THIS DOCUMENT NAMES NO GENERATION. Read /v1/places/generations for which one is default
+    and what each holds, and /v1/places/layers for the levels. Until 0.34.0 this line asserted
+    `mdb-zaf-2020` and the pack's four layers by hand; the default had been `stats-sa-2022`
+    since before the oldest tag we can measure, and production serves nine layers rather than
+    four. It was wrong on all six tags from 0.29.0 to 0.33.0 and a host reported it on the
+    release whose own correction pointed here. A generation example elsewhere in this document
+    is an example of the parameter, never a claim about what is loaded.
     Harvest cells are subplaces. GeoNames are labels/search only.
     Levels are compared with `adm` (ADM1..ADM4, MP, SP, LOC), never with `kind`. A `kind` is the
     word a source uses for a level, and it differs by country: South Africa's ADM3 is a
@@ -18,8 +24,19 @@ info:
     code resolves to whichever word that country's pack uses.
 
     A country may hold NO cell at a level, and that is not a gap: ADM4, MP, GN and ST are
-    absent from the India pack, LOC from South Africa's. Such a layer answers 200 with an
-    empty array, never 400, and /v1/places/layers reports what a country actually carries.
+    absent from the India pack. Such a layer answers 200 with an empty array, never 400.
+
+    READ `held` ON /v1/places/layers TO KNOW WHICH, and from 0.34.0 that is a field rather than
+    an inference. Every level is listed for every country, so the presence of an entry says
+    nothing; `held` is the boolean. Until 0.34.0 the only signal was whether an entry carried a
+    `vintage`, which worked for South Africa and inverted for India, whose pack recorded no
+    vintages at all: all ten levels came back bare and five of them held 79,082 cells. An empty
+    array is not the test either -- a name search over a level a country does fill returns an
+    empty array whenever nothing matches the string.
+
+    This paragraph said "LOC from South Africa's" until 0.34.0, and that stopped being true on
+    29 October 2026 when South Africa began serving 9,215 localities. Corrected here rather than
+    quietly dropped, because a host may have written that absence into a branch.
 
     SP means THE FINEST OFFICIAL CELL, not "a subdivision of a settlement". South Africa has
     two place levels below ADM3, a mainplace and the subplace inside it; India has one, the
@@ -248,7 +265,7 @@ paths:
                 type: object
                 properties:
                   default_country: { type: string, example: ZA }
-                  default: { type: string, example: mdb-zaf-2020, description: "The default country's generation; the single-country shape, kept for hosts written against it." }
+                  default: { type: string, example: stats-sa-2022, description: "The default country's generation; the single-country shape, kept for hosts written against it. Read it, never assume it: this example said `mdb-zaf-2020` through 0.33.0 while the served default was `stats-sa-2022`." }
                   countries:
                     type: array
                     description: Every country this deployment serves, each with its own default and generations.
@@ -282,6 +299,9 @@ paths:
         The same layers everywhere, but the response carries a generation, and a generation
         belongs to a country: a country with no pack is refused here too.
 
+        **Every level is listed for every country, and `held` says which of them this pack
+        actually fills.** The list is the vocabulary; `held` is the pack. From 0.34.0.
+
         Each layer also says **which vintage it is of**, and whether that vintage describes
         what is in force. One generation can hold layers on different cadences from different
         custodians, so the generation name cannot tell you.
@@ -295,7 +315,7 @@ paths:
         - $ref: "#/components/parameters/generation"
       responses:
         "200":
-          description: ADM1–4, MP, SP, LOC, GN, ST, each with its vintage where the pack records one
+          description: All ten levels, each with `held`, and with its vintage where the pack records one
           content:
             application/json:
               schema:
@@ -310,6 +330,27 @@ paths:
                       properties:
                         adm: { type: string, example: SP }
                         kind: { type: string, example: subplace }
+                        held:
+                          type: boolean
+                          example: true
+                          description: |
+                            Whether this pack holds any cell at this level. **New in 0.34.0.**
+                            Always present, on every entry, for every country.
+
+                            **This list is the whole vocabulary, not the pack.** All ten levels
+                            are returned for every country, so an entry existing tells you
+                            nothing — `held` is the answer. A level with `held: false` answers
+                            `200` with an empty array on the endpoints that draw it.
+
+                            **Do not infer this from `vintage` any more, and do not infer it
+                            from an empty array.** Before this field the only signal was whether
+                            an entry carried a `vintage`, which is correct for South Africa —
+                            nine of ten levels carry one — and inverted for India, whose pack
+                            recorded no vintages at all: all ten levels came back bare while
+                            five of them held 79,082 cells. A check built against one country
+                            and reused for the other reported every Indian level absent. An
+                            empty array is no better: a name search over a level a country does
+                            fill returns an empty array whenever nothing matches the string.
                         vintage:
                           type: string
                           example: "2011"

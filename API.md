@@ -236,25 +236,34 @@ What this pack can and cannot answer for a country, as **data a host reads** rat
 
 **A generation belongs to a country.** Census years differ, so cadence does: South Africa can sit on 2011 cells while another country's pack is already on a newer vintage. Each country has its own default and its own cutovers.
 
-Everything this pack holds. During a geography change the old and the new generation are both loaded, and a host can read either one.
+Everything this pack holds. During a geography change the old and the new generation are both loaded, and a host can read either one. **Both shapes below are read from production, not drawn by hand** — they showed one generation, marked the retired one `"default": true` and named four layers where nine are served, for every tag from `0.29.0` to `0.33.0`. A host told us, which is the only reason this paragraph and its own illustration now agree.
 
 ```json
 {
-  "default": "mdb-zaf-2020",
+  "default": "stats-sa-2022",
   "generations": [
-    { "generation": "mdb-zaf-2020", "loaded_at": "…", "layers": ["polygons_adm","places_census","points_geonames","lines_streets"], "default": true }
+    { "generation": "stats-sa-2022", "loaded_at": "2026-10-27T08:38:16.348Z", "default": true,
+      "layers": ["counts_buildings","coverage","derived","lines_streets","places_census",
+                 "places_osm","points_geonames","polygons_adm","polygons_ward_mdb"] },
+    { "generation": "mdb-zaf-2020", "loaded_at": "2026-10-22T04:01:21.544Z", "default": false,
+      "layers": ["counts_buildings","coverage","derived","lines_streets","places_census",
+                 "points_geonames","polygons_adm"] }
   ]
 }
 ```
 
+The two differ by exactly the layers the newer pack added: `places_osm`, the locality tier, and `polygons_ward_mdb`, the 2026 ward layer. **`default: false` is not "retired"** — `mdb-zaf-2020` is fully readable, and is the only route from a 2020 ward id to its successor.
+
 ```json
 {
   "default_country": "ZA",
-  "default": "mdb-zaf-2020",
-  "generations": [ { "generation": "mdb-zaf-2020", "loaded_at": "…", "layers": ["…"], "default": true } ],
+  "default": "stats-sa-2022",
+  "generations": [ { "generation": "stats-sa-2022", "…": "…", "default": true },
+                   { "generation": "mdb-zaf-2020", "…": "…", "default": false } ],
   "countries": [
-    { "country": "ZA", "default": "mdb-zaf-2020", "loaded": true,
-      "generations": [ { "generation": "mdb-zaf-2020", "…": "…" } ] }
+    { "country": "ZA", "default": "stats-sa-2022", "loaded": true,
+      "generations": [ { "generation": "stats-sa-2022", "…": "…" },
+                       { "generation": "mdb-zaf-2020", "…": "…" } ] }
   ]
 }
 ```

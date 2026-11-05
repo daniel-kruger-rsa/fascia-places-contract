@@ -1,6 +1,6 @@
 {
   "_read_me": "A complete real response per path, generated from a live deployment rather than written by hand. Assert that every key path here survives your transport, recursively. If this file cannot be fetched, report that you could not check -- never pass.",
-  "contract": "0.33.0",
+  "contract": "0.34.0",
   "generated_from": "https://places.fascia.network",
   "examples": {
     "generation": {
@@ -16,7 +16,7 @@
         "country": "ZA",
         "generation": "stats-sa-2022",
         "loaded": true,
-        "contract": "0.33.0",
+        "contract": "0.34.0",
         "attribution": [
           {
             "url": "https://www.statssa.gov.za/",
@@ -201,6 +201,7 @@
           {
             "adm": "ADM1",
             "kind": "province",
+            "held": true,
             "vintage": "2020",
             "vintage_source": "read from geoBoundaries ADM1 metaData.json at commit 9469f09",
             "current": true
@@ -208,6 +209,7 @@
           {
             "adm": "ADM2",
             "kind": "district",
+            "held": true,
             "vintage": "2020",
             "vintage_source": "read from geoBoundaries ADM2 metaData.json at commit 9469f09",
             "current": true
@@ -215,17 +217,20 @@
           {
             "adm": "ADM3",
             "kind": "municipality",
+            "held": true,
             "vintage": "2020",
             "vintage_source": "read from geoBoundaries ADM3 metaData.json at commit 9469f09",
             "current": true
           },
           {
             "adm": "ADM3",
-            "kind": "subdistrict"
+            "kind": "subdistrict",
+            "held": false
           },
           {
             "adm": "ADM4",
             "kind": "ward",
+            "held": true,
             "vintage": "2026",
             "vintage_source": "read: the DATE field of the MDB ward shapefile, https://spatialhub-mdb-sa.opendata.arcgis.com/",
             "effective_from": "2026-11-04",
@@ -234,6 +239,7 @@
           {
             "adm": "MP",
             "kind": "mainplace",
+            "held": true,
             "vintage": "2022",
             "vintage_source": "asserted: the release supplied is Stats SA Census 2022 Placenames (MainPlace2022, SubPlace2022)",
             "current": true
@@ -241,6 +247,7 @@
           {
             "adm": "SP",
             "kind": "subplace",
+            "held": true,
             "vintage": "2022",
             "vintage_source": "asserted: the release supplied is Stats SA Census 2022 Placenames (MainPlace2022, SubPlace2022)",
             "current": true
@@ -248,6 +255,7 @@
           {
             "adm": "LOC",
             "kind": "locality",
+            "held": true,
             "vintage": "2026-10-19",
             "vintage_source": "read: osmosis_replication_timestamp in the header of south-africa-261019.osm.pbf, cross-checked against this entry by ingest-osm-places.js",
             "superseded_by": "a newer OpenStreetMap extract, which exists continuously",
@@ -256,6 +264,7 @@
           {
             "adm": "GN",
             "kind": "geoname",
+            "held": true,
             "vintage": "2026-09-21",
             "vintage_source": "asserted: the download date of https://download.geonames.org/export/dump/ZA.zip, sha256 04a5e6ac…, retrieved 2026-09-21T11:04:49Z. GeoNames regenerates its country files daily and stamps no version in them, so this is when we took the snapshot and not a date GeoNames published -- accurate to about a day, and the sha256 is what identifies the file exactly",
             "superseded_by": "a newer GeoNames daily dump, which exists continuously",
@@ -264,6 +273,7 @@
           {
             "adm": "ST",
             "kind": "street",
+            "held": true,
             "vintage": "2026-10-19",
             "vintage_source": "read: osm_replication_timestamp 2026-10-19T20:21:11Z recorded by ingest-streets.js from the header of south-africa-261019.osm.pbf, sha256 12296c46…",
             "superseded_by": "a newer OpenStreetMap extract, which exists continuously",
@@ -272,13 +282,106 @@
         ]
       },
       "key_paths_unique_to_this_example": [
-        "layers[].adm",
-        "layers[].current",
-        "layers[].effective_from",
-        "layers[].kind",
-        "layers[].superseded_by",
-        "layers[].vintage",
-        "layers[].vintage_source"
+        "layers[].effective_from"
+      ]
+    },
+    "layers_superseded": {
+      "request": {
+        "method": "GET",
+        "path": "/v1/places/layers?country=ZA&generation=mdb-zaf-2020",
+        "needs_host_key": false
+      },
+      "why": "THE ADVANCE-WARNING FIELDS, and they are only reachable on a non-default generation. `superseded_from` is the one thing in this API that announces a geography change BEFORE it happens: the 2020 ward layer has carried `superseded_from: 2026-11-04` since 21 October 2026, with `superseded_by` naming the delimitation that replaces it, and `current` is computed against today -- so it read `true` until the cutover morning and flipped itself with no deployment. The default generation carries none of this, because the layer that announced its own retirement is the one that has now been retired. So `0.33.0` LOST example coverage of `superseded_from` on the very release that superseded a layer, and the field a host would poll to see the next one coming became the field no example exercised. A host asked whether /v1/places/layers is the signal to poll; it is, and this example is what keeps the answer true.",
+      "generated_from": "https://places.fascia.network",
+      "generated_from_public": true,
+      "response": {
+        "country": "ZA",
+        "generation": "mdb-zaf-2020",
+        "layers": [
+          {
+            "adm": "ADM1",
+            "kind": "province",
+            "held": true,
+            "vintage": "2020",
+            "vintage_source": "read from geoBoundaries ADM1 metaData.json at commit 9469f09",
+            "current": true
+          },
+          {
+            "adm": "ADM2",
+            "kind": "district",
+            "held": true,
+            "vintage": "2020",
+            "vintage_source": "read from geoBoundaries ADM2 metaData.json at commit 9469f09",
+            "current": true
+          },
+          {
+            "adm": "ADM3",
+            "kind": "municipality",
+            "held": true,
+            "vintage": "2020",
+            "vintage_source": "read from geoBoundaries ADM3 metaData.json at commit 9469f09",
+            "current": true
+          },
+          {
+            "adm": "ADM3",
+            "kind": "subdistrict",
+            "held": false
+          },
+          {
+            "adm": "ADM4",
+            "kind": "ward",
+            "held": true,
+            "vintage": "2020",
+            "vintage_source": "read from geoBoundaries ADM4 metaData.json at commit 9469f09",
+            "superseded_by": "MDB ward delimitation 2024/2026",
+            "superseded_from": "2026-11-04",
+            "current": false
+          },
+          {
+            "adm": "MP",
+            "kind": "mainplace",
+            "held": true,
+            "vintage": "2011",
+            "vintage_source": "asserted: the release supplied is Stats SA Census 2011 main place / sub-place",
+            "superseded_by": "Stats SA Census 2022 place names",
+            "current": true
+          },
+          {
+            "adm": "SP",
+            "kind": "subplace",
+            "held": true,
+            "vintage": "2011",
+            "vintage_source": "asserted: the release supplied is Stats SA Census 2011 main place / sub-place",
+            "superseded_by": "Stats SA Census 2022 place names",
+            "current": true
+          },
+          {
+            "adm": "LOC",
+            "kind": "locality",
+            "held": false
+          },
+          {
+            "adm": "GN",
+            "kind": "geoname",
+            "held": true,
+            "vintage": "2026-09-21",
+            "vintage_source": "asserted: the download date of https://download.geonames.org/export/dump/ZA.zip, sha256 04a5e6ac…, retrieved 2026-09-21T11:04:49Z. GeoNames regenerates its country files daily and stamps no version in them, so this is when we took the snapshot and not a date GeoNames published -- accurate to about a day, and the sha256 is what identifies the file exactly",
+            "superseded_by": "a newer GeoNames daily dump, which exists continuously",
+            "current": true
+          },
+          {
+            "adm": "ST",
+            "kind": "street",
+            "held": true,
+            "vintage": "2026-09-21",
+            "vintage_source": "read: osm_replication_timestamp 2026-09-21T20:21:51Z recorded by ingest-streets.js from the header of south-africa-latest.osm.pbf, sha256 487ad72e… -- that URL has since moved, so this pack_meta record is the only remaining evidence of which extract it was",
+            "superseded_by": "a newer OpenStreetMap extract, which exists continuously",
+            "current": true
+          }
+        ]
+      },
+      "key_paths_unique_to_this_example": [
+        "layers[].superseded_from"
       ]
     },
     "coverage": {
@@ -404,7 +507,7 @@
       "generated_from_public": true,
       "response": {
         "ok": true,
-        "build": "6c17393aa57b"
+        "build": "9e62a58eedcc"
       },
       "key_paths_unique_to_this_example": [
         "build",
@@ -2809,7 +2912,7 @@
       "generation": "in-abdb-2025"
     }
   ],
-  "_generated_elsewhere_why": "These examples come from a non-production deployment, because the field they exercise exists only where a pack exists and that pack is not in production. Both deployments serve contract 0.33.0, asserted at generation time. The response shape is the shape production returns for the same path; the DATA in these examples is not fetchable from https://places.fascia.network, so assert their key paths and not their values. Every example carries `generated_from_public`: branch on that boolean rather than on the URL, which for a non-public deployment is a loopback address that means nothing from where you are reading it. Do not send these paths through your transport and expect a match.",
+  "_generated_elsewhere_why": "These examples come from a non-production deployment, because the field they exercise exists only where a pack exists and that pack is not in production. Both deployments serve contract 0.34.0, asserted at generation time. The response shape is the shape production returns for the same path; the DATA in these examples is not fetchable from https://places.fascia.network, so assert their key paths and not their values. Every example carries `generated_from_public`: branch on that boolean rather than on the URL, which for a non-public deployment is a loopback address that means nothing from where you are reading it. Do not send these paths through your transport and expect a match.",
   "key_paths_covered": [
     "[].adm",
     "[].area_id",
@@ -3029,8 +3132,10 @@
     "layers[].adm",
     "layers[].current",
     "layers[].effective_from",
+    "layers[].held",
     "layers[].kind",
     "layers[].superseded_by",
+    "layers[].superseded_from",
     "layers[].vintage",
     "layers[].vintage_source",
     "lng",
@@ -3179,12 +3284,10 @@
   "_not_covered_note": "Fields no example here exercises are not protected by this file. An optional field only appears when the data warrants it, so coverage is a property of the calls above. And coverage is a property of the calls you actually RUN: every example carries `key_paths_unique_to_this_example`, the key paths produced by that example and no other. If your gate skips an example -- because your own layer will not forward its path, or because `generated_from_public` is false and you have no route to the deployment it came from -- those paths stop being tested at that moment. Print them beside the reason for the skip. An empty list means the skip costs nothing.",
   "documented_properties_not_covered": [
     "reason",
-    "rejected",
-    "superseded_from"
+    "rejected"
   ],
   "_not_covered_why": {
-    "effective_from": "No layer in this deployment carries one. `effective_from` appears on a layer that is published and not yet in force, and none is today -- so no call against this pack can produce it. It is listed rather than quietly omitted: a host asserting against this file is not protected on that field.",
-    "rejected": "New in 0.30.0, and not reachable from any public deployment -- a named gap, not an oversight. `rejected` is written only by the LOCALITY crosswalk, and a locality crosswalk needs TWO locality vintages of one country. No locality layer is in production at all today, and the first country to get one will still have a single vintage until its next extract. The `crosswalk` example above is sub-place ground computed from polygon overlap, which refuses nothing and so carries no `rejected`. Earliest it can be covered: one extract after a locality layer goes public. Until then, assert nothing on `rejected` through this file and treat your transport as unverified for it.",
-    "reason": "`rejected[].reason` cannot be covered while `rejected` is not -- same cause, listed separately because a host searching this list for one field should not have to know it is a child of the other."
+    "reason": "`rejected[].reason` cannot be covered while `rejected` is not -- same cause, listed separately because a host searching this list for one field should not have to know it is a child of the other.",
+    "rejected": "New in 0.30.0, and not reachable from any public deployment -- a named gap, not an oversight. `rejected` is written only by the LOCALITY crosswalk, and a locality crosswalk needs TWO locality vintages of one country. No locality layer is in production at all today, and the first country to get one will still have a single vintage until its next extract. The `crosswalk` example above is sub-place ground computed from polygon overlap, which refuses nothing and so carries no `rejected`. MEASURED rather than argued: on 4 November 2026 the full ward crosswalk was run over all 4,392 retired cells and `rejected` appeared on none of them -- so a polygon crosswalk omits it rather than sending `[]`, and a host reported reaching the same conclusion from this document alone. Earliest it can be covered: one extract after a locality layer goes public. Until then, assert nothing on `rejected` through this file and treat your transport as unverified for it."
   }
 }
